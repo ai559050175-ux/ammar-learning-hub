@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>منصة عمار التعليمية | Ammar Learning Hub</title>
+<style>
+:root{--bg1:#fff3c4;--bg2:#cfeeff;--ink:#27304d;--soft:#6b7494;--card:#ffffff;--c:#4d9bff;--c2:#2f6fe0;--gold:#ffc83d;--ok:#2ec27e}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none}
+html,body{margin:0;min-height:100%}
+body{font-family:"Arial Rounded MT Bold","Trebuchet MS","Geeza Pro","Segoe UI",system-ui,sans-serif;color:var(--ink);
+ background:linear-gradient(160deg,var(--bg2),var(--bg1));background-attachment:fixed;overflow-x:hidden;
+ padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button{font:inherit;color:inherit;cursor:pointer;border:0}
+.ltr{direction:ltr;unicode-bidi:isolate;display:inline-block}
+.arab{direction:rtl;unicode-bidi:isolate;font-family:"Geeza Pro","Noto Naskh Arabic","Traditional Arabic","Arial",serif}
+.quran{direction:rtl;unicode-bidi:isolate;font-family:"Amiri Quran","KFGQPC Uthmanic Script HAFS","Scheherazade New","Geeza Pro","Noto Naskh Arabic","Traditional Arabic",serif;line-height:2.1}
+small{display:block;font-size:.5em;opacity:.7;font-weight:normal;line-height:1.2}
+
+/* top bar */
+.top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);box-shadow:0 3px 14px rgba(40,60,120,.12);flex-wrap:wrap}
+.brand{flex:1;min-width:160px;font-size:24px;font-weight:bold;display:flex;align-items:center;gap:8px}
+.brand span{background:linear-gradient(90deg,#ff7a59,#a66cff,#4d9bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pill{background:#fff;border-radius:30px;padding:0 18px;min-height:56px;display:flex;align-items:center;gap:8px;font-size:24px;font-weight:bold;box-shadow:0 4px 0 rgba(0,0,0,.1)}
+.ico{min-width:56px;min-height:56px;border-radius:50%;background:#fff;font-size:26px;box-shadow:0 4px 0 rgba(0,0,0,.12);padding:0 14px}
+.ico:active,.btn:active,.card:active,.choice:active{transform:translateY(3px)}
+.lang{border-radius:30px;font-weight:bold;font-size:20px;background:#ffe27a}
+
+main{max-width:1100px;margin:0 auto;padding:18px 16px 40px}
+h1,h2{margin:0}
+.hello{display:flex;align-items:center;gap:16px;background:#fff;border-radius:28px;padding:16px 22px;margin-bottom:20px;box-shadow:0 8px 0 rgba(0,0,0,.08)}
+.hello .mascot{font-size:64px;animation:bob 2.4s ease-in-out infinite}
+.hello h2{font-size:30px}.hello p{margin:4px 0 0;color:var(--soft);font-size:20px}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.card{position:relative;text-align:start;border-radius:30px;padding:22px;min-height:190px;color:#fff;
+ background:linear-gradient(145deg,var(--c),var(--c2));box-shadow:0 10px 0 rgba(0,0,0,.18);display:flex;flex-direction:column;gap:6px;overflow:hidden;transition:transform .12s}
+.card .big{font-size:70px;line-height:1;filter:drop-shadow(0 4px 0 rgba(0,0,0,.2))}
+.card h3{margin:0;font-size:32px}.card .g{font-size:20px;opacity:.95}
+.card .pr{margin-top:auto;display:flex;gap:6px;align-items:center;font-size:22px;background:rgba(255,255,255,.22);align-self:flex-start;padding:6px 16px;border-radius:20px}
+.card::after{content:"";position:absolute;inset-inline-end:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,.15)}
+
+.lvhead{display:flex;align-items:center;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.lvhead h2{font-size:32px;flex:1}
+.btn{min-height:64px;padding:0 28px;border-radius:22px;font-size:24px;font-weight:bold;background:#fff;box-shadow:0 6px 0 rgba(0,0,0,.15);transition:transform .1s}
+.btn.pri{background:linear-gradient(145deg,#3ddc97,#1fa971);color:#fff}
+.btn.sec{background:#ffd34d}
+.btn.mini{min-height:56px;font-size:20px;padding:0 20px}
+.lvgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:18px}
+.lv{display:flex;gap:16px;align-items:center;text-align:start;background:#fff;border-radius:28px;padding:20px;min-height:130px;box-shadow:0 8px 0 rgba(0,0,0,.12);border:5px solid transparent;transition:transform .1s}
+.lv .n{width:76px;height:76px;border-radius:24px;background:linear-gradient(145deg,var(--c),var(--c2));color:#fff;font-size:38px;display:flex;align-items:center;justify-content:center;flex:none}
+.lv h3{margin:0;font-size:26px}.lv p{margin:4px 0 6px;color:var(--soft);font-size:18px}
+.stars{font-size:30px;letter-spacing:2px}.stars .off{filter:grayscale(1);opacity:.3}
+.badge{font-size:34px;margin-inline-start:auto}
+.toggle{display:flex;gap:10px;background:#fff;border-radius:26px;padding:8px;box-shadow:0 5px 0 rgba(0,0,0,.1);margin-bottom:18px;flex-wrap:wrap}
+.toggle button{flex:1;min-height:60px;border-radius:20px;background:#eef1fb;font-size:24px;font-weight:bold;padding:0 16px}
+.toggle button.on{background:var(--c);color:#fff}
+
+/* play */
+.playtop{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.dots{display:flex;gap:8px;flex:1;justify-content:center}
+.dots i{width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:inset 0 0 0 3px rgba(0,0,0,.12)}
+.dots i.done{background:var(--ok);box-shadow:none}.dots i.cur{background:var(--gold);transform:scale(1.25);box-shadow:none}
+.qcard{background:#fff;border-radius:32px;padding:22px;box-shadow:0 10px 0 rgba(0,0,0,.12);animation:slide .35s ease}
+.title{font-size:30px;font-weight:bold;text-align:center;margin:4px 0 12px;line-height:1.5}
+.visual{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;align-items:center;min-height:120px;margin-bottom:14px;font-size:64px;text-align:center}
+.visual .em{font-size:110px;line-height:1}
+.visual .eq{font-size:64px;font-weight:bold;letter-spacing:4px;color:var(--c2)}
+.visual .word{font-size:82px;font-weight:bold;letter-spacing:4px;color:var(--c2)}
+.visual .sent{font-size:44px;font-weight:bold;line-height:1.5;color:var(--ink)}
+.visual .vname{font-size:36px;font-weight:bold;width:100%}
+.gap{display:inline-block;min-width:1.4em;border-bottom:8px dashed var(--gold);color:transparent;margin:0 4px}
+.blank{display:inline-block;min-width:1.1em;border-bottom:8px dashed var(--gold);color:var(--c2);text-align:center}
+.hl{color:#ff6f91}
+.listen{min-height:72px;border-radius:36px;padding:0 34px;font-size:28px;font-weight:bold;background:linear-gradient(145deg,#ffd34d,#ffab1f);box-shadow:0 6px 0 rgba(0,0,0,.18)}
+.listen:active{transform:translateY(3px)}
+.fb{background:#fff7d6;border-radius:16px;padding:8px 16px;font-size:20px;color:var(--soft)}
+.choices{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(0,1fr));gap:14px}
+.choice,.vcard{min-width:0;overflow-wrap:anywhere}
+.choice{min-height:92px;border-radius:26px;background:linear-gradient(180deg,#fff,#eef3ff);border:5px solid var(--c);font-size:38px;font-weight:bold;padding:10px 12px;box-shadow:0 7px 0 rgba(0,0,0,.14);transition:transform .1s,opacity .2s,background .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;line-height:1.35}
+.choice.quranc{font-size:30px;font-weight:normal}
+.choice.right{background:linear-gradient(180deg,#b9f6d4,#6fe3a5);border-color:var(--ok);animation:pop .5s}
+.choice.wrong{opacity:.45;background:#fff4d6;border-color:#f6b73c;animation:wiggle .45s;pointer-events:none}
+.choice.glow{animation:glow 1s infinite}
+.choice .ic{font-size:44px}
+.dot{display:inline-block}
+.tenf{display:grid;grid-template-columns:repeat(5,34px);gap:6px;background:#eef3ff;padding:10px;border-radius:16px}
+.frames{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;direction:ltr}
+.tenf i{width:34px;height:34px;border-radius:50%;background:#e1e7f7}
+.tenf i.on{background:#4d9bff;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.tenf i.on2{background:#ff9f43;box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)}
+.tenf i.cut{background:#cfd6ea;position:relative}
+.tenf i.cut::after{content:"✕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7a86a8;font-size:24px;font-style:normal}
+.tenf i.q{background:transparent;border:3px dashed #f0b429}
+svg.shape{width:150px;height:150px}
+
+.toast{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);background:#fff;border-radius:34px;padding:16px 34px;font-size:40px;font-weight:bold;box-shadow:0 14px 40px rgba(0,0,0,.25);z-index:50;pointer-events:none;animation:toast 1.2s forwards;text-align:center;max-width:90vw}
+.toast.soft{background:#fff7e0;font-size:32px}
+
+/* order game */
+.bridge{display:flex;flex-direction:column;gap:10px;margin-bottom:16px}
+.slot{display:flex;gap:12px;align-items:center;min-height:84px;border-radius:22px;background:#eef3ff;border:4px dashed #b8c6ee;padding:8px 12px}
+.slot .no{flex:none;width:48px;height:48px;border-radius:50%;background:var(--c);color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center}
+.slot .tx{flex:1;font-size:34px;text-align:center}
+.slot.filled{background:linear-gradient(180deg,#d9fbe8,#b4f0cf);border:4px solid var(--ok);animation:pop .4s}
+.slot.next{border-color:var(--gold);background:#fff9e0}
+.pool{display:flex;flex-direction:column;gap:12px}
+.vcard{min-height:76px;border-radius:24px;background:#fff;border:5px solid var(--c);font-size:32px;padding:6px 14px;box-shadow:0 6px 0 rgba(0,0,0,.14);text-align:center}
+.vcard.wrong{animation:wiggle .45s;background:#fff4d6;border-color:#f6b73c}
+.vcard.glow{animation:glow 1s infinite}
+.rowc{display:flex;justify-content:center;gap:12px;margin-bottom:10px;flex-wrap:wrap}
+
+/* result */
+.result{text-align:center;background:#fff;border-radius:34px;padding:30px 20px;box-shadow:0 10px 0 rgba(0,0,0,.12);animation:slide .4s}
+.result h2{font-size:44px}
+.result .stars{font-size:90px}
+.result .stars span{display:inline-block;animation:starIn .6s both}
+.result p{font-size:26px;margin:10px 0 20px}
+.acts{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.conf{position:fixed;top:-60px;z-index:40;font-size:34px;pointer-events:none;animation:fall linear forwards}
+
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(30,40,80,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
+.mbox{background:#fff;border-radius:30px;padding:26px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
+.mbox h3{margin:0 0 8px;font-size:30px}.mbox p{font-size:22px;color:var(--soft)}
+.mbox input{width:140px;min-height:64px;font-size:34px;text-align:center;border-radius:18px;border:4px solid #c9d3f2;margin:8px 0 16px;direction:ltr;-webkit-user-select:text;user-select:text}
+.note{color:var(--soft);font-size:18px;text-align:center;margin-top:20px}
+
+@keyframes bob{50%{transform:translateY(-8px) rotate(4deg)}}
+@keyframes slide{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes pop{40%{transform:scale(1.08)}}
+@keyframes wiggle{20%{transform:translateX(-9px)}40%{transform:translateX(9px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes glow{50%{box-shadow:0 0 0 8px rgba(255,200,61,.65),0 7px 0 rgba(0,0,0,.14)}}
+@keyframes toast{0%{opacity:0;transform:translate(-50%,-30%) scale(.7)}15%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1}100%{opacity:0;transform:translate(-50%,-60%)}}
+@keyframes fall{to{transform:translateY(110vh) rotate(540deg)}}
+@keyframes starIn{from{transform:scale(0) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
+@media(max-width:640px){.choices[style*="--cols:4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.choices[style*="--cols:3"]{grid-template-columns:minmax(0,1fr)}.choice .ic{font-size:36px}.visual .eq{font-size:48px}.brand{font-size:19px}.title{font-size:25px}.choice{font-size:30px;min-height:80px}.visual .em{font-size:84px}.visual .word{font-size:60px}.slot .tx{font-size:28px}.vcard{font-size:28px}.pill{font-size:20px;padding:0 12px}.tenf{grid-template-columns:repeat(5,26px)}.tenf i{width:26px;height:26px}}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+</style>
+</head>
+<body>
+<div class="top" id="top"></div>
+<main id="app"></main>
+<script>
+/* ===================== DATA ===================== */
+const SURAHS=[
+{id:'ikhlas',no:112,ar:'الإخلاص',en:'Al-Ikhlas',lvl:1,v:['قُلْ هُوَ ٱللَّهُ أَحَدٌ','ٱللَّهُ ٱلصَّمَدُ','لَمْ يَلِدْ وَلَمْ يُولَدْ','وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ'],
+ clue:{ar:'سورة تقول: اللهُ أحد',en:'The surah that says: Allah is One',e:'☝️'}},
+{id:'falaq',no:113,ar:'الفلق',en:'Al-Falaq',lvl:1,v:['قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ','مِن شَرِّ مَا خَلَقَ','وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ','وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ','وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ'],
+ clue:{ar:'نستعيذ بربّ الصبح (الفلق)',en:'We ask protection from the Lord of the daybreak',e:'🌅'}},
+{id:'nas',no:114,ar:'الناس',en:'An-Nas',lvl:1,v:['قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ','مَلِكِ ٱلنَّاسِ','إِلَٰهِ ٱلنَّاسِ','مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ','ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ','مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ'],
+ clue:{ar:'نستعيذ بربّ الناس مَلِك الناس',en:'We seek refuge in the Lord, King and God of mankind',e:'🧑‍🤝‍🧑'}},
+{id:'kawthar',no:108,ar:'الكوثر',en:'Al-Kawthar',lvl:1,v:['إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ','فَصَلِّ لِرَبِّكَ وَٱنْحَرْ','إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ'],
+ clue:{ar:'سورة فيها نهر الكوثر في الجنة',en:'The surah of the river Al-Kawthar in Paradise',e:'🌊'}},
+{id:'masad',no:111,ar:'المسد',en:'Al-Masad',lvl:1,v:['تَبَّتْ يَدَآ أَبِى لَهَبٍ وَتَبَّ','مَآ أَغْنَىٰ عَنْهُ مَالُهُۥ وَمَا كَسَبَ','سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ','وَٱمْرَأَتُهُۥ حَمَّالَةَ ٱلْحَطَبِ','فِى جِيدِهَا حَبْلٌ مِّن مَّسَدٍۭ'],
+ clue:{ar:'سورة أبي لهب وامرأته',en:'The surah about Abu Lahab and his wife',e:'🔥'}},
+{id:'nasr',no:110,ar:'النصر',en:'An-Nasr',lvl:1,v:['إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ','وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًا','فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ إِنَّهُۥ كَانَ تَوَّابًۢا'],
+ clue:{ar:'سورة نصر الله والفتح',en:'The surah of Allah’s victory and the opening',e:'🏆'}},
+{id:'asr',no:103,ar:'العصر',en:'Al-Asr',lvl:2,v:['وَٱلْعَصْرِ','إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ','إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ'],
+ clue:{ar:'سورة أقسم الله فيها بالزمن',en:'Allah swears by time',e:'⏳'}},
+{id:'fil',no:105,ar:'الفيل',en:'Al-Fil',lvl:2,v:['أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَٰبِ ٱلْفِيلِ','أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍ','وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ','تَرْمِيهِم بِحِجَارَةٍ مِّن سِجِّيلٍ','فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۭ'],
+ clue:{ar:'سورة أصحاب الفيل والطير الأبابيل',en:'The surah of the elephant and the birds',e:'🐘'}},
+{id:'quraysh',no:106,ar:'قريش',en:'Quraysh',lvl:2,v:['لِإِيلَٰفِ قُرَيْشٍ','إِۦلَٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ','فَلْيَعْبُدُوا۟ رَبَّ هَٰذَا ٱلْبَيْتِ','ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍ وَءَامَنَهُم مِّنْ خَوْفٍۭ'],
+ clue:{ar:'رحلة الشتاء والصيف',en:'The winter and summer journey',e:'🐪'}},
+{id:'maun',no:107,ar:'الماعون',en:'Al-Ma’un',lvl:2,v:['أَرَءَيْتَ ٱلَّذِى يُكَذِّبُ بِٱلدِّينِ','فَذَٰلِكَ ٱلَّذِى يَدُعُّ ٱلْيَتِيمَ','وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ','فَوَيْلٌ لِّلْمُصَلِّينَ','ٱلَّذِينَ هُمْ عَن صَلَاتِهِمْ سَاهُونَ','ٱلَّذِينَ هُمْ يُرَآءُونَ','وَيَمْنَعُونَ ٱلْمَاعُونَ'],
+ clue:{ar:'سورة فيها: ويمنعون الماعون',en:'The surah that ends: and they refuse small kindnesses',e:'🤲'}},
+{id:'humazah',no:104,ar:'الهمزة',en:'Al-Humazah',lvl:2,v:['وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ','ٱلَّذِى جَمَعَ مَالًا وَعَدَّدَهُۥ','يَحْسَبُ أَنَّ مَالَهُۥٓ أَخْلَدَهُۥ','كَلَّا ۖ لَيُنۢبَذَنَّ فِى ٱلْحُطَمَةِ','وَمَآ أَدْرَىٰكَ مَا ٱلْحُطَمَةُ','نَارُ ٱللَّهِ ٱلْمُوقَدَةُ','ٱلَّتِى تَطَّلِعُ عَلَى ٱلْأَفْـِٔدَةِ','إِنَّهَا عَلَيْهِم مُّؤْصَدَةٌ','فِى عَمَدٍ مُّمَدَّدَةٍۭ'],
+ clue:{ar:'ويلٌ لكلِّ هُمزةٍ لُمزة',en:'Woe to every backbiter and slanderer',e:'💰'}},
+{id:'qariah',no:101,ar:'القارعة',en:'Al-Qari’ah',lvl:2,v:['ٱلْقَارِعَةُ','مَا ٱلْقَارِعَةُ','وَمَآ أَدْرَىٰكَ مَا ٱلْقَارِعَةُ','يَوْمَ يَكُونُ ٱلنَّاسُ كَٱلْفَرَاشِ ٱلْمَبْثُوثِ','وَتَكُونُ ٱلْجِبَالُ كَٱلْعِهْنِ ٱلْمَنفُوشِ','فَأَمَّا مَن ثَقُلَتْ مَوَٰزِينُهُۥ','فَهُوَ فِى عِيشَةٍ رَّاضِيَةٍ','وَأَمَّا مَنْ خَفَّتْ مَوَٰزِينُهُۥ','فَأُمُّهُۥ هَاوِيَةٌ','وَمَآ أَدْرَىٰكَ مَا هِيَهْ','نَارٌ حَامِيَةٌۢ'],
+ clue:{ar:'القارعة: الناس كالفراش المبثوث',en:'The Striking Calamity: people like scattered moths',e:'⚡'}},
+{id:'adiyat',no:100,ar:'العاديات',en:'Al-Adiyat',lvl:3,v:['وَٱلْعَٰدِيَٰتِ ضَبْحًا','فَٱلْمُورِيَٰتِ قَدْحًا','فَٱلْمُغِيرَٰتِ صُبْحًا','فَأَثَرْنَ بِهِۦ نَقْعًا','فَوَسَطْنَ بِهِۦ جَمْعًا','إِنَّ ٱلْإِنسَٰنَ لِرَبِّهِۦ لَكَنُودٌ','وَإِنَّهُۥ عَلَىٰ ذَٰلِكَ لَشَهِيدٌ','وَإِنَّهُۥ لِحُبِّ ٱلْخَيْرِ لَشَدِيدٌ','أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِى ٱلْقُبُورِ','وَحُصِّلَ مَا فِى ٱلصُّدُورِ','إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍ لَّخَبِيرٌۢ'],
+ clue:{ar:'سورة الخيل الجارية بسرعة',en:'The surah of the galloping horses',e:'🐎'}},
+{id:'zalzalah',no:99,ar:'الزلزلة',en:'Az-Zalzalah',lvl:3,v:['إِذَا زُلْزِلَتِ ٱلْأَرْضُ زِلْزَالَهَا','وَأَخْرَجَتِ ٱلْأَرْضُ أَثْقَالَهَا','وَقَالَ ٱلْإِنسَٰنُ مَا لَهَا','يَوْمَئِذٍ تُحَدِّثُ أَخْبَارَهَا','بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا','يَوْمَئِذٍ يَصْدُرُ ٱلنَّاسُ أَشْتَاتًا لِّيُرَوْا۟ أَعْمَٰلَهُمْ','فَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًا يَرَهُۥ','وَمَن يَعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُۥ'],
+ clue:{ar:'سورة الأرض المهتزّة بزلزالها',en:'The surah of the shaking earth',e:'🌍'}},
+{id:'bayyinah',no:98,ar:'البينة',en:'Al-Bayyinah',lvl:3,v:['لَمْ يَكُنِ ٱلَّذِينَ كَفَرُوا۟ مِنْ أَهْلِ ٱلْكِتَٰبِ وَٱلْمُشْرِكِينَ مُنفَكِّينَ حَتَّىٰ تَأْتِيَهُمُ ٱلْبَيِّنَةُ','رَسُولٌ مِّنَ ٱللَّهِ يَتْلُوا۟ صُحُفًا مُّطَهَّرَةً','فِيهَا كُتُبٌ قَيِّمَةٌ','وَمَا تَفَرَّقَ ٱلَّذِينَ أُوتُوا۟ ٱلْكِتَٰبَ إِلَّا مِنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَةُ','وَمَآ أُمِرُوٓا۟ إِلَّا لِيَعْبُدُوا۟ ٱللَّهَ مُخْلِصِينَ لَهُ ٱلدِّينَ حُنَفَآءَ وَيُقِيمُوا۟ ٱلصَّلَوٰةَ وَيُؤْتُوا۟ ٱلزَّكَوٰةَ ۚ وَذَٰلِكَ دِينُ ٱلْقَيِّمَةِ','إِنَّ ٱلَّذِينَ كَفَرُوا۟ مِنْ أَهْلِ ٱلْكِتَٰبِ وَٱلْمُشْرِكِينَ فِى نَارِ جَهَنَّمَ خَٰلِدِينَ فِيهَآ ۚ أُو۟لَٰٓئِكَ هُمْ شَرُّ ٱلْبَرِيَّةِ','إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ أُو۟لَٰٓئِكَ هُمْ خَيْرُ ٱلْبَرِيَّةِ','جَزَآؤُهُمْ عِندَ رَبِّهِمْ جَنَّٰتُ عَدْنٍ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَٰرُ خَٰلِدِينَ فِيهَآ أَبَدًا ۖ رَّضِىَ ٱللَّهُ عَنْهُمْ وَرَضُوا۟ عَنْهُ ۚ ذَٰلِكَ لِمَنْ خَشِىَ رَبَّهُۥ'],
+ clue:{ar:'سورة فيها: أولئك هم خير البرية',en:'The surah: those are the best of creation',e:'🌟'}},
+{id:'qadr',no:97,ar:'القدر',en:'Al-Qadr',lvl:3,v:['إِنَّآ أَنزَلْنَٰهُ فِى لَيْلَةِ ٱلْقَدْرِ','وَمَآ أَدْرَىٰكَ مَا لَيْلَةُ ٱلْقَدْرِ','لَيْلَةُ ٱلْقَدْرِ خَيْرٌ مِّنْ أَلْفِ شَهْرٍ','تَنَزَّلُ ٱلْمَلَٰٓئِكَةُ وَٱلرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍ','سَلَٰمٌ هِىَ حَتَّىٰ مَطْلَعِ ٱلْفَجْرِ'],
+ clue:{ar:'ليلة خير من ألف شهر',en:'The night better than a thousand months',e:'🌙'}},
+{id:'alaq',no:96,ar:'العلق',en:'Al-Alaq',lvl:3,v:['ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ','خَلَقَ ٱلْإِنسَٰنَ مِنْ عَلَقٍ','ٱقْرَأْ وَرَبُّكَ ٱلْأَكْرَمُ','ٱلَّذِى عَلَّمَ بِٱلْقَلَمِ','عَلَّمَ ٱلْإِنسَٰنَ مَا لَمْ يَعْلَمْ','كَلَّآ إِنَّ ٱلْإِنسَٰنَ لَيَطْغَىٰٓ','أَن رَّءَاهُ ٱسْتَغْنَىٰٓ','إِنَّ إِلَىٰ رَبِّكَ ٱلرُّجْعَىٰٓ','أَرَءَيْتَ ٱلَّذِى يَنْهَىٰ','عَبْدًا إِذَا صَلَّىٰٓ','أَرَءَيْتَ إِن كَانَ عَلَى ٱلْهُدَىٰٓ','أَوْ أَمَرَ بِٱلتَّقْوَىٰٓ','أَرَءَيْتَ إِن كَذَّبَ وَتَوَلَّىٰٓ','أَلَمْ يَعْلَم بِأَنَّ ٱللَّهَ يَرَىٰ','كَلَّا لَئِن لَّمْ يَنتَهِ لَنَسْفَعًۢا بِٱلنَّاصِيَةِ','نَاصِيَةٍ كَٰذِبَةٍ خَاطِئَةٍ','فَلْيَدْعُ نَادِيَهُۥ','سَنَدْعُ ٱلزَّبَانِيَةَ','كَلَّا لَا تُطِعْهُ وَٱسْجُدْ وَٱقْتَرِب'],
+ clue:{ar:'اقرأ باسم ربك الذي خلق',en:'Read in the name of your Lord who created',e:'📖'}},
+{id:'sharh',no:94,ar:'الشرح',en:'Ash-Sharh',lvl:3,v:['أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ','وَوَضَعْنَا عَنكَ وِزْرَكَ','ٱلَّذِىٓ أَنقَضَ ظَهْرَكَ','وَرَفَعْنَا لَكَ ذِكْرَكَ','فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا','إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا','فَإِذَا فَرَغْتَ فَٱنصَبْ','وَإِلَىٰ رَبِّكَ فَٱرْغَب'],
+ clue:{ar:'إنّ مع العسر يسرًا',en:'Indeed, with hardship comes ease',e:'💖'}},
+{id:'duha',no:93,ar:'الضحى',en:'Ad-Duha',lvl:3,v:['وَٱلضُّحَىٰ','وَٱلَّيْلِ إِذَا سَجَىٰ','مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ','وَلَلْءَاخِرَةُ خَيْرٌ لَّكَ مِنَ ٱلْأُولَىٰ','وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ','أَلَمْ يَجِدْكَ يَتِيمًا فَـَٔاوَىٰ','وَوَجَدَكَ ضَآلًّا فَهَدَىٰ','وَوَجَدَكَ عَآئِلًا فَأَغْنَىٰ','فَأَمَّا ٱلْيَتِيمَ فَلَا تَقْهَرْ','وَأَمَّا ٱلسَّآئِلَ فَلَا تَنْهَرْ','وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ'],
+ clue:{ar:'والضحى والليل إذا سجى',en:'By the morning brightness and the calm night',e:'☀️'}},
+{id:'tin',no:95,ar:'التين',en:'At-Tin',lvl:3,v:['وَٱلتِّينِ وَٱلزَّيْتُونِ','وَطُورِ سِينِينَ','وَهَٰذَا ٱلْبَلَدِ ٱلْأَمِينِ','لَقَدْ خَلَقْنَا ٱلْإِنسَٰنَ فِىٓ أَحْسَنِ تَقْوِيمٍ','ثُمَّ رَدَدْنَٰهُ أَسْفَلَ سَٰفِلِينَ','إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ فَلَهُمْ أَجْرٌ غَيْرُ مَمْنُونٍ','فَمَا يُكَذِّبُكَ بَعْدُ بِٱلدِّينِ','أَلَيْسَ ٱللَّهُ بِأَحْكَمِ ٱلْحَٰكِمِينَ'],
+ clue:{ar:'والتين والزيتون',en:'By the fig and the olive',e:'🫒'}},
+{id:'takathur',no:102,ar:'التكاثر',en:'At-Takathur',lvl:3,v:['أَلْهَىٰكُمُ ٱلتَّكَاثُرُ','حَتَّىٰ زُرْتُمُ ٱلْمَقَابِرَ','كَلَّا سَوْفَ تَعْلَمُونَ','ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ','كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ','لَتَرَوُنَّ ٱلْجَحِيمَ','ثُمَّ لَتَرَوُنَّهَا عَيْنَ ٱلْيَقِينِ','ثُمَّ لَتُسْـَٔلُنَّ يَوْمَئِذٍ عَنِ ٱلنَّعِيمِ'],
+ clue:{ar:'ألهاكم التكاثر حتى زرتم المقابر',en:'Competing for more distracts you until you visit the graves',e:'🏦'}},
+{id:'kafirun',no:109,ar:'الكافرون',en:'Al-Kafirun',lvl:4,noOrder:true,v:['قُلْ يَٰٓأَيُّهَا ٱلْكَٰفِرُونَ','لَآ أَعْبُدُ مَا تَعْبُدُونَ','لَكُمْ دِينُكُمْ وَلِىَ دِينِ'],
+ clue:{ar:'لكم دينكم ولي دين',en:'To you your religion, and to me mine',e:'🕌'}},
+/* الأعلى → ... (extra surahs when the Al-A'la range is chosen) */
+{id:'ala',no:87,ar:'الأعلى',en:'Al-A’la',lvl:3,ala:true,v:['سَبِّحِ ٱسْمَ رَبِّكَ ٱلْأَعْلَى','ٱلَّذِى خَلَقَ فَسَوَّىٰ','وَٱلَّذِى قَدَّرَ فَهَدَىٰ','وَٱلَّذِىٓ أَخْرَجَ ٱلْمَرْعَىٰ','فَجَعَلَهُۥ غُثَآءً أَحْوَىٰ','سَنُقْرِئُكَ فَلَا تَنسَىٰٓ','إِلَّا مَا شَآءَ ٱللَّهُ ۚ إِنَّهُۥ يَعْلَمُ ٱلْجَهْرَ وَمَا يَخْفَىٰ','وَنُيَسِّرُكَ لِلْيُسْرَىٰ','فَذَكِّرْ إِن نَّفَعَتِ ٱلذِّكْرَىٰ','سَيَذَّكَّرُ مَن يَخْشَىٰ','وَيَتَجَنَّبُهَا ٱلْأَشْقَى','ٱلَّذِى يَصْلَى ٱلنَّارَ ٱلْكُبْرَىٰ','ثُمَّ لَا يَمُوتُ فِيهَا وَلَا يَحْيَىٰ','قَدْ أَفْلَحَ مَن تَزَكَّىٰ','وَذَكَرَ ٱسْمَ رَبِّهِۦ فَصَلَّىٰ','بَلْ تُؤْثِرُونَ ٱلْحَيَوٰةَ ٱلدُّنْيَا','وَٱلْـَٔاخِرَةُ خَيْرٌ وَأَبْقَىٰٓ','إِنَّ هَٰذَا لَفِى ٱلصُّحُفِ ٱلْأُولَىٰ','صُحُفِ إِبْرَٰهِيمَ وَمُوسَىٰ'],
+ clue:{ar:'سبّح اسم ربك الأعلى',en:'Glorify the name of your Lord, the Most High',e:'🕊️'}},
+{id:'ghashiyah',no:88,ar:'الغاشية',en:'Al-Ghashiyah',lvl:3,ala:true,v:['هَلْ أَتَىٰكَ حَدِيثُ ٱلْغَٰشِيَةِ','وُجُوهٌ يَوْمَئِذٍ خَٰشِعَةٌ','عَامِلَةٌ نَّاصِبَةٌ','تَصْلَىٰ نَارًا حَامِيَةً','تُسْقَىٰ مِنْ عَيْنٍ ءَانِيَةٍ','لَّيْسَ لَهُمْ طَعَامٌ إِلَّا مِن ضَرِيعٍ','لَّا يُسْمِنُ وَلَا يُغْنِى مِن جُوعٍ','وُجُوهٌ يَوْمَئِذٍ نَّاعِمَةٌ','لِّسَعْيِهَا رَاضِيَةٌ','فِى جَنَّةٍ عَالِيَةٍ','لَّا تَسْمَعُ فِيهَا لَٰغِيَةً','فِيهَا عَيْنٌ جَارِيَةٌ','فِيهَا سُرُرٌ مَّرْفُوعَةٌ','وَأَكْوَابٌ مَّوْضُوعَةٌ','وَنَمَارِقُ مَصْفُوفَةٌ','وَزَرَابِىُّ مَبْثُوثَةٌ','أَفَلَا يَنظُرُونَ إِلَى ٱلْإِبِلِ كَيْفَ خُلِقَتْ','وَإِلَى ٱلسَّمَآءِ كَيْفَ رُفِعَتْ','وَإِلَى ٱلْجِبَالِ كَيْفَ نُصِبَتْ','وَإِلَى ٱلْأَرْضِ كَيْفَ سُطِحَتْ','فَذَكِّرْ إِنَّمَآ أَنتَ مُذَكِّرٌ','لَّسْتَ عَلَيْهِم بِمُصَيْطِرٍ','إِلَّا مَن تَوَلَّىٰ وَكَفَرَ','فَيُعَذِّبُهُ ٱللَّهُ ٱلْعَذَابَ ٱلْأَكْبَرَ','إِنَّ إِلَيْنَآ إِيَابَهُمْ','ثُمَّ إِنَّ عَلَيْنَا حِسَابَهُم'],
+ clue:{ar:'أفلا ينظرون إلى الإبل كيف خلقت',en:'Do they not look at the camels, how they were created?',e:'🐫'}},
+{id:'fajr',no:89,ar:'الفجر',en:'Al-Fajr',lvl:3,ala:true,v:['وَٱلْفَجْرِ','وَلَيَالٍ عَشْرٍ','وَٱلشَّفْعِ وَٱلْوَتْرِ','وَٱلَّيْلِ إِذَا يَسْرِ','هَلْ فِى ذَٰلِكَ قَسَمٌ لِّذِى حِجْرٍ','أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِعَادٍ','إِرَمَ ذَاتِ ٱلْعِمَادِ','ٱلَّتِى لَمْ يُخْلَقْ مِثْلُهَا فِى ٱلْبِلَٰدِ','وَثَمُودَ ٱلَّذِينَ جَابُوا۟ ٱلصَّخْرَ بِٱلْوَادِ','وَفِرْعَوْنَ ذِى ٱلْأَوْتَادِ','ٱلَّذِينَ طَغَوْا۟ فِى ٱلْبِلَٰدِ','فَأَكْثَرُوا۟ فِيهَا ٱلْفَسَادَ','فَصَبَّ عَلَيْهِمْ رَبُّكَ سَوْطَ عَذَابٍ','إِنَّ رَبَّكَ لَبِٱلْمِرْصَادِ','فَأَمَّا ٱلْإِنسَٰنُ إِذَا مَا ٱبْتَلَىٰهُ رَبُّهُۥ فَأَكْرَمَهُۥ وَنَعَّمَهُۥ فَيَقُولُ رَبِّىٓ أَكْرَمَنِ','وَأَمَّآ إِذَا مَا ٱبْتَلَىٰهُ فَقَدَرَ عَلَيْهِ رِزْقَهُۥ فَيَقُولُ رَبِّىٓ أَهَٰنَنِ','كَلَّا ۖ بَل لَّا تُكْرِمُونَ ٱلْيَتِيمَ','وَلَا تَحَٰٓضُّونَ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ','وَتَأْكُلُونَ ٱلتُّرَاثَ أَكْلًا لَّمًّا','وَتُحِبُّونَ ٱلْمَالَ حُبًّا جَمًّا','كَلَّآ إِذَا دُكَّتِ ٱلْأَرْضُ دَكًّا دَكًّا','وَجَآءَ رَبُّكَ وَٱلْمَلَكُ صَفًّا صَفًّا','وَجِا۟ىٓءَ يَوْمَئِذٍۭ بِجَهَنَّمَ ۚ يَوْمَئِذٍ يَتَذَكَّرُ ٱلْإِنسَٰنُ وَأَنَّىٰ لَهُ ٱلذِّكْرَىٰ','يَقُولُ يَٰلَيْتَنِى قَدَّمْتُ لِحَيَاتِى','فَيَوْمَئِذٍ لَّا يُعَذِّبُ عَذَابَهُۥٓ أَحَدٌ','وَلَا يُوثِقُ وَثَاقَهُۥٓ أَحَدٌ','يَٰٓأَيَّتُهَا ٱلنَّفْسُ ٱلْمُطْمَئِنَّةُ','ٱرْجِعِىٓ إِلَىٰ رَبِّكِ رَاضِيَةً مَّرْضِيَّةً','فَٱدْخُلِى فِى عِبَٰدِى','وَٱدْخُلِى جَنَّتِى'],
+ clue:{ar:'والفجر وليالٍ عشر',en:'By the dawn and the ten nights',e:'🌄'}},
+{id:'balad',no:90,ar:'البلد',en:'Al-Balad',lvl:3,ala:true,v:['لَآ أُقْسِمُ بِهَٰذَا ٱلْبَلَدِ','وَأَنتَ حِلٌّۢ بِهَٰذَا ٱلْبَلَدِ','وَوَالِدٍ وَمَا وَلَدَ','لَقَدْ خَلَقْنَا ٱلْإِنسَٰنَ فِى كَبَدٍ','أَيَحْسَبُ أَن لَّن يَقْدِرَ عَلَيْهِ أَحَدٌ','يَقُولُ أَهْلَكْتُ مَالًا لُّبَدًا','أَيَحْسَبُ أَن لَّمْ يَرَهُۥٓ أَحَدٌ','أَلَمْ نَجْعَل لَّهُۥ عَيْنَيْنِ','وَلِسَانًا وَشَفَتَيْنِ','وَهَدَيْنَٰهُ ٱلنَّجْدَيْنِ','فَلَا ٱقْتَحَمَ ٱلْعَقَبَةَ','وَمَآ أَدْرَىٰكَ مَا ٱلْعَقَبَةُ','فَكُّ رَقَبَةٍ','أَوْ إِطْعَٰمٌ فِى يَوْمٍ ذِى مَسْغَبَةٍ','يَتِيمًا ذَا مَقْرَبَةٍ','أَوْ مِسْكِينًا ذَا مَتْرَبَةٍ','ثُمَّ كَانَ مِنَ ٱلَّذِينَ ءَامَنُوا۟ وَتَوَاصَوْا۟ بِٱلصَّبْرِ وَتَوَاصَوْا۟ بِٱلْمَرْحَمَةِ','أُو۟لَٰٓئِكَ أَصْحَٰبُ ٱلْمَيْمَنَةِ','وَٱلَّذِينَ كَفَرُوا۟ بِـَٔايَٰتِنَا هُمْ أَصْحَٰبُ ٱلْمَشْـَٔمَةِ','عَلَيْهِمْ نَارٌ مُّؤْصَدَةٌ'],
+ clue:{ar:'لا أقسم بهذا البلد',en:'I swear by this city',e:'🏙️'}},
+{id:'shams',no:91,ar:'الشمس',en:'Ash-Shams',lvl:3,ala:true,v:['وَٱلشَّمْسِ وَضُحَىٰهَا','وَٱلْقَمَرِ إِذَا تَلَىٰهَا','وَٱلنَّهَارِ إِذَا جَلَّىٰهَا','وَٱلَّيْلِ إِذَا يَغْشَىٰهَا','وَٱلسَّمَآءِ وَمَا بَنَىٰهَا','وَٱلْأَرْضِ وَمَا طَحَىٰهَا','وَنَفْسٍ وَمَا سَوَّىٰهَا','فَأَلْهَمَهَا فُجُورَهَا وَتَقْوَىٰهَا','قَدْ أَفْلَحَ مَن زَكَّىٰهَا','وَقَدْ خَابَ مَن دَسَّىٰهَا','كَذَّبَتْ ثَمُودُ بِطَغْوَىٰهَآ','إِذِ ٱنۢبَعَثَ أَشْقَىٰهَا','فَقَالَ لَهُمْ رَسُولُ ٱللَّهِ نَاقَةَ ٱللَّهِ وَسُقْيَٰهَا','فَكَذَّبُوهُ فَعَقَرُوهَا فَدَمْدَمَ عَلَيْهِمْ رَبُّهُم بِذَنۢبِهِمْ فَسَوَّىٰهَا','وَلَا يَخَافُ عُقْبَٰهَا'],
+ clue:{ar:'والشمس وضحاها والقمر إذا تلاها',en:'By the sun and its brightness, and the moon that follows',e:'🌞'}},
+{id:'layl',no:92,ar:'الليل',en:'Al-Layl',lvl:3,ala:true,v:['وَٱلَّيْلِ إِذَا يَغْشَىٰ','وَٱلنَّهَارِ إِذَا تَجَلَّىٰ','وَمَا خَلَقَ ٱلذَّكَرَ وَٱلْأُنثَىٰٓ','إِنَّ سَعْيَكُمْ لَشَتَّىٰ','فَأَمَّا مَنْ أَعْطَىٰ وَٱتَّقَىٰ','وَصَدَّقَ بِٱلْحُسْنَىٰ','فَسَنُيَسِّرُهُۥ لِلْيُسْرَىٰ','وَأَمَّا مَنۢ بَخِلَ وَٱسْتَغْنَىٰ','وَكَذَّبَ بِٱلْحُسْنَىٰ','فَسَنُيَسِّرُهُۥ لِلْعُسْرَىٰ','وَمَا يُغْنِى عَنْهُ مَالُهُۥٓ إِذَا تَرَدَّىٰٓ','إِنَّ عَلَيْنَا لَلْهُدَىٰ','وَإِنَّ لَنَا لَلْءَاخِرَةَ وَٱلْأُولَىٰ','فَأَنذَرْتُكُمْ نَارًا تَلَظَّىٰ','لَا يَصْلَىٰهَآ إِلَّا ٱلْأَشْقَى','ٱلَّذِى كَذَّبَ وَتَوَلَّىٰ','وَسَيُجَنَّبُهَا ٱلْأَتْقَى','ٱلَّذِى يُؤْتِى مَالَهُۥ يَتَزَكَّىٰ','وَمَا لِأَحَدٍ عِندَهُۥ مِن نِّعْمَةٍ تُجْزَىٰٓ','إِلَّا ٱبْتِغَآءَ وَجْهِ رَبِّهِ ٱلْأَعْلَىٰ','وَلَسَوْفَ يَرْضَىٰ'],
+ clue:{ar:'والليل إذا يغشى والنهار إذا تجلى',en:'By the night when it covers and the day when it shines',e:'🌃'}}
+];
+
+/* ---------- Math shapes (SVG) ---------- */
+const SHAPES={
+ cube:{ar:'المكعب',en:'Cube',svg:'<svg class="shape" viewBox="0 0 120 120"><polygon points="60,10 105,32 60,54 15,32" fill="#8fd0ff"/><polygon points="15,32 60,54 60,108 15,86" fill="#4d9bff"/><polygon points="105,32 60,54 60,108 105,86" fill="#2f6fe0"/></svg>',
+  objs:[['🎲','النرد','Dice'],['📦','صندوق','Box'],['🧊','مكعب ثلج','Ice cube']]},
+ sphere:{ar:'الكرة',en:'Sphere',svg:'<svg class="shape" viewBox="0 0 120 120"><defs><radialGradient id="gs" cx="35%" cy="30%"><stop offset="0" stop-color="#ffd0c2"/><stop offset=".6" stop-color="#ff7a59"/><stop offset="1" stop-color="#c8431f"/></radialGradient></defs><circle cx="60" cy="60" r="50" fill="url(#gs)"/></svg>',
+  objs:[['⚽','كرة قدم','Football'],['🏀','كرة سلة','Basketball'],['🌍','الأرض','Earth']]},
+ cone:{ar:'المخروط',en:'Cone',svg:'<svg class="shape" viewBox="0 0 120 120"><ellipse cx="60" cy="92" rx="42" ry="14" fill="#c98a00"/><polygon points="60,8 18,92 102,92" fill="#ffc83d"/><ellipse cx="60" cy="92" rx="42" ry="14" fill="#ffb300"/></svg>',
+  objs:[['🍦','مخروط آيس كريم','Ice-cream cone'],['🎉','قبعة حفلة','Party hat'],['🥕','جزرة','Carrot']]},
+ cylinder:{ar:'الأسطوانة',en:'Cylinder',svg:'<svg class="shape" viewBox="0 0 120 120"><rect x="20" y="25" width="80" height="70" fill="#3ddc97"/><ellipse cx="60" cy="95" rx="40" ry="14" fill="#1fa971"/><ellipse cx="60" cy="25" rx="40" ry="14" fill="#8cf0c3"/></svg>',
+  objs:[['🥫','علبة معلبات','Tin can'],['🛢️','برميل','Barrel'],['🔋','بطارية','Battery']]}
+};
+
+/* ---------- English ---------- */
+const DIG={
+ sh:[['ship','🚢'],['shop','🏪'],['fish','🐟'],['shell','🐚'],['sheep','🐑'],['shark','🦈'],['dish','🍽️'],['shirt','👕'],['brush','🪥'],['shed',''],['wish',''],['shut','']],
+ ch:[['chip','🍟'],['chop','🪓'],['chair','🪑'],['cheese','🧀'],['chick','🐥'],['cherry','🍒'],['lunch','🍱'],['bench',''],['chin',''],['chat','']],
+ th:[['thin',''],['thumb','👍'],['bath','🛁'],['three','3️⃣'],['think','🤔'],['moth',''],['path',''],['thick',''],['this',''],['that','']]
+};
+const VOW={
+ ai:[['rain','🌧️'],['train','🚂'],['snail','🐌'],['mail','📬'],['chain','⛓️'],['paint','🎨'],['tail',''],['wait',''],['pain','']],
+ ee:[['tree','🌳'],['bee','🐝'],['feet','🦶'],['sheep','🐑'],['jeep','🚙'],['seed','🌱'],['green',''],['sleep','😴'],['queen','👸']],
+ oa:[['boat','⛵'],['coat','🧥'],['goat','🐐'],['soap','🧼'],['toast','🍞'],['road','🛣️'],['toad','🐸'],['load','']],
+ igh:[['night','🌃'],['light','💡'],['high',''],['right',''],['fight',''],['sight',''],['tight',''],['flight','✈️']]
+};
+const TRICKY=['the','said','was','you','they','go','no','so','my','her'];
+const SENT={
+ the:'I can see ___ moon.',said:'Mum ___ it is time for bed.',was:'The cat ___ on the mat.',you:'Can ___ help me please?',
+ they:'___ play in the park.',go:'Let us ___ to school.',no:'There is ___ milk left.',so:'I am ___ happy!',my:'This is ___ red bag.',her:'Mum has ___ hat on.'
+};
+const PATTERNS=[
+ ['ship','🚢','sh'],['chip','🍟','ch'],['shop','🏪','sh'],['fish','🐟','sh'],['shell','🐚','sh'],['cheese','🧀','ch'],['chair','🪑','ch'],['bath','🛁','th'],['thumb','👍','th'],
+ ['train','🚂','ai'],['rain','🌧️','ai'],['snail','🐌','ai'],['tree','🌳','ee'],['sheep','🐑','ee'],['bee','🐝','ee'],['boat','⛵','oa'],['coat','🧥','oa'],['goat','🐐','oa'],['soap','🧼','oa'],
+ ['light','💡','igh'],['night','🌃','igh'],['moon','🌕','oo'],['book','📖','oo'],['spoon','🥄','oo'],['star','⭐','ar'],['car','🚗','ar'],['farm','🚜','ar'],['fork','🍴','or'],['corn','🌽','or'],['horse','🐴','or'],['cow','🐄','ow']
+];
+const SOUNDS=['sh','ch','th','ai','ee','oa','igh','oo','ar','or','ow'];
+
+/* ---------- Science (strings are "ar|en") ---------- */
+const ANIMALS={
+ carn:[['🦁','أسد','Lion'],['🐯','نمر','Tiger'],['🦈','قرش','Shark'],['🐺','ذئب','Wolf'],['🦅','نسر','Eagle'],['🐊','تمساح','Crocodile'],['🐍','ثعبان','Snake'],['🦉','بومة','Owl'],['🕷️','عنكبوت','Spider'],['🐸','ضفدع','Frog']],
+ herb:[['🐄','بقرة','Cow'],['🐰','أرنب','Rabbit'],['🐘','فيل','Elephant'],['🦒','زرافة','Giraffe'],['🐴','حصان','Horse'],['🐑','خروف','Sheep'],['🦌','غزال','Deer'],['🦓','حمار وحشي','Zebra'],['🐼','باندا','Panda'],['🐌','حلزون','Snail'],['🐐','ماعز','Goat'],['🦛','فرس النهر','Hippo']],
+ omni:[['🐻','دبّ','Bear'],['🐷','خنزير','Pig'],['🐔','دجاجة','Chicken'],['🐒','قرد','Monkey'],['🦆','بطة','Duck'],['🦊','ثعلب','Fox'],['🦝','راكون','Raccoon'],['🦔','قنفذ','Hedgehog'],['🐶','كلب','Dog']]
+};
+const DIETS={carn:['🥩','آكل لحوم','Carnivore'],herb:['🌿','آكل أعشاب','Herbivore'],omni:['🍽️','آكل للاثنين','Omnivore']};
+const MATS={wood:['🪵','خشب','Wood'],metal:['⚙️','معدن','Metal'],plastic:['🧴','بلاستيك','Plastic'],glass:['🔍','زجاج','Glass']};
+const OBJS=[
+ ['🪑','كرسي','Chair','wood'],['🚪','باب','Door','wood'],['✏️','قلم رصاص','Pencil','wood'],['🪵','جذع شجرة','Log','wood'],['🪜','سُلّم','Ladder','wood'],
+ ['🔑','مفتاح','Key','metal'],['🔧','مفتاح ربط','Spanner','metal'],['🔔','جرس','Bell','metal'],['🪙','عملة','Coin','metal'],['⚓','مرساة','Anchor','metal'],['🍴','شوكة وسكين','Fork','metal'],
+ ['🪣','دلو','Bucket','plastic'],['🥤','كوب بلاستيك','Plastic cup','plastic'],['🧴','زجاجة شامبو','Shampoo bottle','plastic'],['🪥','فرشاة أسنان','Toothbrush','plastic'],['📏','مسطرة','Ruler','plastic'],
+ ['🪟','نافذة','Window','glass'],['🥛','كوب زجاج','Glass of milk','glass'],['🍷','كأس','Wine glass','glass'],['🪞','مرآة','Mirror','glass'],['🫙','برطمان','Jar','glass'],['💡','مصباح','Light bulb','glass']
+];
+/* Q: [emoji, arQ, enQ, answer, [distractors]] */
+const SCI3=[
+ ['❄️','الجو بارد وتتساقط الثلوج. أيّ فصل هذا؟','It is cold and snowy. Which season?','شتاء|Winter',['ربيع|Spring','صيف|Summer','خريف|Autumn']],
+ ['🌸','تتفتّح الأزهار وتولد الحيوانات الصغيرة. أيّ فصل؟','Flowers bloom and baby animals are born. Which season?','ربيع|Spring',['شتاء|Winter','صيف|Summer','خريف|Autumn']],
+ ['☀️','الجو حارّ ونذهب إلى الشاطئ. أيّ فصل؟','It is hot and we go to the beach. Which season?','صيف|Summer',['شتاء|Winter','ربيع|Spring','خريف|Autumn']],
+ ['🍂','تتساقط أوراق الأشجار. أيّ فصل؟','Leaves fall from the trees. Which season?','خريف|Autumn',['شتاء|Winter','ربيع|Spring','صيف|Summer']],
+ ['🧥','في أيّ فصل نلبس معطفاً سميكاً؟','In which season do we wear a thick coat?','شتاء|Winter',['صيف|Summer','ربيع|Spring','خريف|Autumn']],
+ ['🍦','في أيّ فصل نأكل الآيس كريم أكثر؟','In which season do we eat the most ice-cream?','صيف|Summer',['شتاء|Winter','خريف|Autumn','ربيع|Spring']],
+ ['🌷','في أيّ فصل تنمو أزهار التوليب الجديدة؟','In which season do new tulips grow?','ربيع|Spring',['شتاء|Winter','خريف|Autumn','صيف|Summer']],
+ ['☀️','ما هذا الطقس؟','What is the weather?','مشمس|Sunny',['ممطر|Rainy','عاصف|Windy','غائم|Cloudy']],
+ ['🌧️','ما هذا الطقس؟','What is the weather?','ممطر|Rainy',['مشمس|Sunny','ثلجي|Snowy','عاصف|Windy']],
+ ['💨','ما هذا الطقس؟','What is the weather?','عاصف|Windy',['مشمس|Sunny','ممطر|Rainy','غائم|Cloudy']],
+ ['☁️','ما هذا الطقس؟','What is the weather?','غائم|Cloudy',['مشمس|Sunny','ثلجي|Snowy','عاصف|Windy']],
+ ['❄️','ما هذا الطقس؟','What is the weather?','ثلجي|Snowy',['مشمس|Sunny','غائم|Cloudy','ممطر|Rainy']],
+ ['🌈','ماذا نرى في السماء بعد المطر والشمس؟','What do we see after rain and sun together?','قوس قزح|Rainbow',['ثلج|Snow','رعد|Thunder','ضباب|Fog']],
+ ['🌱','أيّ جزء من النبات يمتصّ الماء من التربة؟','Which plant part takes in water from the soil?','الجذور|Roots',['الأوراق|Leaves','الزهرة|Flower','الساق|Stem']],
+ ['🌿','أيّ جزء من النبات يصنع الغذاء بالشمس؟','Which plant part makes food using sunlight?','الأوراق|Leaves',['الجذور|Roots','الساق|Stem','البذرة|Seed']],
+ ['🌻','أيّ جزء ملوّن ويجذب النحل؟','Which plant part is colourful and attracts bees?','الزهرة|Flower',['الجذور|Roots','الساق|Stem','الأوراق|Leaves']],
+ ['🌰','ماذا ينمو منه نبات جديد؟','What does a new plant grow from?','البذرة|Seed',['الحجر|Stone','الزهرة|Flower','الغيمة|Cloud']],
+ ['🌲','أيّ جزء يحمل الأوراق والزهور ويقف شامخاً؟','Which part holds up the leaves and flowers?','الساق|Stem',['الجذور|Roots','البذرة|Seed','الثمرة|Fruit']],
+ ['🐦','ماذا يغطّي جسم الطائر؟','What covers a bird’s body?','ريش|Feathers',['فرو|Fur','حراشف|Scales','صوف|Wool']],
+ ['🐟','بماذا تسبح السمكة؟','What does a fish use to swim?','زعانف|Fins',['أجنحة|Wings','أرجل|Legs','خرطوم|Trunk']],
+ ['🐑','ماذا يغطّي جسم الخروف؟','What covers a sheep’s body?','صوف|Wool',['ريش|Feathers','حراشف|Scales','زعانف|Fins']],
+ ['🐍','ماذا يغطّي جسم الثعبان؟','What covers a snake’s body?','حراشف|Scales',['ريش|Feathers','صوف|Wool','فرو|Fur']],
+ ['🦋','بماذا تطير الفراشة؟','What does a butterfly fly with?','أجنحة|Wings',['زعانف|Fins','أرجل|Legs','ذيل|Tail']],
+ ['🐘','ماذا يستعمل الفيل ليشرب ويلتقط الأشياء؟','What does an elephant use to drink and pick things up?','خرطوم|Trunk',['منقار|Beak','زعانف|Fins','أجنحة|Wings']]
+];
+const EGG=[['🐔','دجاجة','Chicken'],['🦆','بطة','Duck'],['🐧','بطريق','Penguin'],['🐢','سلحفاة','Turtle'],['🐊','تمساح','Crocodile'],['🦅','نسر','Eagle']];
+const NOEGG=[['🐄','بقرة','Cow'],['🐶','كلب','Dog'],['🐱','قطة','Cat'],['🐴','حصان','Horse'],['🐰','أرنب','Rabbit'],['🐘','فيل','Elephant'],['🐑','خروف','Sheep']];
+const FEATH=[['🦅','نسر','Eagle'],['🦉','بومة','Owl'],['🦜','ببغاء','Parrot'],['🦆','بطة','Duck'],['🐔','دجاجة','Chicken'],['🐧','بطريق','Penguin']];
+const NOFEATH=[['🐟','سمكة','Fish'],['🐶','كلب','Dog'],['🐍','ثعبان','Snake'],['🐄','بقرة','Cow'],['🐸','ضفدع','Frog'],['🐱','قطة','Cat']];
+const WATER=[['🐟','سمكة','Fish'],['🐋','حوت','Whale'],['🐬','دلفين','Dolphin'],['🐙','أخطبوط','Octopus'],['🦈','قرش','Shark']];
+const LAND=[['🐄','بقرة','Cow'],['🦁','أسد','Lion'],['🐘','فيل','Elephant'],['🐴','حصان','Horse'],['🐰','أرنب','Rabbit']];
+const SCI4=[
+ ['🌧️','ما أفضل مادة لصنع معطف المطر؟','Which material is best for a raincoat?','بلاستيك مقاوم للماء|Waterproof plastic',['ورق|Paper','قطن|Cotton wool','كرتون|Cardboard']],
+ ['☂️','ما أفضل مادة لقماش المظلّة؟','Which material is best for an umbrella cover?','قماش مقاوم للماء|Waterproof cloth',['ورق|Paper','إسفنج|Sponge','منديل|Tissue']],
+ ['🪟','ما أفضل مادة للنافذة لنرى من خلالها؟','Which material is best for a window so we can see through?','زجاج|Glass',['خشب|Wood','معدن|Metal','كرتون|Cardboard']],
+ ['🍳','ما أفضل مادة لمقلاة الطبخ على النار؟','Which material is best for a cooking pan?','معدن|Metal',['ورق|Paper','بلاستيك|Plastic','قطن|Cotton']],
+ ['🥾','ما أفضل مادة لحذاء المطر؟','Which material is best for wellies (rain boots)?','مطاط|Rubber',['ورق|Paper','زجاج|Glass','معدن|Metal']],
+ ['🧸','ما أفضل مادة لدمية ناعمة نحتضنها؟','Which material is best for a soft cuddly toy?','قماش ناعم|Soft fabric',['معدن|Metal','زجاج|Glass','حجر|Stone']],
+ ['🏠','ما أفضل مادة لبناء بيت قوي؟','Which material is best for building a strong house?','طوب|Bricks',['ورق|Paper','قطن|Cotton','ثلج|Ice']],
+ ['🧊','لماذا نضع الطعام في الثلّاجة؟','Why do we put food in the fridge?','ليبقى باردًا وطازجًا|To keep it cold and fresh',['ليصبح ساخنًا|To make it hot','ليتحوّل إلى ماء|To turn it into water','لنراه فقط|Just to look at it']],
+ ['🌱','ماذا يحتاج النبات ليكبر؟','What does a plant need to grow?','ماء وشمس|Water and sunlight',['ظلام فقط|Only darkness','حلوى|Sweets','ثلج فقط|Only ice']],
+ ['🦷','لماذا ننظّف أسناننا؟','Why do we brush our teeth?','لتبقى صحية|To keep them healthy',['لتصبح زرقاء|To turn them blue','لتسقط|To make them fall out','لتكبر|To make them huge']],
+ ['🥛','لماذا نشرب الماء كل يوم؟','Why do we drink water every day?','لأجسامنا تحتاجه|Our bodies need it',['لنصبح أطول فورًا|To grow taller at once','لنلوّن أيدينا|To colour our hands','لا سبب|No reason']]
+];
+
+/* ---------- Arabic ---------- */
+const ARW=[ /* [units, emoji, en] */
+ [['أَ','سَ','د'],'🦁','Lion'],[['جَ','مَ','ل'],'🐪','Camel'],[['قَ','مَ','ر'],'🌙','Moon'],[['شَ','مْ','س'],'☀️','Sun'],
+ [['سَ','مَ','كَ','ة'],'🐟','Fish'],[['شَ','جَ','رَ','ة'],'🌳','Tree'],[['بَ','طَّ','ة'],'🦆','Duck'],[['إِ','بْ','رَ','ة'],'🪡','Needle'],
+ [['كِ','تَ','ا','ب'],'📖','Book'],[['حِ','صَ','ا','ن'],'🐴','Horse'],[['أُ','ذُ','ن'],'👂','Ear'],[['كُ','رَ','ة'],'⚽','Ball'],
+ [['دُ','ب'],'🐻','Bear'],[['بُ','رْ','تُ','قَ','ا','ل'],'🍊','Orange'],[['قُ','بَّ','عَ','ة'],'👒','Hat'],[['وَ','رْ','دَ','ة'],'🌹','Rose'],
+ [['نَ','جْ','مَ','ة'],'⭐','Star'],[['قَ','لَ','م'],'✏️','Pencil'],[['بَ','يْ','ت'],'🏠','House'],[['تُ','فَّ','ا','حَ','ة'],'🍎','Apple'],
+ [['مَ','وْ','ز'],'🍌','Banana'],[['ثَ','عْ','لَ','ب'],'🦊','Fox'],[['زَ','رَ','ا','فَ','ة'],'🦒','Giraffe'],[['خَ','رُ','و','ف'],'🐑','Sheep'],
+ [['فِ','ي','ل'],'🐘','Elephant'],[['ذُ','رَ','ة'],'🌽','Corn'],[['زَ','هْ','رَ','ة'],'🌸','Flower'],[['صَ','قْ','ر'],'🦅','Falcon'],[['ذِ','ئْ','ب'],'🐺','Wolf']
+];
+const FATHA='َ',KASRA='ِ',DAMMA='ُ',SUKUN='ْ',SHADDA='ّ';
+const LETTERS=['ب','ت','ث','ج','ح','خ','د','ذ','ر','ز','س','ش','ص','ض','ط','ظ','ع','غ','ف','ق','ك','ل','م','ن','ه'];
+const HARAKAT={fatha:{mark:FATHA,ar:'الفتحة',en:'Fatha',sym:'ـَ'},kasra:{mark:KASRA,ar:'الكسرة',en:'Kasra',sym:'ـِ'},damma:{mark:DAMMA,ar:'الضمة',en:'Damma',sym:'ـُ'}};
+const MADD=[ /* [html (hl marks madd letter), emoji, type, spoken] */
+ ['بَ<u class="hl">ا</u>ب','🚪','alif','بَاب'],['كِتَ<u class="hl">ا</u>ب','📖','alif','كِتَاب'],['قَ<u class="hl">ا</u>رِب','⛵','alif','قَارِب'],['نَ<u class="hl">ا</u>ر','🔥','alif','نَار'],['سَ<u class="hl">ا</u>عَة','⏰','alif','سَاعَة'],['طَ<u class="hl">ا</u>ئِرَة','✈️','alif','طَائِرَة'],['حِصَ<u class="hl">ا</u>ن','🐴','alif','حِصَان'],
+ ['نُ<u class="hl">و</u>ر','💡','waw','نُور'],['فُ<u class="hl">و</u>ل','🫘','waw','فُول'],['دُ<u class="hl">و</u>دَة','🐛','waw','دُودَة'],['صُ<u class="hl">و</u>رَة','🖼️','waw','صُورَة'],['بُ<u class="hl">و</u>م','🦉','waw','بُوم'],['خَرُ<u class="hl">و</u>ف','🐑','waw','خَرُوف'],
+ ['فِ<u class="hl">ي</u>ل','🐘','yaa','فِيل'],['عِ<u class="hl">ي</u>د','🎉','yaa','عِيد'],['حَلِ<u class="hl">ي</u>ب','🥛','yaa','حَلِيب'],['رَغِ<u class="hl">ي</u>ف','🥖','yaa','رَغِيف'],['مِ<u class="hl">ي</u>زَان','⚖️','yaa','مِيزَان'],['سَفِ<u class="hl">ي</u>نَة','🚢','yaa','سَفِينَة']
+];
+const MADDS={alif:{ar:'مدّ بالألف',en:'Madd with Alif',sym:'ـَا'},waw:{ar:'مدّ بالواو',en:'Madd with Waw',sym:'ـُو'},yaa:{ar:'مدّ بالياء',en:'Madd with Yaa',sym:'ـِي'}};
+const DEMO=[ /* [word, emoji, gender m/f, en] */
+ ['كِتَاب','📖','m','Book'],['قَلَم','✏️','m','Pencil'],['بَيْت','🏠','m','House'],['جَمَل','🐪','m','Camel'],['بَاب','🚪','m','Door'],['وَلَد','👦','m','Boy'],['كُرْسِيّ','🪑','m','Chair'],['أَسَد','🦁','m','Lion'],['قِطّ','🐈','m','Cat'],
+ ['سَيَّارَة','🚗','f','Car'],['شَجَرَة','🌳','f','Tree'],['مَدْرَسَة','🏫','f','School'],['قِطَّة','🐱','f','Cat'],['وَرْدَة','🌹','f','Rose'],['طَاوِلَة','🛏️','f','Table'],['بِنْت','👧','f','Girl'],['حَقِيبَة','🎒','f','Bag'],['فَرَاشَة','🦋','f','Butterfly'],['تُفَّاحَة','🍎','f','Apple']
+];
+const PAIRS={'س':'ص','ص':'س','ذ':'ز','ز':'ذ','ت':'ط','ط':'ت','ك':'ق','ق':'ك'};
+const PRAISE=[{ar:'برافو يا عمّار! 🎉',en:'Well done, Ammar! 🎉'},{ar:'ممتاز! ⭐',en:'Excellent! ⭐'},{ar:'أحسنت! 👏',en:'Great job! 👏'},{ar:'رائع جدًّا! 🌟',en:'Super! 🌟'},{ar:'يا بطل! 🏆',en:'You are a star! 🏆'},{ar:'عظيم! 🚀',en:'Fantastic! 🚀'}];
+const TRYAGAIN=[{ar:'حاول مرّة أخرى 💪',en:'Try again 💪'},{ar:'قريب! جرّب ثانيةً 🌈',en:'Nearly! Have another go 🌈'},{ar:'لا بأس، فكّر وجرّب 🤔',en:'That is OK, think and try 🤔'}];
+
+/* ===================== ENGINE ===================== */
+const $=s=>document.querySelector(s);
+const LS_KEY='ammar_hub_v1';
+let state={lang:'ar',sound:true,quranRange:'duha',prog:{}};
+(function load(){try{const r=localStorage.getItem(LS_KEY);if(r){const o=JSON.parse(r);if(o&&typeof o==='object')Object.assign(state,o)}}catch(e){}})();
+function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(state))}catch(e){}}
+const tx=o=>(o&&typeof o==='object')?o[state.lang]:o;
+const L=(ar,en)=>state.lang==='ar'?ar:en;
+const rnd=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=rnd(0,i);[a[i],a[j]]=[a[j],a[i]]}return a};
+const pick=a=>a[rnd(0,a.length-1)];
+const sample=(a,n)=>shuffle(a).slice(0,n);
+const strip=s=>s.replace(/[ً-ْٰ]/g,'');
+const dualHTML=s=>{const [a,e]=s.split('|');return state.lang==='ar'?`<span dir="rtl" class="arab">${a}</span><small dir="ltr">${e}</small>`:`<span dir="ltr">${e}</span><small dir="rtl" class="arab">${a}</small>`};
+const D=s=>()=>dualHTML(s);                       // lazy bilingual label
+const ch=(h,ok,cls)=>({h,ok:!!ok,cls:cls||''});
+const hh=v=>typeof v==='function'?v():v;
+
+/* ---------- sound ---------- */
+let AC;
+function ac(){try{if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
+function tone(f,t0,d,type,v,f2){if(!state.sound)return;const a=ac();if(!a)return;try{const o=a.createOscillator(),g=a.createGain(),t=a.currentTime+t0;o.type=type||'sine';o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(v||.18,t+.02);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+const SFX={
+ ok(){[523,659,784,1047].forEach((f,i)=>tone(f,i*.08,.28,'triangle',.2))},
+ boing(){tone(380,0,.4,'sine',.2,140);tone(190,.05,.35,'sine',.08,95)},
+ tap(){tone(660,0,.07,'sine',.1)},
+ place(){tone(587,0,.15,'triangle',.18);tone(784,.09,.2,'triangle',.18)},
+ win(){[523,659,784,1047,784,1047,1319].forEach((f,i)=>tone(f,i*.11,.32,'triangle',.22))}
+};
+/* ---------- speech ---------- */
+const canSpeak=()=>('speechSynthesis' in window)&&typeof SpeechSynthesisUtterance!=='undefined';
+if(canSpeak()){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}}
+function speak(t,lang,rate){if(!canSpeak())return false;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang;u.rate=rate||.8;u.pitch=1.05;const vs=speechSynthesis.getVoices()||[];const norm=v=>v.lang.replace('_','-').toLowerCase();const lo=lang.toLowerCase(),pre=lo.split('-')[0];const v=vs.find(v=>norm(v)===lo)||vs.find(v=>norm(v).startsWith(pre));if(v)u.voice=v;speechSynthesis.speak(u);return true}catch(e){return false}}
+
+/* ---------- subjects ---------- */
+const SUBJ=[
+ {id:'math',icon:'🚀',c:'#4d9bff',c2:'#2f6fe0',name:{ar:'الرياضيات',en:'Math'},game:{ar:'صاروخ الأرقام',en:'Number Rocket'},sub:{ar:'الصف الأول (بريطانيا Year 1)',en:'UK Year 1'}},
+ {id:'english',icon:'🔤',c:'#a66cff',c2:'#7b3fe4',name:{ar:'اللغة الإنجليزية',en:'English'},game:{ar:'مغامرة الأصوات والكلمات',en:'Phonics & Words Quest'},sub:{ar:'الفونيكس والكلمات الصعبة',en:'Phonics & Tricky Words'}},
+ {id:'science',icon:'🔬',c:'#2ec27e',c2:'#14935a',name:{ar:'العلوم',en:'Science'},game:{ar:'مختبر العلوم',en:'Science Lab'},sub:{ar:'الصف الأول (بريطانيا Year 1)',en:'UK Year 1'}},
+ {id:'arabic',icon:'🚂',c:'#ff9f43',c2:'#e8741a',name:{ar:'اللغة العربية',en:'Arabic'},game:{ar:'قطار الحروف واللغويات',en:'Arabic Train'},sub:{ar:'الصف الأول (مصر والإمارات)',en:'Egypt & UAE Grade 1'}},
+ {id:'quran',icon:'🌉',c:'#1fb5a8',c2:'#0d7f87',name:{ar:'القرآن الكريم',en:'Quran'},game:{ar:'جسر الآيات',en:'Verse Bridge'},sub:{ar:'من جزء عمّ',en:'Juz’ Amma'}}
+];
+const LVN=[{ar:'الأساس',en:'Foundation',icon:'🌱'},{ar:'نبني معًا',en:'Building Up',icon:'🧱'},{ar:'التحدّي',en:'Challenge',icon:'⚡'},{ar:'البطل',en:'Master',icon:'👑'}];
+const LVD={
+ math:[{ar:'أزواج العدد ١٠',en:'Number bonds to 10'},{ar:'أزواج العدد ٢٠ وواحد أكثر / أقل',en:'Bonds to 20 · 1 more / 1 less'},{ar:'الجمع والطرح حتى ٢٠',en:'Add & subtract within 20'},{ar:'الأشكال ثلاثية الأبعاد وتحدٍّ سريع',en:'3D shapes + quick maths'}],
+ english:[{ar:'sh · ch · th',en:'Digraphs sh · ch · th'},{ar:'ai · ee · oa · igh',en:'Vowel teams ai · ee · oa · igh'},{ar:'الكلمات الصعبة',en:'Tricky words'},{ar:'أكمل النمط الصوتي',en:'Complete the phonics pattern'}],
+ science:[{ar:'ماذا تأكل الحيوانات؟',en:'What animals eat'},{ar:'المواد من حولنا',en:'Everyday materials'},{ar:'الفصول والطقس والنباتات',en:'Seasons, weather & parts'},{ar:'أفضل اختيار ولماذا؟',en:'Best choice & why?'}],
+ arabic:[{ar:'الفتحة والكسرة والضمة',en:'Short vowels'},{ar:'المدود: ا و ي',en:'Long vowels (madd)'},{ar:'هذا / هذه والحروف المتشابهة',en:'Hatha / hathihi & similar letters'},{ar:'الحرف الناقص والمقاطع',en:'Missing letters & syllables'}],
+ quran:[{ar:'سور قصيرة جدًّا',en:'Very short surahs'},{ar:'سور قصيرة متوسطة',en:'Medium-short surahs'},{ar:'سور إضافية',en:'More surahs'},{ar:'أيّ سورة؟ وتمّم الآية',en:'Which surah? · Next verse'}]
+};
+const ROUND_LEN=s=>s==='quran'?5:6;
+
+/* ---------- progress ---------- */
+const getP=(s,l)=>(state.prog[s]&&state.prog[s][l])||{stars:0,plays:0};
+function setP(s,l,stars){state.prog[s]=state.prog[s]||{};const p=getP(s,l);state.prog[s][l]={stars:Math.max(p.stars,stars),plays:p.plays+1};save()}
+const subjStars=s=>[1,2,3,4].reduce((n,l)=>n+getP(s,l).stars,0);
+const totalStars=()=>SUBJ.reduce((n,s)=>n+subjStars(s.id),0);
+const totalBadges=()=>SUBJ.reduce((n,s)=>n+[1,2,3,4].filter(l=>getP(s.id,l).stars>=3).length,0);
+
+/* ===================== GENERATORS ===================== */
+const frames=items=>{let h='<div class="frames">';for(let i=0;i<items.length;i+=10)h+='<div class="tenf">'+items.slice(i,i+10).map(c=>`<i class="${c}"></i>`).join('')+'</div>';return h+'</div>'};
+const rep=(c,n)=>Array(Math.max(0,n)).fill(c);
+function numCh(ans,min,max){const s=new Set([ans]);let g=0;while(s.size<4&&g++<300){const d=ans+pick([-4,-3,-2,-1,1,2,3,4]);if(d>=min&&d<=max)s.add(d)}return shuffle([...s]).map(n=>ch(`<span class="ltr">${n}</span>`,n===ans))}
+const N=n=>`<span class="ltr">${n}</span>`;
+
+function math1(){const a=rnd(1,9),b=10-a;return{key:'m1:'+a,title:{ar:'كم نحتاج ليصبح المجموع ١٠؟',en:'How many more to make 10?'},
+ visual:`<div class="eq ltr">${a} + ? = 10</div>`+frames([...rep('on',a),...rep('q',b)]),choices:numCh(b,0,10),cols:4}}
+function math2(){const t=rnd(0,2);
+ if(t===0){const a=rnd(1,19),b=20-a;return{key:'m2b:'+a,title:{ar:'كم نحتاج ليصبح المجموع ٢٠؟',en:'How many more to make 20?'},visual:`<div class="eq ltr">${a} + ? = 20</div>`+frames([...rep('on',a),...rep('q',b)]),choices:numCh(b,0,20),cols:4}}
+ if(t===1){const n=rnd(0,19);return{key:'m2u:'+n,title:{ar:`ما العدد الذي هو واحد أكثر من ${N(n)}؟`,en:`What is 1 more than ${N(n)}?`},visual:`<div class="eq ltr">${n} ➜ +1 ➜ ?</div>`,choices:numCh(n+1,0,20),cols:4}}
+ const n=rnd(1,20);return{key:'m2d:'+n,title:{ar:`ما العدد الذي هو واحد أقل من ${N(n)}؟`,en:`What is 1 less than ${N(n)}?`},visual:`<div class="eq ltr">${n} ➜ −1 ➜ ?</div>`,choices:numCh(n-1,0,20),cols:4}}
+function math3(){if(Math.random()<.5){const a=rnd(1,14),b=rnd(1,Math.min(10,20-a)),ans=a+b;
+  return{key:'m3a:'+a+'+'+b,title:{ar:'اجمع',en:'Add'},visual:`<div class="eq ltr">${a} + ${b} = ?</div>`+frames([...rep('on',a),...rep('on2',b)]),choices:numCh(ans,0,20),cols:4}}
+ const a=rnd(4,20),b=rnd(1,Math.min(9,a-1)),ans=a-b;
+ return{key:'m3s:'+a+'-'+b,title:{ar:'اطرح (الدوائر المشطوبة تُزال)',en:'Take away (crossed dots go)'},visual:`<div class="eq ltr">${a} − ${b} = ?</div>`+frames([...rep('on',a-b),...rep('cut',b)]),choices:numCh(ans,0,20),cols:4}}
+function math4(){const t=rnd(0,3),ids=Object.keys(SHAPES);
+ if(t===0){const id=pick(ids);return{key:'m4n:'+id,title:{ar:'ما اسم هذا الشكل؟',en:'What is the name of this shape?'},visual:SHAPES[id].svg,
+  choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
+ if(t===1){const id=pick(ids),o=pick(SHAPES[id].objs);return{key:'m4o:'+o[2],title:{ar:'ما شكل هذا الشيء؟',en:'What shape is this object?'},
+  visual:()=>`<div class="em">${o[0]}</div><div class="vname">${dualHTML(o[1]+'|'+o[2])}</div>`,choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
+ if(t===2){const id=pick(ids);const others=ids.filter(i=>i!==id);const lbls=[id,...others.slice(0,2)];
+  const pickq=pick([{ar:'أيّ شكل يتدحرج مثل الكرة؟',en:'Which shape rolls like a ball?',a:'sphere'},{ar:'أيّ شكل له ٦ وجوه مربّعة؟',en:'Which shape has 6 square faces?',a:'cube'},{ar:'أيّ شكل له رأس مدبّب؟',en:'Which shape has a pointy tip?',a:'cone'},{ar:'أيّ شكل يشبه علبة المعلبات؟',en:'Which shape looks like a tin can?',a:'cylinder'}]);
+  return{key:'m4q:'+pickq.a,title:{ar:pickq.ar,en:pickq.en},visual:'<div class="em">🤔</div>',choices:shuffle(ids).map(i=>ch(()=>SHAPES[i].svg.replace('class="shape"','class="shape" style="width:84px;height:84px"')+dualHTML(SHAPES[i].ar+'|'+SHAPES[i].en),i===pickq.a)),cols:2}}
+ const g=pick([math1,math2,math3])();g.key='m4m:'+g.key;return g}
+
+/* ----- English ----- */
+const blankW=(w,d)=>{const i=w.indexOf(d);return w.slice(0,i)+`<span class="gap">${d}</span>`+w.slice(i+d.length)};
+const wChoice=(w,e)=>ch(`${e?`<span class="ic">${e}</span>`:''}<span class="ltr">${w}</span>`,false);
+const SP=(t,r)=>({t,l:'en-GB',r:r||.75});
+function eng1(){if(Math.random()<.55){const d=pick(Object.keys(DIG)),[w,e]=pick(DIG[d]);
+  return{key:'e1a:'+w,title:{ar:'اسمع الكلمة واختر الصوت الناقص',en:'Listen and pick the missing sound'},speak:SP(w),auto:1,fallback:`<b class="ltr">${w}</b>`,
+  visual:`${e?`<div class="em">${e}</div>`:''}<div class="word ltr">${blankW(w,d)}</div>`,choices:shuffle(['sh','ch','th']).map(x=>ch(`<span class="ltr">${x}</span>`,x===d)),cols:3}}
+ const d=pick(Object.keys(DIG)),ds=Object.keys(DIG),others=ds.filter(x=>x!==d);const cw=pick(DIG[d]);
+ const set=[[cw,true],...others.map(o=>[pick(DIG[o]),false])];
+ return{key:'e1b:'+cw[0],title:{ar:`أيّ كلمة فيها الصوت <b class="ltr">${d}</b>؟`,en:`Which word has the sound <b class="ltr">${d}</b>?`},visual:`<div class="word ltr">${d}</div>`,
+  choices:shuffle(set).map(([wd,ok])=>{const c=wChoice(wd[0],wd[1]);c.ok=ok;return c}),cols:3}}
+function eng2(){const ts=Object.keys(VOW);if(Math.random()<.55){const d=pick(ts),[w,e]=pick(VOW[d]);
+  return{key:'e2a:'+w,title:{ar:'اسمع الكلمة واختر الصوت الناقص',en:'Listen and pick the missing sound'},speak:SP(w),auto:1,fallback:`<b class="ltr">${w}</b>`,
+  visual:`${e?`<div class="em">${e}</div>`:''}<div class="word ltr">${blankW(w,d)}</div>`,choices:shuffle(ts).map(x=>ch(`<span class="ltr">${x}</span>`,x===d)),cols:2}}
+ const d=pick(ts),cw=pick(VOW[d]);const set=[[cw,true],...ts.filter(x=>x!==d).map(o=>[pick(VOW[o]),false])];
+ return{key:'e2b:'+cw[0],title:{ar:`أيّ كلمة فيها الصوت <b class="ltr">${d}</b>؟`,en:`Which word has the sound <b class="ltr">${d}</b>?`},visual:`<div class="word ltr">${d}</div>`,
+  choices:shuffle(set).map(([wd,ok])=>{const c=wChoice(wd[0],wd[1]);c.ok=ok;return c}),cols:2}}
+function eng3(){const w=pick(TRICKY);if(Math.random()<.5){
+  return{key:'e3a:'+w,title:{ar:'اسمع واضغط على الكلمة الصحيحة',en:'Listen and tap the right word'},speak:SP(w,.7),auto:1,fallback:`<b class="ltr">${w}</b>`,visual:'<div class="em">👂</div>',
+  choices:shuffle([w,...sample(TRICKY.filter(x=>x!==w),3)]).map(x=>ch(`<span class="ltr">${x}</span>`,x===w)),cols:2}}
+ const s=SENT[w];return{key:'e3b:'+w,title:{ar:'اسمع الجملة واختر الكلمة الناقصة',en:'Listen to the sentence and pick the missing word'},speak:SP(s.replace('___',w),.7),auto:1,fallback:`<span class="ltr">${s.replace('___','<b>'+w+'</b>')}</span>`,
+  visual:`<div class="sent ltr">${s.replace('___','<span class="gap">the</span>')}</div>`,choices:shuffle([w,...sample(TRICKY.filter(x=>x!==w),3)]).map(x=>ch(`<span class="ltr">${x}</span>`,x===w)),cols:2}}
+function eng4(){const it=pick(PATTERNS),[w,e,s]=it;
+ if(Math.random()<.6){const ds=[s,...sample(SOUNDS.filter(x=>x!==s),3)];
+  return{key:'e4a:'+w,title:{ar:'أكمل الكلمة بالصوت الصحيح',en:'Complete the word with the right sound'},speak:SP(w),auto:1,fallback:`<b class="ltr">${w}</b>`,visual:`<div class="em">${e}</div><div class="word ltr">${blankW(w,s)}</div>`,choices:shuffle(ds).map(x=>ch(`<span class="ltr">${x}</span>`,x===s)),cols:2}}
+ const others=sample(PATTERNS.filter(p=>p[0]!==w&&p[1]!==e),3);
+ return{key:'e4b:'+w,title:{ar:'أيّ صورة تطابق الكلمة؟',en:'Which picture matches the word?'},speak:SP(w),visual:`<div class="word ltr">${w}</div>`,fallback:'',
+  choices:shuffle([[e,true],...others.map(o=>[o[1],false])]).map(([em,ok])=>ch(`<span class="em" style="font-size:64px">${em}</span>`,ok)),cols:2}}
+
+/* ----- Science ----- */
+const animalVis=a=>()=>`<div class="em">${a[0]}</div><div class="vname">${dualHTML(a[1]+'|'+a[2])}</div>`;
+function sci1(){const k=pick(Object.keys(ANIMALS)),a=pick(ANIMALS[k]);
+ return{key:'s1:'+a[2],title:{ar:'ماذا يأكل هذا الحيوان؟',en:'What does this animal eat?'},visual:animalVis(a),
+  choices:['carn','herb','omni'].map(x=>ch(()=>`<span class="ic">${DIETS[x][0]}</span>${dualHTML(DIETS[x][1]+'|'+DIETS[x][2])}`,x===k)),cols:3}}
+function sci2(){const o=pick(OBJS);
+ return{key:'s2:'+o[2],title:{ar:'من أيّ مادة صُنع هذا الشيء؟',en:'What material is this object made of?'},visual:()=>`<div class="em">${o[0]}</div><div class="vname">${dualHTML(o[1]+'|'+o[2])}</div>`,
+  choices:shuffle(Object.keys(MATS)).map(m=>ch(()=>`<span class="ic">${MATS[m][0]}</span>${dualHTML(MATS[m][1]+'|'+MATS[m][2])}`,m===o[3])),cols:2}}
+function qFromEntry(pre,e){return{key:pre+e[2]+e[3],title:{ar:e[1],en:e[2]},visual:`<div class="em">${e[0]}</div>`,choices:shuffle([e[3],...e[4]]).map(x=>ch(D(x),x===e[3])),cols:2}}
+const sci3=()=>qFromEntry('s3:',pick(SCI3));
+function dyn(pre,ar,en,yes,no,em){const a=pick(yes);return{key:pre+a[2],title:{ar,en},visual:`<div class="em">${em}</div>`,choices:shuffle([[a,true],...sample(no,3).map(x=>[x,false])]).map(([x,ok])=>ch(()=>`<span class="ic">${x[0]}</span>${dualHTML(x[1]+'|'+x[2])}`,ok)),cols:2}}
+function sci4(){const t=rnd(0,9);
+ if(t===7)return dyn('s4e:','أيّ حيوان يضع بيضًا؟','Which animal lays eggs?',EGG,NOEGG,'🥚');
+ if(t===8)return dyn('s4f:','أيّ حيوان له ريش؟','Which animal has feathers?',FEATH,NOFEATH,'🪶');
+ if(t===9)return dyn('s4w:','أيّ حيوان يعيش في الماء؟','Which animal lives in water?',WATER,LAND,'🌊');
+ return qFromEntry('s4:',SCI4[rnd(0,SCI4.length-1)])}
+
+/* ----- Arabic ----- */
+const hOf=u=>u.includes(FATHA)?'fatha':u.includes(KASRA)?'kasra':u.includes(DAMMA)?'damma':null;
+const hChoice=(k,ok)=>ch(()=>`<span class="arab" style="font-size:1.3em">${HARAKAT[k].sym}</span>${dualHTML(HARAKAT[k].ar+'|'+HARAKAT[k].en)}`,ok);
+const SPA=(t)=>({t,l:'ar-SA',r:.7});
+const wordHL=(units,k)=>units.map((u,i)=>i===k?`<span class="hl">${u}</span>`:u).join('');
+function blankU(units,k){const pre=units.slice(0,k).join(''),post=units.slice(k+1).join('');return pre+(pre?'ـ':'')+'<span class="blank">؟</span>'+(post?'ـ':'')+post}
+function ar1(){const t=rnd(0,2),hk=Object.keys(HARAKAT);
+ if(t===0){const l=pick(LETTERS),h=pick(hk);return{key:'a1a:'+l+h,title:{ar:'ما اسم الحركة على هذا الحرف؟',en:'What is the name of the vowel mark on this letter?'},visual:`<div class="em arab">${l+HARAKAT[h].mark}</div>`,choices:shuffle(hk).map(k=>hChoice(k,k===h)),cols:3}}
+ if(t===1){const l=pick(LETTERS),h=pick(hk);return{key:'a1b:'+l+h,title:{ar:`أيّ حرف عليه ${HARAKAT[h].ar}؟`,en:`Which letter has a ${HARAKAT[h].en}?`},visual:`<div class="em arab">${l}</div>`,
+  choices:shuffle(hk).map(k=>ch(`<span class="arab" style="font-size:1.6em">${l+HARAKAT[k].mark}</span>`,k===h)),cols:3}}
+ const w=pick(ARW),u=w[0],h=hOf(u[0]);return{key:'a1c:'+u.join(''),title:{ar:'ما حركة الحرف الملوّن؟',en:'What is the vowel mark on the coloured letter?'},speak:SPA(u.join('')),fallback:'',
+  visual:`<div class="em">${w[1]}</div><div class="word arab">${wordHL(u,0)}</div><div class="vname ltr">${w[2]}</div>`,choices:shuffle(hk).map(k=>hChoice(k,k===h)),cols:3}}
+function ar2(){const m=pick(MADD);return{key:'a2:'+m[3],title:{ar:'ما نوع المدّ في هذه الكلمة؟',en:'What kind of long vowel (madd) is in this word?'},speak:SPA(m[3]),fallback:'',
+ visual:`<div class="em">${m[1]}</div><div class="word arab">${m[0]}</div>`,choices:shuffle(Object.keys(MADDS)).map(k=>ch(()=>`<span class="arab" style="font-size:1.3em">${MADDS[k].sym}</span>${dualHTML(MADDS[k].ar+'|'+MADDS[k].en)}`,k===m[2])),cols:3}}
+function ar3(){if(Math.random()<.5){const d=pick(DEMO);const ans=d[2]==='m'?'هذا':'هذه';
+  return{key:'a3a:'+d[0],title:{ar:'اختر: هذا أم هذه؟',en:'Pick: hatha (m.) or hathihi (f.)?'},speak:SPA(ans+' '+d[0]),fallback:'',visual:`<div class="em">${d[1]}</div><div class="word arab"><span class="blank">&nbsp;&nbsp;&nbsp;</span> ${d[0]}</div><div class="vname ltr">${d[3]}</div>`,
+  choices:[ch(D('هذا|This (masculine)'),ans==='هذا'),ch(D('هذه|This (feminine)'),ans==='هذه')],cols:2}}
+ for(let g=0;g<60;g++){const w=pick(ARW),u=w[0];const idx=u.map((x,i)=>i).filter(i=>PAIRS[strip(u[i])]);if(!idx.length)continue;const k=pick(idx),b=strip(u[k]);
+  return{key:'a3b:'+u.join('')+k,title:{ar:'اختر الحرف الصحيح للكلمة',en:'Pick the right letter for the word'},speak:SPA(u.join('')),fallback:'',visual:`<div class="em">${w[1]}</div><div class="word arab">${blankU(u,k)}</div><div class="vname ltr">${w[2]}</div>`,
+   choices:shuffle([b,PAIRS[b]]).map(x=>ch(`<span class="arab" style="font-size:1.4em">${x}</span>`,x===b)),cols:2}}
+ return ar3()}
+function ar4(){const t=rnd(0,2);
+ for(let g=0;g<80;g++){const w=pick(ARW),u=w[0];
+  if(t===0||t===2){const idx=u.map((x,i)=>i).filter(i=>LETTERS.includes(strip(u[i])));if(!idx.length)continue;const k=pick(idx),b=strip(u[k]);
+   if(t===0){const ds=[b,...sample(LETTERS.filter(x=>x!==b),3)];return{key:'a4a:'+u.join('')+k,title:{ar:'أيّ حرف ينقص الكلمة؟',en:'Which letter is missing from the word?'},speak:SPA(u.join('')),fallback:'',
+    visual:`<div class="em">${w[1]}</div><div class="word arab">${blankU(u,k)}</div><div class="vname ltr">${w[2]}</div>`,choices:shuffle(ds).map(x=>ch(`<span class="arab" style="font-size:1.4em">${x}</span>`,x===b)),cols:2}}
+   const h=hOf(u[k]);if(!h)continue;const others=Object.keys(HARAKAT).filter(x=>x!==h);const ob=pick(LETTERS.filter(x=>x!==b));
+   const ds=[u[k],b+HARAKAT[others[0]].mark,b+HARAKAT[others[1]].mark,ob+HARAKAT[h].mark];
+   return{key:'a4c:'+u.join('')+k,title:{ar:'أيّ مقطع يُكمل الكلمة؟',en:'Which syllable completes the word?'},speak:SPA(u.join('')),fallback:'',
+    visual:`<div class="em">${w[1]}</div><div class="word arab">${blankU(u,k)}</div><div class="vname ltr">${w[2]}</div>`,choices:shuffle(ds).map(x=>ch(`<span class="arab" style="font-size:1.5em">${x}</span>`,x===u[k])),cols:2}}
+  const idx=u.map((x,i)=>i).filter(i=>hOf(u[i]));const k=pick(idx),h=hOf(u[k]);
+  return{key:'a4b:'+u.join('')+k,title:{ar:'ما حركة الحرف الملوّن؟',en:'What is the vowel mark on the coloured letter?'},speak:SPA(u.join('')),fallback:'',
+   visual:`<div class="em">${w[1]}</div><div class="word arab">${wordHL(u,k)}</div><div class="vname ltr">${w[2]}</div>`,choices:shuffle(Object.keys(HARAKAT)).map(x=>hChoice(x,x===h)),cols:3}}
+ return ar1()}
+
+/* ----- Quran ----- */
+const surahPool=()=>SURAHS.filter(s=>!s.ala||state.quranRange==='ala');
+const sname=s=>()=>dualHTML(`سورة ${s.ar}|Surah ${s.en}`);
+function quranOrder(lvl){let pool=lvl<3?SURAHS.filter(s=>s.lvl===lvl):surahPool().filter(s=>s.lvl===3);
+ const s=pick(pool),size=Math.min(s.v.length,lvl===1?4:5),start=rnd(0,s.v.length-size);
+ const items=[];for(let i=0;i<size;i++)items.push({n:start+i+1,t:s.v[start+i]});
+ return{kind:'order',key:s.id+':'+start,s,items,title:{ar:`رتّب آيات سورة ${s.ar} لتعبر الجسر 🌉`,en:`Put the verses of Surah ${s.en} in order to cross the bridge 🌉`}}}
+function quran4(){const pool=surahPool(),t=rnd(0,2);
+ if(t===0){for(let g=0;g<50;g++){const s=pick(pool),i=rnd(0,s.v.length-1),v=s.v[i];if(v.length<16||v.length>70)continue;
+   return{key:'q4a:'+s.id+i,title:{ar:'من أيّ سورة هذه الآية؟',en:'Which surah is this verse from?'},visual:`<div class="quran" style="font-size:44px;line-height:2.2">${v}</div>`,speak:{t:v,l:'ar-SA',r:.7},fallback:'',
+    choices:shuffle([s,...sample(pool.filter(x=>x!==s),3)]).map(x=>ch(sname(x),x===s)),cols:2}}}
+ if(t===1){for(let g=0;g<80;g++){const c=pool.filter(s=>s.v.length>=2&&!s.noOrder);const s=pick(c),k=rnd(0,s.v.length-2),v=s.v[k],nx=s.v[k+1];if(v.length>70||nx.length>70)continue;
+   const dp=shuffle(pool.flatMap(x=>x.v.map((y,i)=>({y,x,i}))).filter(o=>o.y!==v&&o.y!==nx&&o.y.length<=70&&o.y.length>=12));const ds=[];for(const o of dp){if(!ds.includes(o.y))ds.push(o.y);if(ds.length===3)break}
+   return{key:'q4b:'+s.id+k,title:{ar:'ما الآية التي تأتي بعد هذه الآية؟',en:'Which verse comes next?'},visual:`<div class="quran" style="font-size:44px;line-height:2.2">${v}</div><div class="vname">${dualHTML(`من سورة ${s.ar}|From Surah ${s.en}`)}</div>`,speak:{t:v,l:'ar-SA',r:.7},fallback:'',
+    choices:shuffle([nx,...ds]).map(x=>ch(`<span class="quran">${x}</span>`,x===nx,'quranc')),cols:1}}}
+ const s=pick(pool.filter(x=>x.clue));return{key:'q4c:'+s.id,title:{ar:'خمّن السورة من التلميح',en:'Guess the surah from the clue'},visual:()=>`<div class="em">${s.clue.e}</div><div class="vname">${s.clue[state.lang]}</div>`,
+  choices:shuffle([s,...sample(pool.filter(x=>x!==s),3)]).map(x=>ch(sname(x),x===s)),cols:2}}
+
+const GEN={math:[null,math1,math2,math3,math4],english:[null,eng1,eng2,eng3,eng4],science:[null,sci1,sci2,sci3,sci4],arabic:[null,ar1,ar2,ar3,ar4],
+ quran:[null,()=>quranOrder(1),()=>quranOrder(2),()=>quranOrder(3),quran4]};
+const RECENT={};
+function buildRound(subj,lvl){const n=ROUND_LEN(subj),used=new Set(),out=[],prev=new Set(RECENT[subj+lvl]||[]);
+ for(let i=0;i<n;i++){let q,g=0;do{q=GEN[subj][lvl]();g++}while(g<60&&(used.has(q.key)||(g<25&&prev.has(q.key))));used.add(q.key);out.push(q)}
+ RECENT[subj+lvl]=out.map(q=>q.key);return out}
+
+/* ===================== UI ===================== */
+let S={screen:'home'};
+const app=()=>$('#app');
+function applyLang(){document.documentElement.lang=state.lang;document.documentElement.dir=state.lang==='ar'?'rtl':'ltr'}
+function setTheme(s){const r=document.documentElement.style;if(s){r.setProperty('--c',s.c);r.setProperty('--c2',s.c2)}else{r.setProperty('--c','#4d9bff');r.setProperty('--c2','#2f6fe0')}}
+function renderTop(){$('#top').innerHTML=`<button class="ico" data-act="home" aria-label="home">🏠</button>
+ <div class="brand">🎓 <span>${L('منصة عمّار التعليمية','Ammar Learning Hub')}</span></div>
+ <div class="pill" title="${L('النجوم','Stars')}">⭐ ${totalStars()}</div><div class="pill" title="${L('الأوسمة','Badges')}">🏅 ${totalBadges()}</div>
+ <button class="ico lang" data-act="lang">${state.lang==='ar'?'English':'العربية'}</button>
+ <button class="ico" data-act="snd" aria-label="sound">${state.sound?'🔊':'🔇'}</button>
+ <button class="ico" data-act="parent" aria-label="parent">⚙️</button>`}
+function starsHTML(n,max){max=max||3;let h='<span class="stars">';for(let i=0;i<max;i++)h+=`<span class="${i<n?'':'off'}">⭐</span>`;return h+'</span>'}
+function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
+
+function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
+ app().innerHTML=`<div class="hello"><div class="mascot">🦉</div><div><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('اختر لعبتك وجمّع النجوم والأوسمة','Pick a game and collect stars and badges')}</p></div></div>
+ <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)} / 12</span></div></button>`).join('')}</div>
+ <div class="note">${L('يُحفظ تقدّم عمّار تلقائيًّا على هذا الجهاز','Ammar’s progress is saved automatically on this device')}</div>`}
+
+function renderLevels(id){const s=SUBJ.find(x=>x.id===id);S={screen:'levels',subj:id};stopSpeech();setTheme(s);renderTop();
+ const rng=id==='quran'?`<div class="toggle"><button data-act="rng" data-v="duha" class="${state.quranRange==='duha'?'on':''}">${L('من الضحى إلى الناس','Ad-Duha → An-Nas')}</button><button data-act="rng" data-v="ala" class="${state.quranRange==='ala'?'on':''}">${L('من الأعلى إلى الناس','Al-A’la → An-Nas')}</button></div>`:'';
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>${s.icon} ${tx(s.game)}</h2></div>${rng}
+ <div class="lvgrid">${[1,2,3,4].map(l=>{const p=getP(id,l);return `<button class="lv" data-act="lvl" data-l="${l}"><div class="n">${LVN[l-1].icon}</div><div style="flex:1"><h3>${L('المستوى','Level')} ${l} · ${tx(LVN[l-1])}</h3><p>${tx(LVD[id][l-1])}</p>${starsHTML(p.stars)}</div><div class="badge">${p.stars>=3?(l===4?'🏆':'🏅'):''}</div></button>`}).join('')}</div>
+ <div class="note">${L('كل المستويات مفتوحة — الأسئلة تتغيّر في كل مرّة 🎲','All levels are open — questions change every time 🎲')}</div>`}
+
+function startRound(subj,lvl){const sub=SUBJ.find(x=>x.id===subj);setTheme(sub);S={screen:'play',subj,lvl,qs:buildRound(subj,lvl),i:0,score:0,lock:false};renderPlay()}
+function dotsHTML(){return `<div class="dots">${S.qs.map((q,i)=>`<i class="${i<S.i?'done':i===S.i?'cur':''}"></i>`).join('')}</div>`}
+function listenHTML(q){if(!q.speak)return '';return `<div class="rowc"><button class="listen" data-act="listen">🔊 ${L('استمع','Listen')}</button>${!canSpeak()&&q.fallback?`<span class="fb">${L('الصوت غير متاح — الكلمة:','Sound not available — it says:')} ${q.fallback}</span>`:''}</div>`}
+function renderPlay(){const q=S.qs[S.i];S.lock=false;S.tries=0;renderTop();
+ const head=`<div class="playtop"><button class="btn mini" data-act="back">✕</button>${dotsHTML()}<div class="pill" style="min-height:56px;font-size:22px">⭐ ${S.score}</div></div>`;
+ if(q.kind==='order'){S.ord={placed:0,mis:0,pool:shuffle(q.items)};if(q.items.length>1){let g=0;while(g++<20&&S.ord.pool.every((x,i)=>x===q.items[i]))S.ord.pool=shuffle(q.items)}
+  app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="rowc"><button class="listen" data-act="hint">🔊 ${L('استمع للآية التالية','Hear the next verse')}</button></div><div id="ord"></div></div>`;renderOrder();return}
+ app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="visual">${hh(q.visual)||''}</div>${listenHTML(q)}<div class="choices" style="--cols:${q.cols||2}">${q.choices.map((c,i)=>`<button class="choice ${c.cls}" data-act="ch" data-i="${i}">${hh(c.h)}</button>`).join('')}</div></div>`;
+ if(q.speak&&q.auto&&canSpeak())setTimeout(()=>{if(S.qs&&S.qs[S.i]===q&&S.screen==='play')speak(q.speak.t,q.speak.l,q.speak.r)},500)}
+function renderOrder(){const q=S.qs[S.i],o=S.ord;const slots=q.items.map((it,i)=>i<o.placed?`<div class="slot filled"><div class="no">${it.n}</div><div class="tx quran">${it.t}</div></div>`:`<div class="slot ${i===o.placed?'next':''}"><div class="no">${it.n}</div><div class="tx" style="color:#9aa6cf">…</div></div>`).join('');
+ const cards=o.pool.filter(it=>!q.items.slice(0,o.placed).includes(it)).map(it=>`<button class="vcard quran ${o.mis>=2&&it===q.items[o.placed]?'glow':''}" data-act="vc" data-n="${it.n}">${it.t}</button>`).join('');
+ $('#ord').innerHTML=`<div class="bridge">${slots}</div><div class="pool">${cards}</div>`}
+
+function toast(msg,soft){const d=document.createElement('div');d.className='toast'+(soft?' soft':'');d.textContent=msg;document.body.appendChild(d);setTimeout(()=>d.remove(),1250)}
+const praise=()=>toast(tx(pick(PRAISE)));
+const encourage=()=>toast(tx(pick(TRYAGAIN)),true);
+function answer(i){if(S.lock)return;const q=S.qs[S.i],c=q.choices[i],el=document.querySelector(`.choice[data-i="${i}"]`);
+ if(c.ok){S.lock=true;el.classList.add('right');SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
+ else{S.tries++;el.classList.add('wrong');SFX.boing();encourage();if(S.tries>=2){const k=q.choices.findIndex(x=>x.ok);const g=document.querySelector(`.choice[data-i="${k}"]`);g&&g.classList.add('glow')}}}
+function pickVerse(n){if(S.lock)return;const q=S.qs[S.i],o=S.ord,exp=q.items[o.placed];
+ if(exp.n===n){SFX.place();o.placed++;if(o.placed===q.items.length){S.lock=true;renderOrder();if(!o.mis)S.score++;SFX.ok();praise();setTimeout(nextQ,1700)}else renderOrder()}
+ else{o.mis++;SFX.boing();encourage();const el=document.querySelector(`.vcard[data-n="${n}"]`);if(el){el.classList.add('wrong');setTimeout(()=>{const e2=document.querySelector(`.vcard[data-n="${exp.n}"]`);if(o.mis>=2&&e2)e2.classList.add('glow')},50)}}}
+function nextQ(){if(S.screen!=='play')return;S.i++;S.i>=S.qs.length?renderResult():renderPlay()}
+
+function confetti(){const em=['⭐','🎉','🌟','✨','🎈','🍬','💫'];for(let i=0;i<46;i++){const d=document.createElement('div');d.className='conf';d.textContent=pick(em);d.style.left=rnd(0,98)+'%';d.style.animationDuration=(2+Math.random()*2.5)+'s';d.style.animationDelay=(Math.random()*.8)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200)}}
+function renderResult(again){const n=S.qs.length,r=S.score/n,stars=r>=.8?3:r>=.5?2:1;if(!again){setP(S.subj,S.lvl,stars);SFX.win();confetti()}S.screen='result';renderTop();stopSpeech();
+ const sub=SUBJ.find(x=>x.id===S.subj),last=S.lvl>=4;const msg=stars===3?L('مذهل! أنت بطل حقيقي 🏆','Amazing! You are a real champion 🏆'):stars===2?L('عمل رائع! تقترب من النجمة الثالثة ⭐','Great work! The third star is near ⭐'):L('أحسنت! جرّب مرّة أخرى لتجمع نجومًا أكثر 💪','Well done! Try again to collect more stars 💪');
+ app().innerHTML=`<div class="result"><div style="font-size:80px">${stars===3?'🏆':'🎉'}</div><h2>${L('انتهت الجولة!','Round complete!')}</h2><div class="stars">${[0,1,2].map(i=>`<span style="animation-delay:${i*.25}s;${i<stars?'':'filter:grayscale(1);opacity:.25'}">⭐</span>`).join('')}</div>
+ <p>${msg}<br><b>${S.score} / ${n}</b> ${L('إجابات صحيحة من المحاولة الأولى','correct on the first try')}</p>
+ ${stars===3&&last?`<p>🏅 ${L('وسام البطل في','Master badge for')} ${tx(sub.game)}!</p>`:''}
+ <div class="acts"><button class="btn pri" data-act="again">🔄 ${L('العب مجدّدًا (أسئلة جديدة)','Play Again (New Questions)')}</button>${last?'':`<button class="btn sec" data-act="next">${L('المستوى التالي','Next Level')} ➜</button>`}<button class="btn" data-act="levels">${L('المستويات','Levels')}</button><button class="btn" data-act="home">🏠</button></div></div>`}
+
+/* ---------- parent reset (two steps) ---------- */
+function closeModal(){const m=$('#modal');if(m)m.remove()}
+function parentModal(step,ctx){closeModal();const m=document.createElement('div');m.className='modal';m.id='modal';
+ if(step===1)m.innerHTML=`<div class="mbox"><h3>👨‍👩‍👦 ${L('منطقة الأهل','Parent area')}</h3><p>${L('هل تريد مسح كل النجوم والأوسمة والتقدّم؟','Do you want to erase all stars, badges and progress?')}</p><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn sec" data-act="mstep2">${L('متابعة','Continue')}</button></div></div>`;
+ else{const a=rnd(11,19),b=rnd(12,19);m.dataset.ans=a+b;m.innerHTML=`<div class="mbox"><h3>🔒 ${L('تأكيد ثانٍ','Second confirmation')}</h3><p>${L('للتأكّد أنّك شخص بالغ، احسب:','To make sure you are a grown-up, solve:')}<br><b class="ltr" style="font-size:34px">${a} + ${b} = ?</b></p><input id="mans" inputmode="numeric" autocomplete="off"><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn pri" data-act="mreset">${L('نعم، امسح','Yes, erase')}</button></div></div>`}
+ document.body.appendChild(m)}
+
+/* ---------- events ---------- */
+document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;ac();const a=t.dataset.act;
+ switch(a){
+  case 'home':closeModal();SFX.tap();renderHome();break;
+  case 'subj':SFX.tap();renderLevels(t.dataset.id);break;
+  case 'lvl':SFX.tap();startRound(S.subj,+t.dataset.l);break;
+  case 'levels':renderLevels(S.subj);break;
+  case 'back':stopSpeech();renderLevels(S.subj);break;
+  case 'ch':answer(+t.dataset.i);break;
+  case 'vc':pickVerse(+t.dataset.n);break;
+  case 'listen':{const q=S.qs[S.i];if(q&&q.speak){if(!speak(q.speak.t,q.speak.l,q.speak.r))toast(L('الصوت غير متاح على هذا الجهاز','Sound is not available on this device'),true)}break}
+  case 'hint':{const q=S.qs[S.i],ex=q.items[Math.min(S.ord.placed,q.items.length-1)];if(!speak(ex.t,'ar-SA',.65))toast(L('الصوت غير متاح — انظر إلى أرقام الآيات 👀','Sound not available — look at the verse numbers 👀'),true);break}
+  case 'again':startRound(S.subj,S.lvl);break;
+  case 'next':startRound(S.subj,S.lvl+1);break;
+  case 'rng':state.quranRange=t.dataset.v;save();SFX.tap();renderLevels('quran');break;
+  case 'lang':state.lang=state.lang==='ar'?'en':'ar';save();applyLang();rerender();break;
+  case 'snd':state.sound=!state.sound;save();if(!state.sound)stopSpeech();renderTop();break;
+  case 'parent':parentModal(1);break;
+  case 'mclose':closeModal();break;
+  case 'mstep2':parentModal(2);break;
+  case 'mreset':{const m=$('#modal');if(+($('#mans').value||0)===+m.dataset.ans){state.prog={};save();closeModal();toast(L('تمّ مسح التقدّم','Progress erased'),true);renderHome()}else{SFX.boing();toast(L('إجابة غير صحيحة','Not correct'),true)}break}
+ }});
+function rerender(){
+ if(S.screen==='home')renderHome();
+ else if(S.screen==='levels')renderLevels(S.subj);
+ else if(S.screen==='play'){const q=S.qs[S.i],lock=S.lock,tries=S.tries,ord=S.ord;renderPlay();S.lock=lock;S.tries=tries;if(q.kind==='order'){S.ord=ord;renderOrder()}}
+ else if(S.screen==='result')renderResult(true)}
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech()});
+applyLang();renderHome();
+</script>
+</body>
+</html>
