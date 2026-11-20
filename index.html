@@ -22,7 +22,7 @@ small{display:block;font-size:.5em;opacity:.7;font-weight:normal;line-height:1.2
 /* top bar */
 .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px;padding:10px 14px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);box-shadow:0 3px 14px rgba(40,60,120,.12);flex-wrap:wrap}
 .brand{flex:1;min-width:160px;font-size:24px;font-weight:bold;display:flex;align-items:center;gap:8px}
-.brand span{background:linear-gradient(90deg,#ff7a59,#a66cff,#4d9bff);-webkit-background-clip:text;background-clip:text;color:transparent}
+.brand span{color:#5b3fd4}
 .pill{background:#fff;border-radius:30px;padding:0 18px;min-height:56px;display:flex;align-items:center;gap:8px;font-size:24px;font-weight:bold;box-shadow:0 4px 0 rgba(0,0,0,.1)}
 .ico{min-width:56px;min-height:56px;border-radius:50%;background:#fff;font-size:26px;box-shadow:0 4px 0 rgba(0,0,0,.12);padding:0 14px}
 .ico:active,.btn:active,.card:active,.choice:active{transform:translateY(3px)}
@@ -138,6 +138,19 @@ svg.shape{width:150px;height:150px}
 @keyframes starIn{from{transform:scale(0) rotate(-90deg);opacity:0}to{transform:none;opacity:1}}
 @media(max-width:640px){.choices[style*="--cols:4"]{grid-template-columns:repeat(2,minmax(0,1fr))}.choices[style*="--cols:3"]{grid-template-columns:minmax(0,1fr)}.choice .ic{font-size:36px}.visual .eq{font-size:48px}.brand{font-size:19px}.title{font-size:25px}.choice{font-size:30px;min-height:80px}.visual .em{font-size:84px}.visual .word{font-size:60px}.slot .tx{font-size:28px}.vcard{font-size:28px}.pill{font-size:20px;padding:0 12px}.tenf{grid-template-columns:repeat(5,26px)}.tenf i{width:26px;height:26px}}
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01s!important}}
+.mgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;max-width:640px;margin:0 auto}
+.mc{aspect-ratio:1;perspective:600px;background:none;padding:0;border-radius:20px}
+.mf{position:relative;display:block;width:100%;height:100%;transition:transform .45s;transform-style:preserve-3d}
+.mc.flip .mf{transform:rotateY(180deg)}
+.mb,.mfr{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;border-radius:20px;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:0 6px 0 rgba(0,0,0,.14);font-size:clamp(34px,9vw,64px)}
+.mb{background:linear-gradient(145deg,var(--c),var(--c2));color:#fff}
+.mfr{background:#fff;transform:rotateY(180deg);border:4px solid #dfe6fb}
+.mc.done .mfr{background:#d9fbe8;border-color:#6fe3a5}
+#csvg{width:100%;height:auto;display:block;background:#fff;border-radius:20px}
+.r{fill:#fff;stroke:#27304d;stroke-width:3;stroke-linejoin:round;cursor:pointer;transition:fill .15s}
+.pal{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:14px 0}
+.sw{width:60px;height:60px;border-radius:50%;border:5px solid #fff;box-shadow:0 0 0 3px #c9d3f2,0 4px 0 rgba(0,0,0,.12);font-size:26px}
+.sw.on{box-shadow:0 0 0 6px var(--c2),0 4px 0 rgba(0,0,0,.12);transform:scale(1.1)}
 </style>
 </head>
 <body>
@@ -537,6 +550,7 @@ function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
 function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
  app().innerHTML=`<div class="hello"><div class="mascot">🦉</div><div><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('اختر لعبتك وجمّع النجوم والأوسمة','Pick a game and collect stars and badges')}</p></div></div>
  <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)} / 12</span></div></button>`).join('')}</div>
+ <button class="card" data-act="funhub" style="--c:#1fb5a8;--c2:#0d7f87;margin-top:18px;width:100%;min-height:140px;flex-direction:row;align-items:center;gap:18px"><div class="big">🌈</div><div><h3>${L('وقت اللعب الهادي','Calm play time')}</h3><div class="g">${L('ذاكرة الكروت والتلوين — للتسلية فقط!','Memory cards & colouring — just for fun!')}</div></div></button>
  <div class="note">${L('يُحفظ تقدّم عمّار تلقائيًّا على هذا الجهاز','Ammar’s progress is saved automatically on this device')}</div>`}
 
 function renderLevels(id){const s=SUBJ.find(x=>x.id===id);S={screen:'levels',subj:id};stopSpeech();setTheme(s);renderTop();
@@ -588,6 +602,14 @@ function parentModal(step,ctx){closeModal();const m=document.createElement('div'
 document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;ac();const a=t.dataset.act;
  switch(a){
   case 'home':closeModal();SFX.tap();renderHome();break;
+  case 'funhub':SFX.tap();renderFunHub();break;
+  case 'memmenu':SFX.tap();renderMemMenu();break;
+  case 'mstart':SFX.tap();startMem(+t.dataset.n);break;
+  case 'mflip':flipMem(+t.dataset.i);break;
+  case 'color':SFX.tap();renderColor();break;
+  case 'cpick':COL.color=t.dataset.c;document.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===t));SFX.tap();break;
+  case 'cnext':COL.pic=(COL.pic+1)%PICS.length;COL.fills={};SFX.tap();renderColor();break;
+  case 'cclear':COL.fills={};renderColor();break;
   case 'subj':SFX.tap();renderLevels(t.dataset.id);break;
   case 'lvl':SFX.tap();startRound(S.subj,+t.dataset.l);break;
   case 'levels':renderLevels(S.subj);break;
@@ -610,7 +632,59 @@ function rerender(){
  if(S.screen==='home')renderHome();
  else if(S.screen==='levels')renderLevels(S.subj);
  else if(S.screen==='play'){const q=S.qs[S.i],lock=S.lock,tries=S.tries,ord=S.ord;renderPlay();S.lock=lock;S.tries=tries;if(q.kind==='order'){S.ord=ord;renderOrder()}}
- else if(S.screen==='result')renderResult(true)}
+ else if(S.screen==='result')renderResult(true);
+ else if(S.screen==='funhub')renderFunHub();
+ else if(S.screen==='memmenu')renderMemMenu();
+ else if(S.screen==='mem')renderMem();
+ else if(S.screen==='color')renderColor()}
+/* ===================== CALM FUN: Memory cards + Coloring (independent of lessons) ===================== */
+const MEMPOOL=['🐶','🐱','🐰','🦁','🐘','🐢','🐟','🦋','🍎','🍌','🍓','🍉','🚗','🚀','⭐','🌈','🎈','🌻'];
+let MEM=null,COL={pic:0,color:'#ff8a80',fills:{}};
+/* eye-rest reminder: counts time spent in the calm games only */
+const FUNT={sec:0};
+setInterval(()=>{if(S.screen==='mem'||S.screen==='color'||S.screen==='memmenu'){if(!$('#modal')&&++FUNT.sec>=480){FUNT.sec=0;breakModal()}}},1000);
+function breakModal(){closeModal();const m=document.createElement('div');m.className='modal';m.id='modal';let n=20;
+ m.innerHTML=`<div class="mbox"><h3>👀 ${L('استراحة للعين','Eye break')}</h3><p>${L('بصّ بعيد من الشاشة لمدّة ٢٠ ثانية، وخُد نفسًا عميقًا 🌿','Look away from the screen for 20 seconds and take a deep breath 🌿')}</p><div class="acts"><button class="btn pri" id="brkgo" disabled>${n}</button><button class="btn" data-act="home">🏠</button></div></div>`;
+ document.body.appendChild(m);const b=$('#brkgo');const t=setInterval(()=>{n--;if(!$('#brkgo')){clearInterval(t);return}if(n<=0){clearInterval(t);b.disabled=false;b.textContent=L('كمّل اللعب','Keep playing');b.dataset.act='mclose'}else b.textContent=n},1000)}
+
+function renderFunHub(){S={screen:'funhub'};stopSpeech();setTheme({c:'#1fb5a8',c2:'#0d7f87'});renderTop();
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🌈 ${L('وقت اللعب الهادي','Calm play time')}</h2></div>
+ <div class="grid"><button class="card" data-act="memmenu" style="--c:#1fb5a8;--c2:#0d7f87"><div class="big">🃏</div><h3>${L('ذاكرة الكروت','Memory cards')}</h3><div class="g">${L('دوّر على الأزواج المتشابهة','Find the matching pairs')}</div></button>
+ <button class="card" data-act="color" style="--c:#ff7ab8;--c2:#d9438a"><div class="big">🎨</div><h3>${L('التلوين','Colouring')}</h3><div class="g">${L('لوّن الصور بألوانك','Colour the pictures your way')}</div></button></div>
+ <div class="note">${L('ألعاب للتسلية فقط، ولا تحتسب نجومًا. وسنذكّره بالراحة كل فترة 👀','Just for fun — no stars. We will remind him to rest his eyes 👀')}</div>`}
+
+/* ----- memory ----- */
+function renderMemMenu(){S={screen:'memmenu'};setTheme({c:'#1fb5a8',c2:'#0d7f87'});renderTop();
+ const o=[[4,'🙂',L('سهل','Easy')],[6,'😀',L('متوسط','Medium')],[8,'🤩',L('صعب','Hard')]];
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🃏 ${L('ذاكرة الكروت','Memory cards')}</h2></div>
+ <div class="lvgrid">${o.map(x=>`<button class="lv" data-act="mstart" data-n="${x[0]}"><div class="n">${x[1]}</div><div><h3>${x[2]}</h3><p>${x[0]} ${L('أزواج','pairs')}</p></div></button>`).join('')}</div>`}
+function startMem(n){MEM={n,cards:shuffle([...sample(MEMPOOL,n)].flatMap(e=>[e,e])).map(e=>({e,open:false,done:false})),first:null,lock:false,moves:0,found:0};renderMem()}
+function renderMem(){S={screen:'mem'};setTheme({c:'#1fb5a8',c2:'#0d7f87'});renderTop();
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="memmenu">✕</button><h2>🃏</h2><div class="pill">👣 <span class="ltr" id="mmoves">${MEM.moves}</span></div></div>
+ <div class="mgrid">${MEM.cards.map((c,i)=>`<button class="mc ${c.open||c.done?'flip':''} ${c.done?'done':''}" data-act="mflip" data-i="${i}"><span class="mf"><span class="mb">❓</span><span class="mfr">${c.e}</span></span></button>`).join('')}</div><div id="mend"></div>`}
+function flipMem(i){if(!MEM||MEM.lock)return;const c=MEM.cards[i];if(c.open||c.done)return;const el=document.querySelector(`.mc[data-i="${i}"]`);c.open=true;el.classList.add('flip');SFX.tap();
+ if(MEM.first===null){MEM.first=i;return}
+ const j=MEM.first,d=MEM.cards[j];MEM.first=null;MEM.moves++;$('#mmoves').textContent=MEM.moves;
+ if(d.e===c.e){c.done=d.done=true;SFX.ok();document.querySelector(`.mc[data-i="${i}"]`).classList.add('done');document.querySelector(`.mc[data-i="${j}"]`).classList.add('done');MEM.found++;
+  if(MEM.found===MEM.n){confetti();SFX.win();$('#mend').innerHTML=`<div class="result" style="margin-top:18px"><h2>${tx(pick(PRAISE))}</h2><div class="acts"><button class="btn pri" data-act="mstart" data-n="${MEM.n}">🔄 ${L('العب مجدّدًا','Play again')}</button><button class="btn" data-act="funhub">🏠</button></div></div>`}}
+ else{MEM.lock=true;setTimeout(()=>{c.open=d.open=false;[i,j].forEach(k=>{const e=document.querySelector(`.mc[data-i="${k}"]`);e&&e.classList.remove('flip')});if(MEM)MEM.lock=false},950)}}
+
+/* ----- colouring ----- */
+const PICS=[
+ {n:{ar:'البيت',en:'House'},svg:'<rect class="r" x="0" y="0" width="400" height="300"/><circle class="r" cx="330" cy="60" r="34"/><rect class="r" x="0" y="230" width="400" height="70"/><rect class="r" x="225" y="75" width="26" height="50"/><rect class="r" x="110" y="130" width="160" height="110"/><polygon class="r" points="95,135 190,60 285,135"/><rect class="r" x="170" y="175" width="40" height="65"/><rect class="r" x="125" y="150" width="35" height="30"/><rect class="r" x="225" y="150" width="35" height="30"/><rect class="r" x="320" y="170" width="16" height="70"/><circle class="r" cx="328" cy="150" r="42"/>'},
+ {n:{ar:'السمكة',en:'Fish'},svg:'<rect class="r" x="0" y="0" width="400" height="300"/><rect class="r" x="0" y="250" width="400" height="50"/><ellipse class="r" cx="60" cy="230" rx="12" ry="45"/><ellipse class="r" cx="90" cy="240" rx="10" ry="35"/><polygon class="r" points="270,150 345,100 345,200"/><polygon class="r" points="160,100 205,100 185,58"/><ellipse class="r" cx="190" cy="150" rx="90" ry="60"/><circle class="r" cx="145" cy="135" r="12"/><circle class="r" cx="90" cy="110" r="12"/><circle class="r" cx="70" cy="70" r="9"/><circle class="r" cx="110" cy="45" r="7"/>'},
+ {n:{ar:'الوردة',en:'Flower'},svg:'<rect class="r" x="0" y="0" width="400" height="300"/><circle class="r" cx="60" cy="60" r="30"/><rect class="r" x="0" y="230" width="400" height="70"/><rect class="r" x="192" y="140" width="16" height="100"/><ellipse class="r" cx="160" cy="200" rx="30" ry="12"/><ellipse class="r" cx="240" cy="190" rx="30" ry="12"/>'+[0,60,120,180,240,300].map(a=>`<ellipse class="r" cx="200" cy="72" rx="20" ry="34" transform="rotate(${a} 200 110)"/>`).join('')+'<circle class="r" cx="200" cy="110" r="24"/>'},
+ {n:{ar:'السيارة',en:'Car'},svg:'<rect class="r" x="0" y="0" width="400" height="210"/><ellipse class="r" cx="90" cy="60" rx="45" ry="20"/><ellipse class="r" cx="300" cy="80" rx="40" ry="18"/><rect class="r" x="0" y="210" width="400" height="90"/><rect class="r" x="70" y="140" width="260" height="60" rx="14"/><polygon class="r" points="130,140 160,95 260,95 290,140"/><polygon class="r" points="145,138 168,105 200,105 200,138"/><polygon class="r" points="210,138 210,105 252,105 272,138"/><circle class="r" cx="130" cy="205" r="32"/><circle class="r" cx="130" cy="205" r="13"/><circle class="r" cx="270" cy="205" r="32"/><circle class="r" cx="270" cy="205" r="13"/>'}
+];
+const PAL=['#ff8a80','#ffb74d','#fff176','#aed581','#4fc3f7','#7986cb','#ba68c8','#f48fb1','#a1887f','#ffffff'];
+function renderColor(){S={screen:'color'};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();let k=0;
+ const svg=PICS[COL.pic].svg.replace(/<(\w+) class="r"/g,(m,t)=>{const i=k++;return `<${t} class="r" data-k="${i}"${COL.fills[i]?` style="fill:${COL.fills[i]}"`:''}`});
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🎨 ${tx(PICS[COL.pic].n)}</h2></div>
+ <div class="qcard" style="padding:12px"><svg id="csvg" viewBox="0 0 400 300">${svg}</svg>
+ <div class="pal">${PAL.map(c=>`<button class="sw ${c===COL.color?'on':''}" data-act="cpick" data-c="${c}" style="background:${c}">${c==='#ffffff'?'🧽':''}</button>`).join('')}</div>
+ <div class="acts"><button class="btn sec" data-act="cnext">${L('صورة أخرى','Next picture')} ➜</button><button class="btn" data-act="cclear">🗑️ ${L('امسح الألوان','Clear')}</button></div></div>`;
+ $('#csvg').addEventListener('click',e=>{const r=e.target.closest('.r');if(!r)return;ac();COL.fills[r.dataset.k]=COL.color;r.style.fill=COL.color;SFX.tap()})}
+
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech()});
 applyLang();renderHome();
 </script>
