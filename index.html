@@ -411,7 +411,32 @@ const SFX={
 /* ---------- speech ---------- */
 const canSpeak=()=>('speechSynthesis' in window)&&typeof SpeechSynthesisUtterance!=='undefined';
 if(canSpeak()){try{speechSynthesis.getVoices();speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices()}catch(e){}}
-function speak(t,lang,rate){if(!canSpeak())return false;try{speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.lang=lang;u.rate=rate||.8;u.pitch=1.05;const vs=speechSynthesis.getVoices()||[];const norm=v=>v.lang.replace('_','-').toLowerCase();const lo=lang.toLowerCase(),pre=lo.split('-')[0];const v=vs.find(v=>norm(v)===lo)||vs.find(v=>norm(v).startsWith(pre));if(v)u.voice=v;speechSynthesis.speak(u);return true}catch(e){return false}}
+const NOVELTY=/zarvox|bad news|good news|bahh|bells|boing|bubbles|cellos|jester|organ|superstar|trinoids|whisper|wobble|albert|deranged|hysterical|fred|junior|ralph|kathy/i;
+const PREFV={en:['Daniel','Serena','Kate','Oliver','Martha','Arthur','Google UK English Female','Google UK English Male','Microsoft Sonia','Microsoft Libby','Microsoft Ryan','Samantha','Karen','Moira'],ar:['Majed','Maged','Tarik','Laila','Zeina','Google العربية','Microsoft Hoda','Microsoft Naayf']};
+const vNorm=v=>(v.lang||'').replace('_','-').toLowerCase();
+function voiceList(pre){try{return(speechSynthesis.getVoices()||[]).filter(v=>vNorm(v).startsWith(pre))}catch(e){return[]}}
+function voiceScore(v,lang){const pre=lang.slice(0,2).toLowerCase(),n=v.name||'',l=vNorm(v);let sc=0;
+ if(l===lang.toLowerCase())sc+=40;else if(l.startsWith(pre))sc+=20;
+ if(pre==='en'){if(l==='en-gb')sc+=25;else if(l==='en-us')sc+=12;else if(l==='en-au'||l==='en-ie')sc+=5}
+ if(/premium|enhanced|natural|neural|siri/i.test(n))sc+=70;
+ if(v.localService)sc+=4;
+ const pi=(PREFV[pre]||[]).findIndex(x=>n.toLowerCase().includes(x.toLowerCase()));if(pi>=0)sc+=40-pi;
+ if(NOVELTY.test(n))sc-=300;
+ return sc}
+function bestVoice(lang){const pre=lang.slice(0,2).toLowerCase(),want=state.voices&&state.voices[pre];const vs=voiceList(pre);if(!vs.length)return null;
+ if(want){const m=vs.find(v=>v.name===want);if(m)return m}
+ return vs.slice().sort((a,b)=>voiceScore(b,lang)-voiceScore(a,lang))[0]}
+function speak(t,lang,rate){if(!canSpeak())return false;try{speechSynthesis.cancel();const pre=lang.slice(0,2).toLowerCase();const u=new SpeechSynthesisUtterance(t);u.lang=lang;
+ u.rate=pre==='en'?Math.min(Math.max(rate||.85,.8),.95):Math.min(Math.max(rate||.8,.7),.9);u.pitch=1;u.volume=1;
+ const v=bestVoice(lang);if(v){u.voice=v;u.lang=v.lang}
+ setTimeout(()=>{try{speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}},60);return true}catch(e){return false}}
+function voiceModal(){closeModal();const m=document.createElement('div');m.className='modal';m.id='modal';
+ const row=(pre,title,sample)=>{const vs=voiceList(pre).slice().sort((a,b)=>voiceScore(b,pre==='en'?'en-GB':'ar-SA')-voiceScore(a,pre==='en'?'en-GB':'ar-SA')).slice(0,8);const cur=bestVoice(pre==='en'?'en-GB':'ar-SA');
+  VL[pre]=vs;
+  return `<h4 style="margin:14px 0 6px">${title}</h4>`+(vs.length?vs.map((v,i)=>`<div class="rowc" style="gap:8px;margin:5px 0"><button class="btn mini" data-act="vtest" data-p="${pre}" data-i="${i}">▶</button><button class="btn mini ${cur&&cur.name===v.name?'pri':''}" data-act="vpick" data-p="${pre}" data-i="${i}" style="flex:1;text-align:start">${cur&&cur.name===v.name?'✅ ':''}${v.name} <span class="ltr" style="opacity:.6;font-size:.8em">${v.lang}</span></button></div>`).join(''):`<p style="opacity:.8;font-size:.9em">${L('لا توجد أصوات لهذه اللغة على هذا الجهاز.','No voices for this language on this device.')}</p>`)};
+ m.innerHTML=`<div class="mbox" style="max-height:88vh;overflow:auto"><h3>🗣️ ${L('اختيار الصوت','Choose the voice')}</h3><p style="font-size:.9em">${L('اضغط ▶ لتسمع كل صوت ثم اختر الأوضح. للحصول على صوت أفضل: إعدادات النظام ← إمكانية الوصول ← المحتوى المنطوق ← إدارة الأصوات، ثم نزّل نسخة Enhanced/Premium (مثل Daniel وMajed).','Tap ▶ to hear each voice, then pick the clearest. For a better voice: System Settings → Accessibility → Spoken Content → Manage Voices, then download an Enhanced/Premium one (e.g. Daniel, Majed).')}</p>${row('en','English','Wood, metal, plastic, glass')}${row('ar','العربية','بَ، بِ، بُ')}<div class="acts"><button class="btn pri" data-act="mclose">${L('تمّ','Done')}</button></div></div>`;
+ document.body.appendChild(m)}
+const VL={};
 
 /* ---------- subjects ---------- */
 const SUBJ=[
@@ -580,6 +605,7 @@ function renderTop(){$('#top').innerHTML=`<button class="ico" data-act="home" ar
  <div class="pill" title="${L('النجوم','Stars')}">⭐ ${totalStars()}</div><div class="pill" title="${L('الأوسمة','Badges')}">🏅 ${totalBadges()}</div>
  <button class="ico lang" data-act="lang">${state.lang==='ar'?'English':'العربية'}</button>
  <button class="ico" data-act="snd" aria-label="sound">${state.sound?'🔊':'🔇'}</button>
+ <button class="ico" data-act="voice" aria-label="voice">🗣️</button>
  <button class="ico" data-act="parent" aria-label="parent">⚙️</button>`}
 function starsHTML(n,max){max=max||3;let h='<span class="stars">';for(let i=0;i<max;i++)h+=`<span class="${i<n?'':'off'}">⭐</span>`;return h+'</span>'}
 function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
@@ -663,6 +689,9 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   case 'lang':state.lang=state.lang==='ar'?'en':'ar';save();applyLang();rerender();break;
   case 'snd':state.sound=!state.sound;save();if(!state.sound)stopSpeech();renderTop();break;
   case 'parent':parentModal(1);break;
+  case 'voice':voiceModal();break;
+  case 'vtest':{const v=VL[t.dataset.p][+t.dataset.i];speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.dataset.p==='en'?'Wood, metal, plastic, glass':'بَ، بِ، بُ');u.voice=v;u.lang=v.lang;u.rate=t.dataset.p==='en'?.85:.8;speechSynthesis.speak(u);break}
+  case 'vpick':{const v=VL[t.dataset.p][+t.dataset.i];state.voices=state.voices||{};state.voices[t.dataset.p]=v.name;save();SFX.tap();voiceModal();break}
   case 'mclose':closeModal();break;
   case 'mstep2':parentModal(2);break;
   case 'mreset':{const m=$('#modal');if(+($('#mans').value||0)===+m.dataset.ans){state.prog={};save();closeModal();toast(L('تمّ مسح التقدّم','Progress erased'),true);renderHome()}else{SFX.boing();toast(L('إجابة غير صحيحة','Not correct'),true)}break}
