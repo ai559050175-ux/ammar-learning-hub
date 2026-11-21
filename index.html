@@ -84,6 +84,8 @@ h1,h2{margin:0}
 .choice.right{background:linear-gradient(180deg,#b9f6d4,#6fe3a5);border-color:var(--ok);animation:pop .5s}
 .choice.wrong{opacity:.45;background:#fff4d6;border-color:#f6b73c;animation:wiggle .45s;pointer-events:none}
 .choice.glow{animation:glow 1s infinite}
+.choice.sel{background:linear-gradient(180deg,#d9e8ff,#a9c8ff);box-shadow:0 0 0 6px var(--c),0 7px 0 rgba(0,0,0,.14);transform:translateY(2px)}
+.tkgo{margin:16px auto 0;display:block}
 .choice .ic{font-size:44px}
 .dot{display:inline-block}
 .tenf{display:grid;grid-template-columns:repeat(5,34px);gap:6px;background:#eef3ff;padding:10px;border-radius:16px}
@@ -454,7 +456,7 @@ const LVD={
  arabic:[{ar:'الفتحة والكسرة والضمة',en:'Short vowels'},{ar:'المدود: ا و ي',en:'Long vowels (madd)'},{ar:'هذا / هذه والحروف المتشابهة',en:'Hatha / hathihi & similar letters'},{ar:'الحرف الناقص والمقاطع',en:'Missing letters & syllables'}],
  quran:[{ar:'سور قصيرة جدًّا',en:'Very short surahs'},{ar:'سور قصيرة متوسطة',en:'Medium-short surahs'},{ar:'سور إضافية',en:'More surahs'},{ar:'أيّ سورة؟ وتمّم الآية',en:'Which surah? · Next verse'}]
 };
-const ROUND_LEN=s=>s==='quran'?5:6;
+const ROUND_LEN=(s,l)=>s==='quran'?5:(s==='mats'&&l===4)?10:6;
 
 /* ---------- progress ---------- */
 const getP=(s,l)=>(state.prog[s]&&state.prog[s][l])||{stars:0,plays:0};
@@ -591,7 +593,7 @@ function quran4(){const pool=surahPool(),t=rnd(0,2);
 const GEN={math:[null,math1,math2,math3,math4],english:[null,eng1,eng2,eng3,eng4],science:[null,sci1,sci2,sci3,sci4],arabic:[null,ar1,ar2,ar3,ar4],
  quran:[null,()=>quranOrder(1),()=>quranOrder(2),()=>quranOrder(3),quran4]};
 const RECENT={};
-function buildRound(subj,lvl){const n=ROUND_LEN(subj),used=new Set(),out=[],prev=new Set(RECENT[subj+lvl]||[]);
+function buildRound(subj,lvl){const n=ROUND_LEN(subj,lvl),used=new Set(),out=[],prev=new Set(RECENT[subj+lvl]||[]);
  for(let i=0;i<n;i++){let q,g=0;do{q=GEN[subj][lvl]();g++}while(g<60&&(used.has(q.key)||(g<25&&prev.has(q.key))));used.add(q.key);out.push(q)}
  RECENT[subj+lvl]=out.map(q=>q.key);return out}
 
@@ -612,13 +614,13 @@ function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
 
 function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
  app().innerHTML=`<div class="hello"><div class="mascot">🦉</div><div><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('اختر لعبتك وجمّع النجوم والأوسمة','Pick a game and collect stars and badges')}</p></div></div>
- <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)+(s.id==='science'?subjStars('body'):0)} / ${s.id==='science'?24:12}</span></div></button>`).join('')}</div>
+ <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)+(s.id==='science'?subjStars('body')+subjStars('mats'):0)} / ${s.id==='science'?36:12}</span></div></button>`).join('')}</div>
  <button class="card" data-act="funhub" style="--c:#1fb5a8;--c2:#0d7f87;margin-top:18px;width:100%;min-height:140px;flex-direction:row;align-items:center;gap:18px"><div class="big">🌈</div><div><h3>${L('وقت اللعب الهادي','Calm play time')}</h3><div class="g">${L('ذاكرة الكروت والتلوين — للتسلية فقط!','Memory cards & colouring — just for fun!')}</div></div></button>
  <div class="note">${L('يُحفظ تقدّم عمّار تلقائيًّا على هذا الجهاز','Ammar’s progress is saved automatically on this device')}</div>`}
 
 function renderLevels(id){const s=ALLS.find(x=>x.id===id);S={screen:'levels',subj:id};stopSpeech();setTheme(s);renderTop();
  const rng=id==='quran'?`<div class="toggle"><button data-act="rng" data-v="duha" class="${state.quranRange==='duha'?'on':''}">${L('من الضحى إلى الناس','Ad-Duha → An-Nas')}</button><button data-act="rng" data-v="ala" class="${state.quranRange==='ala'?'on':''}">${L('من الأعلى إلى الناس','Al-A’la → An-Nas')}</button></div>`:'';
- const tog=(id==='science'||id==='body')?`<div class="toggle"><button data-act="subj" data-id="science" class="${id==='science'?'on':''}">🔬 ${L('مختبر العلوم','Science Lab')}</button><button data-act="subj" data-id="body" class="${id==='body'?'on':''}">🧒 ${L('جسم الإنسان','Human Body')}</button></div>`:'';
+ const tog=(id==='science'||id==='body'||id==='mats')?`<div class="toggle"><button data-act="subj" data-id="science" class="${id==='science'?'on':''}">🔬 ${L('مختبر العلوم','Science Lab')}</button><button data-act="subj" data-id="body" class="${id==='body'?'on':''}">🧒 ${L('جسم الإنسان','Human Body')}</button><button data-act="subj" data-id="mats" class="${id==='mats'?'on':''}">🧱 ${L('مراجعة المواد','Materials')}</button></div>`:'';
  app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>${s.icon} ${tx(s.game)}</h2></div>${rng}${tog}
  <div class="lvgrid">${[1,2,3,4].map(l=>{const p=getP(id,l);return `<button class="lv" data-act="lvl" data-l="${l}"><div class="n">${LVN[l-1].icon}</div><div style="flex:1"><h3>${L('المستوى','Level')} ${l} · ${tx(LVN[l-1])}</h3><p>${tx(LVD[id][l-1])}</p>${starsHTML(p.stars)}</div><div class="badge">${p.stars>=3?(l===4?'🏆':'🏅'):''}</div></button>`}).join('')}</div>
  <div class="note">${L('كل المستويات مفتوحة — الأسئلة تتغيّر في كل مرّة 🎲','All levels are open — questions change every time 🎲')}</div>`}
@@ -629,6 +631,7 @@ function listenHTML(q){if(!q.speak)return '';return `<div class="rowc"><button c
 function renderPlay(){const q=S.qs[S.i];S.lock=false;S.tries=0;renderTop();
  const head=`<div class="playtop"><button class="btn mini" data-act="back">✕</button>${dotsHTML()}<div class="pill" style="min-height:56px;font-size:22px">⭐ ${S.score}</div></div>`;
  if(q.kind==='tap'){app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div>${listenHTML(q)}<div class="bodywrap">${bodySVG()}</div></div>`;const sv=document.querySelector('.bodysvg');sv.addEventListener('click',e=>{const t=e.target.closest('[data-part]');if(t){ac();tapBody(t.dataset.part)}});return}
+ if(q.kind==='multi'){S.sel=new Set();app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="visual">${hh(q.visual)||''}</div>${listenHTML(q)}<div class="choices" style="--cols:2">${q.choices.map((c,i)=>`<button class="choice" data-act="tk" data-i="${i}">${hh(c.h)}</button>`).join('')}</div><button class="btn pri tkgo" id="tkgo" data-act="tkgo" disabled>✔ ${L('تأكيد','Check')}</button></div>`;return}
  if(q.kind==='order'){S.ord={placed:0,mis:0,pool:shuffle(q.items)};if(q.items.length>1){let g=0;while(g++<20&&S.ord.pool.every((x,i)=>x===q.items[i]))S.ord.pool=shuffle(q.items)}
   app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="rowc"><button class="listen" data-act="hint">🔊 ${L('استمع للآية التالية','Hear the next verse')}</button></div><div id="ord"></div></div>`;renderOrder();return}
  app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="visual">${hh(q.visual)||''}</div>${listenHTML(q)}<div class="choices" style="--cols:${q.cols||2}">${q.choices.map((c,i)=>`<button class="choice ${c.cls}" data-act="ch" data-i="${i}">${hh(c.h)}</button>`).join('')}</div></div>`;
@@ -680,6 +683,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   case 'levels':renderLevels(S.subj);break;
   case 'back':stopSpeech();renderLevels(S.subj);break;
   case 'ch':answer(+t.dataset.i);break;
+  case 'tk':{if(S.lock)break;const i=+t.dataset.i,q=S.qs[S.i];if(S.sel.has(i)){S.sel.delete(i);t.classList.remove('sel')}else if(S.sel.size<2){S.sel.add(i);t.classList.add('sel')}SFX.tap();const b=$('#tkgo');if(b)b.disabled=S.sel.size!==2;break}
+  case 'tkgo':{if(S.lock||S.sel.size!==2)break;const q=S.qs[S.i],bad=[...S.sel].filter(i=>!q.choices[i].ok);
+   if(!bad.length){S.lock=true;S.sel.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('right')});SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
+   else{S.tries++;SFX.boing();encourage();bad.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('wrong');S.sel.delete(i)});$('#tkgo').disabled=true;
+    if(S.tries>=2)q.choices.forEach((c,i)=>{if(c.ok){const e=document.querySelector(`.choice[data-i="${i}"]`);e&&e.classList.add('glow')}})}break}
   case 'vc':pickVerse(+t.dataset.n);break;
   case 'listen':{const q=S.qs[S.i];if(q&&q.speak){if(!speak(q.speak.t,q.speak.l,q.speak.r))toast(L('الصوت غير متاح على هذا الجهاز','Sound is not available on this device'),true)}break}
   case 'hint':{const q=S.qs[S.i],ex=q.items[Math.min(S.ord.placed,q.items.length-1)];if(!speak(ex.t,'ar-SA',.65))toast(L('الصوت غير متاح — انظر إلى أرقام الآيات 👀','Sound not available — look at the verse numbers 👀'),true);break}
@@ -707,8 +715,29 @@ function rerender(){
  else if(S.screen==='color')renderColor()}
 /* ===================== SCIENCE: HUMAN BODY ===================== */
 const BODYS={id:'body',icon:'🧒',c:'#2ec27e',c2:'#14935a',name:{ar:'جسم الإنسان',en:'Human Body'},game:{ar:'تعرّف على جسمك',en:'Know Your Body'}};
-const ALLS=[...SUBJ,BODYS];
+const MATREV={id:'mats',icon:'🧱',c:'#2ec27e',c2:'#14935a',name:{ar:'مراجعة المواد',en:'Materials Revision'},game:{ar:'مراجعة المواد وخصائصها',en:'Materials & Properties'}};
+const ALLS=[...SUBJ,BODYS,MATREV];
 LVD.body=[{ar:'اضغط على أجزاء الجسم',en:'Tap the body parts'},{ar:'الحواس الخمس وأجزاء أخرى',en:'The five senses & more parts'},{ar:'ماذا نفعل بكل جزء؟',en:'What do we use each part for?'},{ar:'تحدّي الجسم: أعداد وأعضاء وحواس',en:'Body challenge: counts, organs, senses'}];
+
+/* ===================== SCIENCE: MATERIALS REVISION ===================== */
+LVD.mats=[{ar:'سمّ الخامة: زجاج · خشب · معدن · بلاستيك',en:'Name the material (4 words)'},{ar:'كل الخامات + اختر كلمتين',en:'All 8 materials + tick two words'},{ar:'وصّل الخاصية + ماصّ أو مانع للماء',en:'Match the property + absorbent / waterproof'},{ar:'امتحان المراجعة: ١٠ أسئلة مخلوطة',en:'Revision exam: 10 mixed questions'}];
+const MAR={glass:'زجاج',wood:'خشب',metal:'معدن',plastic:'بلاستيك',fabric:'قماش',rubber:'مطاط',leather:'جلد',paper:'ورق',hard:'صلب',soft:'ناعم',shiny:'لامع',rough:'خشن',flexible:'مرن',clear:'شفاف',light:'خفيف',waterproof:'مانع للماء',absorbent:'ماصّ',bumpy:'غير أملس (ناتئ)',transparent:'شفّاف'};
+const wd=w=>`<span dir="ltr">${w}</span><small dir="rtl" class="arab">${MAR[w]}</small>`;
+const mvis=(e,n)=>`<div class="em">${e}</div><div class="word ltr">${n}</div>`;
+const MOBJ={glass:[['🥛','tumbler'],['🪟','window'],['🫙','jar'],['🍷','glass cup']],wood:[['🪑','chair'],['🚪','door'],['🪵','log'],['🏏','bat']],metal:[['🥄','spoon'],['🔑','key'],['🔔','bell'],['🔩','bolt']],plastic:[['🦆','toy duck'],['🪣','bucket'],['🧴','bottle'],['🥤','plastic cup']],
+ fabric:[['👗','dress'],['👕','T-shirt'],['🧦','sock'],['🧣','scarf']],rubber:[['🎈','balloon'],['🛞','tyre'],['🩴','flip-flop'],['⚽','ball']],leather:[['👜','bag'],['👞','shoe'],['👢','boot'],['🧤','glove']],paper:[['📚','books'],['📰','newspaper'],['📄','page'],['✉️','envelope']]};
+const MAT4=['glass','wood','metal','plastic'],MAT8=Object.keys(MOBJ);
+function matLab(pool){const m=pick(pool),[e,n]=pick(MOBJ[m]);const ds=sample(pool.filter(x=>x!==m),3);
+ return{key:'m1:'+n+m,title:{ar:'ما الخامة المصنوع منها هذا الشيء؟',en:'What material is it made of?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([m,...ds]).map(x=>ch(()=>wd(x),x===m)),cols:2}}
+const mats1=()=>matLab(MAT4),mats1b=()=>matLab(MAT8);
+const TICK={wood:[['hard','rough'],['soft','shiny']],metal:[['hard','shiny'],['flexible','clear']],plastic:[['light','waterproof'],['soft','rough']],glass:[['hard','transparent'],['soft','rough']],rubber:[['flexible','waterproof'],['hard','rough']],fabric:[['soft','absorbent'],['hard','shiny']],paper:[['light','absorbent'],['hard','shiny']]};
+function matTick(){const m=pick(Object.keys(TICK)),[ok,no]=TICK[m];
+ return{kind:'multi',key:'mt:'+m,title:{ar:`اختر الكلمتين اللتين تصفان ${MAR[m]} (${m})`,en:`Tick the TWO words that best describe ${m}`},visual:`<div class="word ltr">${m}</div>`,speak:SP(m),fallback:'',choices:shuffle([...ok,...no]).map(x=>ch(()=>wd(x),ok.includes(x))),cols:2}}
+const MPROP=[['🟦','rubber mat','waterproof'],['🐟','fish bowl','transparent'],['🐚','shell','rough'],['🧽','sponge','absorbent'],['🍍','pineapple','bumpy'],['💍','ring','shiny']],PROPS=['bumpy','rough','absorbent','waterproof','shiny','transparent'];
+function matPair(){const [e,n,p]=pick(MPROP);return{key:'mp:'+n,title:{ar:'أيّ كلمة تصف هذا الشيء؟',en:'Which word describes it?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([p,...sample(PROPS.filter(x=>x!==p),3)]).map(x=>ch(()=>wd(x),x===p)),cols:2}}
+const MSORT=[['☁️','cotton ball','absorbent'],['🟤','clay','absorbent'],['🧽','sponge','absorbent'],['🧻','tissue paper','absorbent'],['👚','fabric','absorbent'],['🧥','raincoat','waterproof'],['🍽️','ceramic plate','waterproof'],['🛍️','plastic bag','waterproof'],['🧤','rubber glove','waterproof'],['🌯','aluminium foil','waterproof']];
+function matSort(){const [e,n,p]=pick(MSORT);return{key:'ms:'+n,title:{ar:'ضع الشيء في العمود الصحيح: ماصّ أم مانع للماء؟',en:'Sort it: absorbent or waterproof?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle(['absorbent','waterproof']).map(x=>ch(()=>wd(x),x===p)),cols:2}}
+GEN.mats=[null,mats1,()=>Math.random()<.5?mats1b():matTick(),()=>Math.random()<.5?matPair():matSort(),()=>pick([mats1b,mats1b,matTick,matTick,matPair,matPair,matSort,matSort])()];
 /* emoji, Arabic (nominative), English, Arabic (after "على") */
 const BP={head:['🧑','الرأس','Head','الرأس'],hair:['💇','الشعر','Hair','الشعر'],eyes:['👁️','العينان','Eyes','العينين'],ears:['👂','الأذنان','Ears','الأذنين'],nose:['👃','الأنف','Nose','الأنف'],mouth:['👄','الفم','Mouth','الفم'],
  neck:['','الرقبة','Neck','الرقبة'],chest:['','الصدر','Chest','الصدر'],tummy:['','البطن','Tummy','البطن'],arms:['💪','الذراعان','Arms','الذراعين'],hands:['✋','اليدان','Hands','اليدين'],
