@@ -728,7 +728,7 @@ LVD.mats=[{ar:'سمّ الخامة: زجاج · خشب · معدن · بلاست
 const MAR={glass:'زجاج',wood:'خشب',metal:'معدن',plastic:'بلاستيك',fabric:'قماش',rubber:'مطاط',leather:'جلد',paper:'ورق',hard:'صلب',soft:'ناعم',shiny:'لامع',rough:'خشن',flexible:'مرن',clear:'شفاف',light:'خفيف',waterproof:'مانع للماء',absorbent:'ماصّ',bumpy:'غير أملس (ناتئ)',transparent:'شفّاف'};
 const wd=w=>`<span dir="ltr">${w}</span><small dir="rtl" class="arab">${MAR[w]}</small>`;
 const mvis=(e,n)=>`<div class="em">${e}</div><div class="word ltr">${n}</div>`;
-const MOBJ={glass:[['🥛','tumbler'],['🪟','window'],['🫙','jar'],['🍷','glass cup']],wood:[['🪑','chair'],['🚪','door'],['🪵','log'],['🏏','bat']],metal:[['🥄','spoon'],['🔑','key'],['🔔','bell'],['🔩','bolt']],plastic:[['🦆','toy duck'],['🪣','bucket'],['🧴','bottle'],['🥤','plastic cup']],
+const MOBJ={glass:[['🥛','tumbler'],['🪟','window'],['🫙','jar'],['🍷','glass cup']],wood:[['🪑','chair'],['🟫','toy block'],['🚪','door'],['🪵','log'],['🏏','bat']],metal:[['🥄','spoon'],['🔑','key'],['🔔','bell'],['🔩','bolt']],plastic:[['🦆','toy duck'],['🪣','bucket'],['🧴','bottle'],['🥤','plastic cup']],
  fabric:[['👗','dress'],['👕','T-shirt'],['🧦','sock'],['🧣','scarf']],rubber:[['🎈','balloon'],['🛞','tyre'],['🩴','flip-flop'],['⚽','ball']],leather:[['👜','bag'],['👞','shoe'],['👢','boot'],['🧤','glove']],paper:[['📚','books'],['📰','newspaper'],['📄','page'],['✉️','envelope']]};
 const MAT4=['glass','wood','metal','plastic'],MAT8=Object.keys(MOBJ);
 function matLab(pool){const m=pick(pool),[e,n]=pick(MOBJ[m]);const ds=sample(pool.filter(x=>x!==m),3);
