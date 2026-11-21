@@ -645,17 +645,20 @@ const praise=()=>toast(tx(pick(PRAISE)));
 const encourage=()=>toast(tx(pick(TRYAGAIN)),true);
 function answer(i){if(S.lock)return;const q=S.qs[S.i],c=q.choices[i],el=document.querySelector(`.choice[data-i="${i}"]`);
  if(c.ok){S.lock=true;el.classList.add('right');SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
- else{S.tries++;el.classList.add('wrong');SFX.boing();encourage();if(S.tries>=2){const k=q.choices.findIndex(x=>x.ok);const g=document.querySelector(`.choice[data-i="${k}"]`);g&&g.classList.add('glow')}}}
+ else{S.tries++;if(q.rev){(S.wr=S.wr||new Map()).set(q.key,q.rev)}el.classList.add('wrong');SFX.boing();encourage();if(S.tries>=2){const k=q.choices.findIndex(x=>x.ok);const g=document.querySelector(`.choice[data-i="${k}"]`);g&&g.classList.add('glow')}}}
 function pickVerse(n){if(S.lock)return;const q=S.qs[S.i],o=S.ord,exp=q.items[o.placed];
  if(exp.n===n){SFX.place();o.placed++;if(o.placed===q.items.length){S.lock=true;renderOrder();if(!o.mis)S.score++;SFX.ok();praise();setTimeout(nextQ,1700)}else renderOrder()}
  else{o.mis++;SFX.boing();encourage();const el=document.querySelector(`.vcard[data-n="${n}"]`);if(el){el.classList.add('wrong');setTimeout(()=>{const e2=document.querySelector(`.vcard[data-n="${exp.n}"]`);if(o.mis>=2&&e2)e2.classList.add('glow')},50)}}}
 function nextQ(){if(S.screen!=='play')return;S.i++;S.i>=S.qs.length?renderResult():renderPlay()}
 
 function confetti(){const em=['⭐','🎉','🌟','✨','🎈','🍬','💫'];for(let i=0;i<46;i++){const d=document.createElement('div');d.className='conf';d.textContent=pick(em);d.style.left=rnd(0,98)+'%';d.style.animationDuration=(2+Math.random()*2.5)+'s';d.style.animationDelay=(Math.random()*.8)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200)}}
+function revHTML(){if(!S.wr||!S.wr.size)return'';S.wrl=[...S.wr.values()];
+ return `<div class="qcard" style="margin:14px 0"><div class="title">📝 ${L('كلمات للمراجعة','Words to review')}</div>${S.wrl.map((r,i)=>`<div class="rowc" style="gap:10px;margin:6px 0"><button class="listen" data-act="rvsay" data-i="${i}">🔊</button><div class="ltr" style="flex:1;font-size:24px;text-align:start">${r.e} <b>${r.n}</b> → ${r.a.split(' + ').map(x=>MAR[x]?x+' ('+MAR[x]+')':x).join(' + ')}</div></div>`).join('')}</div>`}
 function renderResult(again){const n=S.qs.length,r=S.score/n,stars=r>=.8?3:r>=.5?2:1;if(!again){setP(S.subj,S.lvl,stars);SFX.win();confetti()}S.screen='result';renderTop();stopSpeech();
  const sub=ALLS.find(x=>x.id===S.subj),last=S.lvl>=4;const msg=stars===3?L('مذهل! أنت بطل حقيقي 🏆','Amazing! You are a real champion 🏆'):stars===2?L('عمل رائع! تقترب من النجمة الثالثة ⭐','Great work! The third star is near ⭐'):L('أحسنت! جرّب مرّة أخرى لتجمع نجومًا أكثر 💪','Well done! Try again to collect more stars 💪');
  app().innerHTML=`<div class="result"><div style="font-size:80px">${stars===3?'🏆':'🎉'}</div><h2>${L('انتهت الجولة!','Round complete!')}</h2><div class="stars">${[0,1,2].map(i=>`<span style="animation-delay:${i*.25}s;${i<stars?'':'filter:grayscale(1);opacity:.25'}">⭐</span>`).join('')}</div>
  <p>${msg}<br><b>${S.score} / ${n}</b> ${L('إجابات صحيحة من المحاولة الأولى','correct on the first try')}</p>
+ ${revHTML()}
  ${stars===3&&last?`<p>🏅 ${L('وسام البطل في','Master badge for')} ${tx(sub.game)}!</p>`:''}
  <div class="acts"><button class="btn pri" data-act="again">🔄 ${L('العب مجدّدًا (أسئلة جديدة)','Play Again (New Questions)')}</button>${last?'':`<button class="btn sec" data-act="next">${L('المستوى التالي','Next Level')} ➜</button>`}<button class="btn" data-act="levels">${L('المستويات','Levels')}</button><button class="btn" data-act="home">🏠</button></div></div>`}
 
@@ -683,10 +686,11 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   case 'levels':renderLevels(S.subj);break;
   case 'back':stopSpeech();renderLevels(S.subj);break;
   case 'ch':answer(+t.dataset.i);break;
+  case 'rvsay':{const r=S.wrl[+t.dataset.i];speak(r.n+'. '+r.a.replace(' + ',', '),'en-GB',.85);break}
   case 'tk':{if(S.lock)break;const i=+t.dataset.i,q=S.qs[S.i];if(S.sel.has(i)){S.sel.delete(i);t.classList.remove('sel')}else if(S.sel.size<2){S.sel.add(i);t.classList.add('sel')}SFX.tap();const b=$('#tkgo');if(b)b.disabled=S.sel.size!==2;break}
   case 'tkgo':{if(S.lock||S.sel.size!==2)break;const q=S.qs[S.i],bad=[...S.sel].filter(i=>!q.choices[i].ok);
    if(!bad.length){S.lock=true;S.sel.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('right')});SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
-   else{S.tries++;SFX.boing();encourage();bad.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('wrong');S.sel.delete(i)});$('#tkgo').disabled=true;
+   else{S.tries++;if(q.rev){(S.wr=S.wr||new Map()).set(q.key,q.rev)}SFX.boing();encourage();bad.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('wrong');S.sel.delete(i)});$('#tkgo').disabled=true;
     if(S.tries>=2)q.choices.forEach((c,i)=>{if(c.ok){const e=document.querySelector(`.choice[data-i="${i}"]`);e&&e.classList.add('glow')}})}break}
   case 'vc':pickVerse(+t.dataset.n);break;
   case 'listen':{const q=S.qs[S.i];if(q&&q.speak){if(!speak(q.speak.t,q.speak.l,q.speak.r))toast(L('الصوت غير متاح على هذا الجهاز','Sound is not available on this device'),true)}break}
@@ -728,15 +732,15 @@ const MOBJ={glass:[['🥛','tumbler'],['🪟','window'],['🫙','jar'],['🍷','
  fabric:[['👗','dress'],['👕','T-shirt'],['🧦','sock'],['🧣','scarf']],rubber:[['🎈','balloon'],['🛞','tyre'],['🩴','flip-flop'],['⚽','ball']],leather:[['👜','bag'],['👞','shoe'],['👢','boot'],['🧤','glove']],paper:[['📚','books'],['📰','newspaper'],['📄','page'],['✉️','envelope']]};
 const MAT4=['glass','wood','metal','plastic'],MAT8=Object.keys(MOBJ);
 function matLab(pool){const m=pick(pool),[e,n]=pick(MOBJ[m]);const ds=sample(pool.filter(x=>x!==m),3);
- return{key:'m1:'+n+m,title:{ar:'ما الخامة المصنوع منها هذا الشيء؟',en:'What material is it made of?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([m,...ds]).map(x=>ch(()=>wd(x),x===m)),cols:2}}
+ return{rev:{e,n,a:m},key:'m1:'+n+m,title:{ar:'ما الخامة المصنوع منها هذا الشيء؟',en:'What material is it made of?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([m,...ds]).map(x=>ch(()=>wd(x),x===m)),cols:2}}
 const mats1=()=>matLab(MAT4),mats1b=()=>matLab(MAT8);
 const TICK={wood:[['hard','rough'],['soft','shiny']],metal:[['hard','shiny'],['flexible','clear']],plastic:[['light','waterproof'],['soft','rough']],glass:[['hard','transparent'],['soft','rough']],rubber:[['flexible','waterproof'],['hard','rough']],fabric:[['soft','absorbent'],['hard','shiny']],paper:[['light','absorbent'],['hard','shiny']]};
 function matTick(){const m=pick(Object.keys(TICK)),[ok,no]=TICK[m];
- return{kind:'multi',key:'mt:'+m,title:{ar:`اختر الكلمتين اللتين تصفان ${MAR[m]} (${m})`,en:`Tick the TWO words that best describe ${m}`},visual:`<div class="word ltr">${m}</div>`,speak:SP(m),fallback:'',choices:shuffle([...ok,...no]).map(x=>ch(()=>wd(x),ok.includes(x))),cols:2}}
+ return{rev:{e:'',n:m,a:ok.join(' + ')},kind:'multi',key:'mt:'+m,title:{ar:`اختر الكلمتين اللتين تصفان ${MAR[m]} (${m})`,en:`Tick the TWO words that best describe ${m}`},visual:`<div class="word ltr">${m}</div>`,speak:SP(m),fallback:'',choices:shuffle([...ok,...no]).map(x=>ch(()=>wd(x),ok.includes(x))),cols:2}}
 const MPROP=[['🟦','rubber mat','waterproof'],['🐟','fish bowl','transparent'],['🐚','shell','rough'],['🧽','sponge','absorbent'],['🍍','pineapple','bumpy'],['💍','ring','shiny']],PROPS=['bumpy','rough','absorbent','waterproof','shiny','transparent'];
-function matPair(){const [e,n,p]=pick(MPROP);return{key:'mp:'+n,title:{ar:'أيّ كلمة تصف هذا الشيء؟',en:'Which word describes it?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([p,...sample(PROPS.filter(x=>x!==p),3)]).map(x=>ch(()=>wd(x),x===p)),cols:2}}
+function matPair(){const [e,n,p]=pick(MPROP);return{rev:{e,n,a:p},key:'mp:'+n,title:{ar:'أيّ كلمة تصف هذا الشيء؟',en:'Which word describes it?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle([p,...sample(PROPS.filter(x=>x!==p),3)]).map(x=>ch(()=>wd(x),x===p)),cols:2}}
 const MSORT=[['☁️','cotton ball','absorbent'],['🟤','clay','absorbent'],['🧽','sponge','absorbent'],['🧻','tissue paper','absorbent'],['👚','fabric','absorbent'],['🧥','raincoat','waterproof'],['🍽️','ceramic plate','waterproof'],['🛍️','plastic bag','waterproof'],['🧤','rubber glove','waterproof'],['🌯','aluminium foil','waterproof']];
-function matSort(){const [e,n,p]=pick(MSORT);return{key:'ms:'+n,title:{ar:'ضع الشيء في العمود الصحيح: ماصّ أم مانع للماء؟',en:'Sort it: absorbent or waterproof?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle(['absorbent','waterproof']).map(x=>ch(()=>wd(x),x===p)),cols:2}}
+function matSort(){const [e,n,p]=pick(MSORT);return{rev:{e,n,a:p},key:'ms:'+n,title:{ar:'ضع الشيء في العمود الصحيح: ماصّ أم مانع للماء؟',en:'Sort it: absorbent or waterproof?'},visual:mvis(e,n),speak:SP(n),auto:1,fallback:`<b class="ltr">${n}</b>`,choices:shuffle(['absorbent','waterproof']).map(x=>ch(()=>wd(x),x===p)),cols:2}}
 GEN.mats=[null,mats1,()=>Math.random()<.5?mats1b():matTick(),()=>Math.random()<.5?matPair():matSort(),()=>pick([mats1b,mats1b,matTick,matTick,matPair,matPair,matSort,matSort])()];
 /* emoji, Arabic (nominative), English, Arabic (after "على") */
 const BP={head:['🧑','الرأس','Head','الرأس'],hair:['💇','الشعر','Hair','الشعر'],eyes:['👁️','العينان','Eyes','العينين'],ears:['👂','الأذنان','Ears','الأذنين'],nose:['👃','الأنف','Nose','الأنف'],mouth:['👄','الفم','Mouth','الفم'],
@@ -806,7 +810,7 @@ function tapBody(part){if(S.lock)return;const q=S.qs[S.i],same=sel=>document.que
  else{S.tries++;const els=same(part);els.forEach(x=>x.classList.add('nop'));setTimeout(()=>els.forEach(x=>x.classList.remove('nop')),650);SFX.boing();encourage();if(S.tries>=2)same(q.ok[0]).forEach(x=>x.classList.add('glowp'))}}
 
 /* ===================== CALM FUN: Memory cards + Coloring (independent of lessons) ===================== */
-const MEMPOOL=['🐶','🐱','🐰','🦁','🐘','🐢','🐟','🦋','🍎','🍌','🍓','🍉','🚗','🚀','⭐','🌈','🎈','🌻'];
+const MEMPOOL=['🐶','🐱','🐰','🦁','🐘','🐢','🐟','🦋','🍎','🍌','🍓','🍉','🚗','🚀','⭐','🌈','🎈','🌻','🥄','🪑','🥛','👗','📚','🧽','🧥','🛞','👜','🔑'];
 let MEM=null,COL={pic:0,color:'#ff8a80',fills:{}};
 /* eye-rest reminder: counts time spent in the calm games only */
 const FUNT={sec:0};
