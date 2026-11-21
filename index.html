@@ -6,6 +6,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <title>منصة عمار التعليمية | Ammar Learning Hub</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="Ammar Hub">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#4d9bff">
 <style>
 :root{--bg1:#fff3c4;--bg2:#cfeeff;--ink:#27304d;--soft:#6b7494;--card:#ffffff;--c:#4d9bff;--c2:#2f6fe0;--gold:#ffc83d;--ok:#2ec27e}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation;-webkit-user-select:none;user-select:none}
@@ -441,7 +446,13 @@ function voiceScore(v,lang){const pre=lang.slice(0,2).toLowerCase(),n=v.name||''
 function bestVoice(lang){const pre=lang.slice(0,2).toLowerCase(),want=state.voices&&state.voices[pre];const vs=voiceList(pre);if(!vs.length)return null;
  if(want){const m=vs.find(v=>v.name===want);if(m)return m}
  return vs.slice().sort((a,b)=>voiceScore(b,lang)-voiceScore(a,lang))[0]}
-function speak(t,lang,rate){if(!canSpeak())return false;try{speechSynthesis.cancel();const pre=lang.slice(0,2).toLowerCase();const u=new SpeechSynthesisUtterance(t);u.lang=lang;
+const AUD=new Set('119f7dz 11jp9wx 149pjde 15vxzhs 170uvyv 17vvor9 19iluce 19od3mh 1ah1t9i 1ak13zr 1b9m4p1 1byirf4 1ew9l2 1j4s70n 1jcnpf3 1jdrmuv 1k0sgv6 1kd0snc 1lhyg5 1m1rev 1mnt85q 1nsz61n 1ouhe5b 1ov6e3l 1q12k8b 1qc1anf 1r7it12 1re2pbc 1roe2j9 1to8qih 1uqo5t9 27vrxl 2pwrzq 2uogxb 2v3x8b 2vp4m1 2vzpec 2wiryf 2wkahr 2wscsb 2wv7g6 2xc2gs 2xev5b 2xf1t4 2xf1tg 2xt9dy 2z9cl5 30ir1h 30xd2z 312dyb 312f6z 312hw5 313kyr 3155lk 33qij7 33r86f 33y2kv 375jzb 375ktx 375kzi 375lru 375pek 375uw0 375zvq 37unlu 382hut 3877s8 38i4sc 38mrca 38otyc 38pjpt 38pk74 38pniz 38pnqm 38pqfa 3h1nda 3hmct 3hmep 3hmis 3hmux 3ioifg 3ns3mb 3oo5g5 3r8z0d 4m01q9 5evhjx 5qw82j 5yyido 79sc6z 84szcd 8wge3b 9082kv 96cdia abs7du aevi4p ailyq6 azhc5f bm8bi3 cywhmq fczsze fmuhqs g5ggfo hbt6dj hm1tu3 huzs1x jhlmdp jxnftc m9h6k8 mh8yv1 o7mckv odd5vy p3aiiz pa5ixy pbh9s0 pid06d pjyoco pllta0 pllwr6 q20qr9 q5cdj7 qbll42 qnknku rks44h rwwhow s8e8bu scce3n syr7go tct7b4 tdmrlh tkqee7 u53jx9 ud4034 ukxnn0 uu52l0 vnjf0t wbccdc wgmy3r wp4whd yirxv7 yiwczb yiwf85 yiwgvl yix9qw yiykss yiymiu yizb25 yizb3g yizcyi yj05aq yj05y4 yj06gl yj08gn yj0sob yj0zx6 yj3mlf yj42np yj480z yj48bp yj48r3 yj4ayj yj5f7j yj74p4 yj75kj yj99xq yj9l92 yjbmpp yjbohd yjbul3 yjbwsx yjc9ea yjccuy yjchl4 yjcht7 yjcjtr yjcjup yjck3r yjck7z yjfmtc yjg6jz yjj23s yjjdlj yjpexe yjpjk6 yjqzko yjtvwt yjtz2v ytcl11 yvp7f8 z7j7da zhi1yd'.split(' '));
+const AUh=t=>{let x=5381;for(const c of t.trim()){x=((x*33)^c.codePointAt(0))>>>0}return x.toString(36)};
+const AU=new Audio();AU.preload='auto';let AUok=false;
+function unlockAudio(){if(AUok)return;AUok=true;try{AU.src='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=';const p=AU.play();if(p&&p.catch)p.catch(()=>{})}catch(e){}}
+function playClip(t){const k=AUh(t);if(!AUD.has(k))return false;try{if('speechSynthesis' in window)speechSynthesis.cancel()}catch(e){}try{AU.onended=null;AU.pause();AU.src='audio/'+k+'.m4a';const p=AU.play();if(p&&p.catch)p.catch(()=>{});return true}catch(e){return false}}
+function speakSeq(list){list=list.filter(x=>/^[a-z' -]+$/i.test(x));const go=()=>{const t=list.shift();if(!t)return;if(playClip(t)){AU.onended=()=>{AU.onended=null;if(list.length)setTimeout(go,250)}}else{speak(t,'en-GB',.85);if(list.length)setTimeout(go,1100)}};go()}
+function speak(t,lang,rate){if(/^en/i.test(lang)&&playClip(t))return true;if(!canSpeak())return false;try{speechSynthesis.cancel();const pre=lang.slice(0,2).toLowerCase();const u=new SpeechSynthesisUtterance(t);u.lang=lang;
  u.rate=pre==='en'?Math.min(Math.max(rate||.85,.8),.95):Math.min(Math.max(rate||.8,.7),.9);u.pitch=1;u.volume=1;
  const v=bestVoice(lang);if(v){u.voice=v;u.lang=v.lang}
  setTimeout(()=>{try{speechSynthesis.resume();speechSynthesis.speak(u)}catch(e){}},60);return true}catch(e){return false}}
@@ -623,7 +634,7 @@ function renderTop(){$('#top').innerHTML=`<button class="ico" data-act="home" ar
  <button class="ico" data-act="voice" aria-label="voice">🗣️</button>
  <button class="ico" data-act="parent" aria-label="parent">⚙️</button>`}
 function starsHTML(n,max){max=max||3;let h='<span class="stars">';for(let i=0;i<max;i++)h+=`<span class="${i<n?'':'off'}">⭐</span>`;return h+'</span>'}
-function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
+function stopSpeech(){try{AU.pause()}catch(e){}try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
 
 function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
  app().innerHTML=`<div class="hello"><div class="mascot">🦉</div><div><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('اختر لعبتك وجمّع النجوم والأوسمة','Pick a game and collect stars and badges')}</p></div></div>
@@ -697,7 +708,7 @@ function parentModal(step,ctx){closeModal();const m=document.createElement('div'
  document.body.appendChild(m)}
 
 /* ---------- events ---------- */
-document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(!t)return;ac();const a=t.dataset.act;
+document.addEventListener('click',e=>{unlockAudio();const t=e.target.closest('[data-act]');if(!t)return;ac();const a=t.dataset.act;
  switch(a){
   case 'home':closeModal();SFX.tap();renderHome();break;
   case 'funhub':SFX.tap();renderFunHub();break;
@@ -713,7 +724,7 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   case 'levels':renderLevels(S.subj);break;
   case 'back':stopSpeech();renderLevels(S.subj);break;
   case 'ch':answer(+t.dataset.i);break;
-  case 'rvsay':{const r=S.wrl[+t.dataset.i];speak(r.n+'. '+r.a.replace(' + ',', '),'en-GB',.85);break}
+  case 'rvsay':{const r=S.wrl[+t.dataset.i];speakSeq([r.n,...r.a.split(' + ')]);break}
   case 'exam':SFX.tap();startExam();break
   case 'st':{if(S.lock)break;const k=+t.dataset.i,sp=S.sp,sl=sp.slots.indexOf(-1);if(sl<0||sp.slots.includes(k))break;sp.slots[sl]=k;SFX.tap();drawSpell();if(!sp.slots.includes(-1))spellCheck();break}
   case 'ss':{if(S.lock)break;S.sp.slots[+t.dataset.i]=-1;drawSpell();break}
@@ -949,6 +960,7 @@ function renderColor(){S={screen:'color'};setTheme({c:'#ff7ab8',c2:'#d9438a'});r
 
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech()});
 applyLang();renderHome();
+if('serviceWorker' in navigator&&location.protocol.startsWith('http')){window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
 </script>
 </body>
 </html>
