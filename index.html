@@ -92,6 +92,12 @@ h1,h2{margin:0}
 .mchoice .ic{font-size:40px}
 .mchoice.mdone{pointer-events:none}
 .mchoice.shk{animation:wiggle .45s}
+.spslots,.sptiles{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:12px 0}
+.sps{width:52px;height:62px;border:4px solid var(--c);border-radius:14px;font-size:36px;font-weight:bold;background:#fff}
+.sps.ok{background:#b9f6d4;border-color:var(--ok)}.sps.bad{background:#fff4d6;border-color:#f6b73c;animation:wiggle .45s}
+.spt{width:56px;height:64px;border-radius:16px;font-size:36px;font-weight:bold;background:linear-gradient(180deg,#fff,#eef3ff);border:4px solid var(--c);box-shadow:0 5px 0 rgba(0,0,0,.14)}.spt:disabled{opacity:.2;box-shadow:none}
+@media(max-width:640px){.sps{width:32px;height:44px;font-size:24px}.spt{width:40px;height:48px;font-size:26px}.toggle button{font-size:19px;padding:0 8px}}
+.extab td{font-size:22px;padding:6px 10px}
 .mlines{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:visible}
 .choice .ic{font-size:44px}
 .dot{display:inline-block}
@@ -621,23 +627,26 @@ function stopSpeech(){try{if(canSpeak())speechSynthesis.cancel()}catch(e){}}
 
 function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
  app().innerHTML=`<div class="hello"><div class="mascot">🦉</div><div><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('اختر لعبتك وجمّع النجوم والأوسمة','Pick a game and collect stars and badges')}</p></div></div>
- <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)+(s.id==='science'?subjStars('body')+subjStars('mats'):0)} / ${s.id==='science'?36:12}</span></div></button>`).join('')}</div>
+ <div class="grid">${SUBJ.map(s=>`<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="g" style="opacity:.8;font-size:17px">${tx(s.sub)}</div><div class="pr">⭐ <span class="ltr">${subjStars(s.id)+(s.id==='science'?subjStars('body')+subjStars('mats')+subjStars('mspell')+subjStars('mfun'):0)} / ${s.id==='science'?60:12}</span></div></button>`).join('')}</div>
  <button class="card" data-act="funhub" style="--c:#1fb5a8;--c2:#0d7f87;margin-top:18px;width:100%;min-height:140px;flex-direction:row;align-items:center;gap:18px"><div class="big">🌈</div><div><h3>${L('وقت اللعب الهادي','Calm play time')}</h3><div class="g">${L('ذاكرة الكروت والتلوين — للتسلية فقط!','Memory cards & colouring — just for fun!')}</div></div></button>
  <div class="note">${L('يُحفظ تقدّم عمّار تلقائيًّا على هذا الجهاز','Ammar’s progress is saved automatically on this device')}</div>`}
 
 function renderLevels(id){const s=ALLS.find(x=>x.id===id);S={screen:'levels',subj:id};stopSpeech();setTheme(s);renderTop();
  const rng=id==='quran'?`<div class="toggle"><button data-act="rng" data-v="duha" class="${state.quranRange==='duha'?'on':''}">${L('من الضحى إلى الناس','Ad-Duha → An-Nas')}</button><button data-act="rng" data-v="ala" class="${state.quranRange==='ala'?'on':''}">${L('من الأعلى إلى الناس','Al-A’la → An-Nas')}</button></div>`:'';
- const tog=(id==='science'||id==='body'||id==='mats')?`<div class="toggle"><button data-act="subj" data-id="science" class="${id==='science'?'on':''}">🔬 ${L('مختبر العلوم','Science Lab')}</button><button data-act="subj" data-id="body" class="${id==='body'?'on':''}">🧒 ${L('جسم الإنسان','Human Body')}</button><button data-act="subj" data-id="mats" class="${id==='mats'?'on':''}">🧱 ${L('مراجعة المواد','Materials')}</button></div>`:'';
+ const TOGS=[['science','🔬',L('مختبر العلوم','Science Lab')],['body','🧒',L('جسم الإنسان','Human Body')],['mats','🧱',L('مراجعة المواد','Materials')],['mspell','✍️',L('تهجئة','Spelling')],['mfun','🎲',L('ألعاب','Games')]];
+ const tog=TOGS.some(x=>x[0]===id)?`<div class="toggle">${TOGS.map(x=>`<button data-act="subj" data-id="${x[0]}" class="${id===x[0]?'on':''}">${x[1]} ${x[2]}</button>`).join('')}</div>`:'';
  app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>${s.icon} ${tx(s.game)}</h2></div>${rng}${tog}
  <div class="lvgrid">${[1,2,3,4].map(l=>{const p=getP(id,l);return `<button class="lv" data-act="lvl" data-l="${l}"><div class="n">${LVN[l-1].icon}</div><div style="flex:1"><h3>${L('المستوى','Level')} ${l} · ${tx(LVN[l-1])}</h3><p>${tx(LVD[id][l-1])}</p>${starsHTML(p.stars)}</div><div class="badge">${p.stars>=3?(l===4?'🏆':'🏅'):''}</div></button>`}).join('')}</div>
+${id==='mats'?`<button class="btn pri" data-act="exam" style="margin-top:14px;width:100%">📝 ${L('وضع الامتحان (٤٠ درجة · بالوقت)','Exam mode (40 marks · timed)')}</button>`:''}
  <div class="note">${L('كل المستويات مفتوحة — الأسئلة تتغيّر في كل مرّة 🎲','All levels are open — questions change every time 🎲')}</div>`}
 
 function startRound(subj,lvl){const sub=ALLS.find(x=>x.id===subj);setTheme(sub);S={screen:'play',subj,lvl,qs:buildRound(subj,lvl),i:0,score:0,lock:false};renderPlay()}
 function dotsHTML(){return `<div class="dots">${S.qs.map((q,i)=>`<i class="${i<S.i?'done':i===S.i?'cur':''}"></i>`).join('')}</div>`}
 function listenHTML(q){if(!q.speak)return '';return `<div class="rowc"><button class="listen" data-act="listen">🔊 ${L('استمع','Listen')}</button>${!canSpeak()&&q.fallback?`<span class="fb">${L('الصوت غير متاح — الكلمة:','Sound not available — it says:')} ${q.fallback}</span>`:''}</div>`}
 function renderPlay(){const q=S.qs[S.i];S.lock=false;S.tries=0;renderTop();
- const head=`<div class="playtop"><button class="btn mini" data-act="back">✕</button>${dotsHTML()}<div class="pill" style="min-height:56px;font-size:22px">⭐ ${S.score}</div></div>`;
+ const head=`<div class="playtop"><button class="btn mini" data-act="back">✕</button>${dotsHTML()}${S.exam?`<div class="pill" id="ext" style="min-height:56px;font-size:20px">⏱ ${fmtT()}</div>`:`<div class="pill" style="min-height:56px;font-size:22px">⭐ ${S.score}</div>`}</div>`;
  if(q.kind==='tap'){app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div>${listenHTML(q)}<div class="bodywrap">${bodySVG()}</div></div>`;const sv=document.querySelector('.bodysvg');sv.addEventListener('click',e=>{const t=e.target.closest('[data-part]');if(t){ac();tapBody(t.dataset.part)}});return}
+ if(q.kind==='spell'){const cs=q.word.split('');let tl=shuffle(cs.map((c,i)=>({c})));if(cs.length>1){let g=0;while(g++<20&&tl.map(x=>x.c).join('')===q.word)tl=shuffle(tl)}S.sp={slots:Array(cs.length).fill(-1),tiles:tl};app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="visual">${q.visual}</div>${listenHTML(q)}<div class="spslots" id="spslots"></div><div class="sptiles" id="sptiles"></div><div class="rowc"><button class="btn mini" data-act="sbk">⌫ ${L('امسح حرفًا','Delete')}</button><button class="btn mini" data-act="sclr">↺ ${L('من جديد','Clear')}</button></div></div>`;drawSpell();if(q.speak&&canSpeak())setTimeout(()=>{if(S.qs&&S.qs[S.i]===q&&S.screen==='play')speak(q.speak.t,q.speak.l,q.speak.r)},500);return}
  if(q.kind==='match'){const ord=shuffle(q.pairs.map((_,i)=>i));S.m={sel:null,done:new Set()};app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="mwrap" id="mw"><svg class="mlines" id="mlines"></svg><div class="mcol">${q.pairs.map((p,i)=>`<button class="choice mchoice" data-act="ml" data-i="${i}">${p.l}</button>`).join('')}</div><div class="mcol">${ord.map(i=>`<button class="choice mchoice" data-act="mr" data-i="${i}">${q.pairs[i].r}</button>`).join('')}</div></div><div class="note">${L('اضغط على شيء ثم على ما يناسبه 👆','Tap an object, then tap the word that matches 👆')}</div></div>`;return}
  if(q.kind==='multi'){S.sel=new Set();app().innerHTML=head+`<div class="qcard"><div class="title">${tx(q.title)}</div><div class="visual">${hh(q.visual)||''}</div>${listenHTML(q)}<div class="choices" style="--cols:2">${q.choices.map((c,i)=>`<button class="choice" data-act="tk" data-i="${i}">${hh(c.h)}</button>`).join('')}</div><button class="btn pri tkgo" id="tkgo" data-act="tkgo" disabled>✔ ${L('تأكيد','Check')}</button></div>`;return}
  if(q.kind==='order'){S.ord={placed:0,mis:0,pool:shuffle(q.items)};if(q.items.length>1){let g=0;while(g++<20&&S.ord.pool.every((x,i)=>x===q.items[i]))S.ord.pool=shuffle(q.items)}
@@ -652,12 +661,13 @@ function toast(msg,soft){const d=document.createElement('div');d.className='toas
 const praise=()=>toast(tx(pick(PRAISE)));
 const encourage=()=>toast(tx(pick(TRYAGAIN)),true);
 function answer(i){if(S.lock)return;const q=S.qs[S.i],c=q.choices[i],el=document.querySelector(`.choice[data-i="${i}"]`);
+ if(S.exam){S.lock=true;el.classList.add('sel');SFX.tap();examRec(q,c.ok?(q.max||1):0);setTimeout(nextQ,400);return}
  if(c.ok){S.lock=true;el.classList.add('right');SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
  else{S.tries++;if(q.rev){(S.wr=S.wr||new Map()).set(q.key,q.rev)}el.classList.add('wrong');SFX.boing();encourage();if(S.tries>=2){const k=q.choices.findIndex(x=>x.ok);const g=document.querySelector(`.choice[data-i="${k}"]`);g&&g.classList.add('glow')}}}
 function pickVerse(n){if(S.lock)return;const q=S.qs[S.i],o=S.ord,exp=q.items[o.placed];
  if(exp.n===n){SFX.place();o.placed++;if(o.placed===q.items.length){S.lock=true;renderOrder();if(!o.mis)S.score++;SFX.ok();praise();setTimeout(nextQ,1700)}else renderOrder()}
  else{o.mis++;SFX.boing();encourage();const el=document.querySelector(`.vcard[data-n="${n}"]`);if(el){el.classList.add('wrong');setTimeout(()=>{const e2=document.querySelector(`.vcard[data-n="${exp.n}"]`);if(o.mis>=2&&e2)e2.classList.add('glow')},50)}}}
-function nextQ(){if(S.screen!=='play')return;S.i++;S.i>=S.qs.length?renderResult():renderPlay()}
+function nextQ(){if(S.screen!=='play')return;S.i++;S.i>=S.qs.length?(S.exam?renderExamResult():renderResult()):renderPlay()}
 
 function confetti(){const em=['⭐','🎉','🌟','✨','🎈','🍬','💫'];for(let i=0;i<46;i++){const d=document.createElement('div');d.className='conf';d.textContent=pick(em);d.style.left=rnd(0,98)+'%';d.style.animationDuration=(2+Math.random()*2.5)+'s';d.style.animationDelay=(Math.random()*.8)+'s';document.body.appendChild(d);setTimeout(()=>d.remove(),5200)}}
 const MPAL=["#e8590c","#1c7ed6","#2f9e44","#ae3ec9"];
@@ -667,11 +677,11 @@ function mClick(side,i,btn){const q=S.qs[S.i],m=S.m;if(!m||S.lock||m.done.has(i)
  if(li===ri){m.done.add(li);const c=MPAL[li%MPAL.length];[lb,rb].forEach(b=>{b.classList.add('mdone');b.style.borderColor=c;b.style.background=c+'26'});
   const w=$('#mw').getBoundingClientRect(),a=lb.getBoundingClientRect(),z=rb.getBoundingClientRect(),ln=document.createElementNS('http://www.w3.org/2000/svg','line');
   ln.setAttribute('x1',a.right-w.left);ln.setAttribute('y1',a.top+a.height/2-w.top);ln.setAttribute('x2',z.left-w.left);ln.setAttribute('y2',z.top+z.height/2-w.top);ln.setAttribute('stroke',c);ln.setAttribute('stroke-width','6');ln.setAttribute('stroke-linecap','round');$('#mlines').appendChild(ln);
-  SFX.ok();if(m.done.size===q.pairs.length){S.lock=true;if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}}
- else{S.tries++;const p=q.pairs[li];if(p.rev)(S.wr=S.wr||new Map()).set(q.key+p.id,p.rev);SFX.boing();encourage();[lb,rb].forEach(b=>{b.classList.add('shk');setTimeout(()=>b.classList.remove('shk'),500)})}}
+  SFX.ok();if(m.done.size===q.pairs.length){S.lock=true;if(S.exam){examRec(q,q.pairs.length-(m.bad?m.bad.size:0));setTimeout(nextQ,500)}else{if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}}}
+ else{S.tries++;if(S.exam)(m.bad=m.bad||new Set()).add(li);const p=q.pairs[li];if(p.rev)(S.wr=S.wr||new Map()).set(q.key+p.id,p.rev);SFX.boing();encourage();[lb,rb].forEach(b=>{b.classList.add('shk');setTimeout(()=>b.classList.remove('shk'),500)})}}
 function revHTML(){if(!S.wr||!S.wr.size)return'';S.wrl=[...S.wr.values()];
  return `<div class="qcard" style="margin:14px 0"><div class="title">📝 ${L('كلمات للمراجعة','Words to review')}</div>${S.wrl.map((r,i)=>`<div class="rowc" style="gap:10px;margin:6px 0"><button class="listen" data-act="rvsay" data-i="${i}">🔊</button><div class="ltr" style="flex:1;font-size:24px;text-align:start">${r.e} <b>${r.n}</b> → ${r.a.split(' + ').map(x=>MAR[x]?x+' ('+MAR[x]+')':x).join(' + ')}</div></div>`).join('')}</div>`}
-function renderResult(again){const n=S.qs.length,r=S.score/n,stars=r>=.8?3:r>=.5?2:1;if(!again){setP(S.subj,S.lvl,stars);SFX.win();confetti()}S.screen='result';renderTop();stopSpeech();
+function renderResult(again){if(S.exam)return renderExamResult(again);const n=S.qs.length,r=S.score/n,stars=r>=.8?3:r>=.5?2:1;if(!again){setP(S.subj,S.lvl,stars);SFX.win();confetti()}S.screen='result';renderTop();stopSpeech();
  const sub=ALLS.find(x=>x.id===S.subj),last=S.lvl>=4;const msg=stars===3?L('مذهل! أنت بطل حقيقي 🏆','Amazing! You are a real champion 🏆'):stars===2?L('عمل رائع! تقترب من النجمة الثالثة ⭐','Great work! The third star is near ⭐'):L('أحسنت! جرّب مرّة أخرى لتجمع نجومًا أكثر 💪','Well done! Try again to collect more stars 💪');
  app().innerHTML=`<div class="result"><div style="font-size:80px">${stars===3?'🏆':'🎉'}</div><h2>${L('انتهت الجولة!','Round complete!')}</h2><div class="stars">${[0,1,2].map(i=>`<span style="animation-delay:${i*.25}s;${i<stars?'':'filter:grayscale(1);opacity:.25'}">⭐</span>`).join('')}</div>
  <p>${msg}<br><b>${S.score} / ${n}</b> ${L('إجابات صحيحة من المحاولة الأولى','correct on the first try')}</p>
@@ -704,9 +714,15 @@ document.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(
   case 'back':stopSpeech();renderLevels(S.subj);break;
   case 'ch':answer(+t.dataset.i);break;
   case 'rvsay':{const r=S.wrl[+t.dataset.i];speak(r.n+'. '+r.a.replace(' + ',', '),'en-GB',.85);break}
+  case 'exam':SFX.tap();startExam();break
+  case 'st':{if(S.lock)break;const k=+t.dataset.i,sp=S.sp,sl=sp.slots.indexOf(-1);if(sl<0||sp.slots.includes(k))break;sp.slots[sl]=k;SFX.tap();drawSpell();if(!sp.slots.includes(-1))spellCheck();break}
+  case 'ss':{if(S.lock)break;S.sp.slots[+t.dataset.i]=-1;drawSpell();break}
+  case 'sbk':{if(S.lock)break;const sl=S.sp.slots;for(let k=sl.length-1;k>=0;k--){if(sl[k]>=0){sl[k]=-1;break}}drawSpell();break}
+  case 'sclr':{if(S.lock)break;S.sp.slots.fill(-1);drawSpell();break}
   case 'ml':case 'mr':mClick(a==='ml'?'l':'r',+t.dataset.i,t);break
   case 'tk':{if(S.lock)break;const i=+t.dataset.i,q=S.qs[S.i];if(S.sel.has(i)){S.sel.delete(i);t.classList.remove('sel')}else if(S.sel.size<2){S.sel.add(i);t.classList.add('sel')}SFX.tap();const b=$('#tkgo');if(b)b.disabled=S.sel.size!==2;break}
   case 'tkgo':{if(S.lock||S.sel.size!==2)break;const q=S.qs[S.i],bad=[...S.sel].filter(i=>!q.choices[i].ok);
+   if(S.exam){S.lock=true;examRec(q,2-bad.length);SFX.tap();setTimeout(nextQ,400);break}
    if(!bad.length){S.lock=true;S.sel.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('right')});SFX.ok();if(!S.tries)S.score++;praise();setTimeout(nextQ,1300)}
    else{S.tries++;if(q.rev){(S.wr=S.wr||new Map()).set(q.key,q.rev)}SFX.boing();encourage();bad.forEach(i=>{const e=document.querySelector(`.choice[data-i="${i}"]`);e.classList.remove('sel');e.classList.add('wrong');S.sel.delete(i)});$('#tkgo').disabled=true;
     if(S.tries>=2)q.choices.forEach((c,i)=>{if(c.ok){const e=document.querySelector(`.choice[data-i="${i}"]`);e&&e.classList.add('glow')}})}break}
@@ -738,7 +754,9 @@ function rerender(){
 /* ===================== SCIENCE: HUMAN BODY ===================== */
 const BODYS={id:'body',icon:'🧒',c:'#2ec27e',c2:'#14935a',name:{ar:'جسم الإنسان',en:'Human Body'},game:{ar:'تعرّف على جسمك',en:'Know Your Body'}};
 const MATREV={id:'mats',icon:'🧱',c:'#2ec27e',c2:'#14935a',name:{ar:'مراجعة المواد',en:'Materials Revision'},game:{ar:'مراجعة المواد وخصائصها',en:'Materials & Properties'}};
-const ALLS=[...SUBJ,BODYS,MATREV];
+const MSPELL={id:'mspell',icon:'✍️',c:'#2ec27e',c2:'#14935a',name:{ar:'تهجئة المواد',en:'Materials Spelling'},game:{ar:'تهجئة كلمات المواد',en:'Spell the Words'}};
+const MFUN={id:'mfun',icon:'🎲',c:'#2ec27e',c2:'#14935a',name:{ar:'ألعاب المواد',en:'Materials Games'},game:{ar:'ألعاب المواد',en:'Materials Games'}};
+const ALLS=[...SUBJ,BODYS,MATREV,MSPELL,MFUN];
 LVD.body=[{ar:'اضغط على أجزاء الجسم',en:'Tap the body parts'},{ar:'الحواس الخمس وأجزاء أخرى',en:'The five senses & more parts'},{ar:'ماذا نفعل بكل جزء؟',en:'What do we use each part for?'},{ar:'تحدّي الجسم: أعداد وأعضاء وحواس',en:'Body challenge: counts, organs, senses'}];
 
 /* ===================== SCIENCE: MATERIALS REVISION ===================== */
@@ -765,7 +783,55 @@ function matOM(){const [w,k]=pick(OMW);return{rev:{e:'',n:w,a:k},key:'mo:'+w,tit
  if(Math.random()<.5)pairs=sample(MPROP,4).map(([e,n,p])=>({id:n,l:`<span class="ic">${e}</span><span dir="ltr">${n}</span>`,r:wd(p),rev:{e,n,a:p}}));
  else pairs=sample(Object.keys(MOBJ),4).map(m=>{const [e,n]=pick(MOBJ[m]);return{id:m,l:`<span class="ic">${e}</span><span dir="ltr">${n}</span>`,r:wd(m),rev:{e,n,a:m}}});
  return{kind:'match',key:'mm:'+pairs.map(p=>p.id).sort().join(),title:{ar:'وصّل كل شيء بما يناسبه',en:'Match each object with its pair'},pairs}}
+
+/* ---- spelling ---- */
+const SPW=[['wood','🪵','خشب',1],['glass',SVU,'زجاج',1],['metal','🔩','معدن',1],['spoon','🥄','معلقة',1],['dress','👗','فستان',1],['books','📚','كتب',1],['ring','💍','خاتم',1],['clay','🟤','طين',1],['shell','🐚','صدفة',1],['table',SVT,'طاولة',1],
+ ['plastic','🛍️','بلاستيك',2],['rubber','🎈','مطاط',2],['fabric','👚','قماش',2],['leather','👜','جلد',2],['paper','📄','ورق',2],['bucket','🪣','دلو',2],['sponge','🧽','إسفنجة',2],['tumbler',SVU,'كوب',2],['handbag','👜','حقيبة يد',2],['balloons','🎈','بالونات',2],['pineapple','🍍','أناناس',2],['raincoat','🧥','معطف مطر',2],
+ ['hard','','صلب',3],['soft','','ناعم',3],['shiny','💍','لامع',3],['rough','🐚','خشن',3],['light','','خفيف',3],['clear','','شفاف',3],['bumpy','🍍','غير أملس',3],['flexible','','مرن',3],
+ ['waterproof','🧥','مانع للماء',4],['transparent','🐟','شفّاف',4],['absorbent','🧽','ماصّ',4],['aluminum','🌯','ألومنيوم',4],['ceramic','🍽️','سيراميك',4],['tissue','🧻','مناديل ورقية',4],['cotton','☁️','قطن',4]];
+function spell(l){const w=pick(SPW.filter(x=>x[3]===l));return{kind:'spell',key:'sp:'+w[0],title:{ar:'رتّب الحروف لتكوّن الكلمة',en:'Put the letters in order to spell the word'},word:w[0],visual:`<div class="em">${w[1]||'✏️'}</div><div class="vname arab">${w[2]}</div>`,speak:SP(w[0]),fallback:'',rev:{e:w[1],n:w[0],a:w[2]}}}
+function drawSpell(){const sp=S.sp;$('#spslots').innerHTML=sp.slots.map((k,i)=>`<button class="sps" data-act="ss" data-i="${i}" dir="ltr">${k>=0?sp.tiles[k].c:''}</button>`).join('');$('#sptiles').innerHTML=sp.tiles.map((t,i)=>`<button class="spt" data-act="st" data-i="${i}" dir="ltr" ${sp.slots.includes(i)?'disabled':''}>${t.c}</button>`).join('')}
+function spellCheck(){const q=S.qs[S.i],w=S.sp.slots.map(k=>S.sp.tiles[k].c).join('');S.lock=true;
+ if(w===q.word){document.querySelectorAll('.sps').forEach(e=>e.classList.add('ok'));SFX.ok();if(!S.tries)S.score++;praise();speak(q.word,'en-GB',.85);setTimeout(nextQ,1700)}
+ else{S.tries++;(S.wr=S.wr||new Map()).set(q.key,q.rev);SFX.boing();encourage();document.querySelectorAll('.sps').forEach(e=>e.classList.add('bad'));setTimeout(()=>{if(S.screen!=='play')return;S.sp.slots.fill(-1);S.lock=false;drawSpell();if(S.tries>=2)toast(q.word,true)},800)}}
+/* ---- games ---- */
+const FACTS=[['A sponge','absorbent','waterproof'],['A raincoat','waterproof','absorbent'],['A cotton ball','absorbent','waterproof'],['Tissue paper','absorbent','waterproof'],['A plastic bag','waterproof','absorbent'],['A rubber glove','waterproof','absorbent'],['Clay','absorbent','waterproof'],['Wood','hard','soft'],['Metal','shiny','soft'],['A ring','shiny','rough'],['A shell','rough','transparent'],['A fish bowl','transparent','absorbent'],['A pineapple','bumpy','shiny'],['Plastic','waterproof','absorbent']];
+function tf(){const [sb,t,f]=pick(FACTS),isT=Math.random()<.5,st=`${sb} is ${isT?t:f}.`;return{rev:{e:'',n:sb.replace(/^An? /,''),a:t},key:'tf:'+st,title:{ar:'صح أم خطأ؟',en:'True or false?'},visual:`<div class="word ltr" style="font-size:38px">${st}</div>`,speak:SP(st,.8),auto:1,fallback:'',choices:[ch(()=>`<span dir="ltr">✔ True</span><small dir="rtl" class="arab">صح</small>`,isT),ch(()=>`<span dir="ltr">✘ False</span><small dir="rtl" class="arab">خطأ</small>`,!isT)],cols:2}}
+const allPics=()=>[...MSORT.map(x=>[x[0],x[1]]),...MPROP.map(x=>[x[0],x[1]]),...Object.values(MOBJ).flat()];
+const picN=(e,n,ok)=>ch(()=>`<span class="ic">${e}</span><span dir="ltr" style="font-size:.7em">${n}</span>`,ok);
+const RIDM=[['I am hard and shiny.','metal'],['I am hard and rough.','wood'],['I am light and waterproof.','plastic'],['I am soft and absorbent.','fabric'],['I am flexible and waterproof.','rubber']];
+const RIDO=[['I am waterproof. I keep you dry in the rain.','raincoat','🧥'],['I am absorbent. I clean up spills.','sponge','🧽'],['I am shiny. I go on a finger.','ring','💍'],['I am waterproof. I hold your shopping.','plastic bag','🛍️'],['I am absorbent. You blow your nose with me.','tissue paper','🧻'],['I am absorbent. I am soft and white.','cotton ball','☁️']];
+function riddle(){if(Math.random()<.5){const [t,m]=pick(RIDM);return{rev:{e:'',n:m,a:m},key:'rm:'+m+t,title:{ar:'أنا مين؟ ما الخامة؟',en:'What material am I?'},visual:`<div class="word ltr" style="font-size:36px">${t}</div><div class="em">❓</div>`,speak:SP(t,.8),auto:1,fallback:'',choices:shuffle([m,...sample(MAT8.filter(x=>x!==m),3)]).map(x=>ch(()=>wd(x),x===m)),cols:2}}
+ const [t,n,e]=pick(RIDO);const ds=sample(MSORT.filter(x=>x[1]!==n),3);return{rev:{e,n,a:n},key:'ro:'+n,title:{ar:'أنا مين؟ ما الشيء؟',en:'What object am I?'},visual:`<div class="word ltr" style="font-size:34px">${t}</div><div class="em">❓</div>`,speak:SP(t,.8),auto:1,fallback:'',choices:shuffle([[e,n,1],...ds.map(x=>[x[0],x[1],0])]).map(x=>picN(x[0],x[1],x[2])),cols:2}}
+function listenPick(){if(Math.random()<.5){const all=allPics(),[e,n]=pick(all),ds=sample(all.filter(x=>x[1]!==n),3);return{rev:{e,n,a:n},key:'lp:'+n,title:{ar:'اسمع الكلمة واختر الصورة الصحيحة',en:'Listen and pick the right picture'},visual:'<div class="em">👂</div>',speak:SP(n),auto:1,fallback:'',choices:shuffle([[e,n,1],...ds.map(x=>[x[0],x[1],0])]).map(x=>ch(()=>`<span class="ic">${x[0]}</span>`,x[2])),cols:2}}
+ const p=pick(['absorbent','waterproof']),ok=pick(MSORT.filter(x=>x[2]===p)),ds=sample(MSORT.filter(x=>x[2]!==p),3);return{rev:{e:ok[0],n:ok[1],a:p},key:'lq:'+p+ok[1],title:{ar:'اسمع الكلمة واختر الشيء المناسب',en:'Listen and pick the matching object'},visual:'<div class="em">👂</div>',speak:SP(p),auto:1,fallback:'',choices:shuffle([ok,...ds]).map(x=>picN(x[0],x[1],x===ok)),cols:2}}
+function odd(){const p=pick(['absorbent','waterproof']),o=p==='absorbent'?'waterproof':'absorbent',same=sample(MSORT.filter(x=>x[2]===p),3),ex=pick(MSORT.filter(x=>x[2]===o));return{rev:{e:ex[0],n:ex[1],a:o},key:'od:'+p+ex[1],title:{ar:`أيّهم ليس ${MAR[p]}؟`,en:`Which one is NOT ${p}?`},visual:'<div class="em">🧩</div>',speak:SP('Which one is not '+p),fallback:'',choices:shuffle([ex,...same]).map(x=>picN(x[0],x[1],x===ex)),cols:2}}
+/* ---- exam mode ---- */
+const fmtT=()=>{const t=S.tFin!==undefined?S.tFin:Math.floor((Date.now()-S.t0)/1000);return Math.floor(t/60)+':'+String(t%60).padStart(2,'0')};
+function examRec(q,pts){S.ex.pts[q.part]=(S.ex.pts[q.part]||0)+pts;if(pts<q.max&&q.rev&&q.kind!=='match')S.wr.set(q.key,q.rev)}
+function startExam(){setTheme(MATREV);const qs=[];const P=(part,max,q)=>{q.part=part;q.max=max;q.key='x'+part+qs.length+q.key;qs.push(q)};
+ const lab=(e,n,m,pool)=>({rev:{e,n,a:m},key:'l'+n,title:{ar:'ما الخامة المصنوع منها هذا الشيء؟',en:'What material is it made of?'},visual:mvis(e,n),speak:SP(n),fallback:'',choices:shuffle([m,...sample(pool.filter(x=>x!==m),3)]).map(x=>ch(()=>wd(x),x===m)),cols:2});
+ [['👜','handbag','leather'],[SVT,'table','wood'],['🥄','spoon','metal'],['👗','dress','fabric'],['🪣','bucket','plastic'],['🎈','balloons','rubber'],['📚','books','paper'],[SVU,'tumbler','glass']].forEach(([e,n,m])=>P('A',1,lab(e,n,m,MAT8)));
+ [['🥄','spoon','metal'],[SVU,'tumbler','glass'],[SVB,'toy block','wood'],['🦆','toy duck','plastic']].forEach(([e,n,m])=>P('B',1,lab(e,n,m,MAT4)));
+ ['wood','spoon','plastic','toy duck','tumbler','metal'].forEach(w=>{const k=OMW.find(x=>x[0]===w)[1];P('C',1,{rev:{e:'',n:w,a:k},key:'o'+w,title:{ar:'هل هذه الكلمة شيء (object) أم خامة (material)؟',en:'Is it an object or a material?'},visual:`<div class="word ltr">${w}</div>`,speak:SP(w),fallback:'',choices:[ch(()=>`<span dir="ltr">object</span><small dir="rtl" class="arab">شيء</small>`,k==='object'),ch(()=>`<span dir="ltr">material</span><small dir="rtl" class="arab">خامة</small>`,k==='material')],cols:2})});
+ ['wood','metal','plastic'].forEach(m=>{const [ok,no]=TICK[m][0].concat?[TICK[m][0],TICK[m][1]]:TICK[m];P('D',2,{rev:{e:'',n:m,a:ok.join(' + ')},key:'t'+m,title:{ar:`اختر الكلمتين اللتين تصفان ${MAR[m]} (${m})`,en:`Tick the TWO words that best describe ${m}`},visual:`<div class="word ltr">${m}</div>`,kind:'multi',speak:SP(m),fallback:'',choices:shuffle([...ok,...no]).map(x=>ch(()=>wd(x),ok.includes(x))),cols:2})});
+ P('E',6,{kind:'match',key:'mm',title:{ar:'وصّل كل شيء بخاصيته',en:'Pair each object with its property'},pairs:shuffle(MPROP).map(([e,n,p])=>({id:n,l:`<span class="ic">${e}</span><span dir="ltr">${n}</span>`,r:wd(p),rev:{e,n,a:p}}))});
+ shuffle(MSORT).forEach(([e,n,p])=>P('F',1,{rev:{e,n,a:p},key:'s'+n,title:{ar:'ضع الشيء في العمود الصحيح: ماصّ أم مانع للماء؟',en:'Sort it: absorbent or waterproof?'},visual:mvis(e,n),speak:SP(n),fallback:'',choices:shuffle(['absorbent','waterproof']).map(x=>ch(()=>wd(x),x===p)),cols:2}));
+ const ex={pts:{},max:{}};qs.forEach(q=>ex.max[q.part]=(ex.max[q.part]||0)+q.max);
+ S={screen:'play',subj:'mats',lvl:5,exam:true,qs,i:0,score:0,lock:false,ex,t0:Date.now(),wr:new Map()};renderPlay();
+ const iv=setInterval(()=>{if(!S.exam||S.screen!=='play'){clearInterval(iv);return}const e=$('#ext');if(e)e.textContent='⏱ '+fmtT()},1000)}
+function renderExamResult(again){if(!again){S.tFin=Math.floor((Date.now()-S.t0)/1000);const tot=Object.values(S.ex.pts).reduce((a,b)=>a+b,0);state.examBest=Math.max(state.examBest||0,tot);save();SFX.win();if(tot>=32)confetti()}
+ S.screen='result';renderTop();stopSpeech();const nm={A:L('أ · الخامات','A · Materials'),B:L('ب · شيء وخامة','B · Objects & materials'),C:L('ج · شيء أم خامة','C · Object or material'),D:L('د · الخصائص','D · Properties (tick two)'),E:L('هـ · التوصيل','E · Join'),F:L('و · ماصّ أم مانع للماء','F · Absorbent / waterproof')};
+ const tot=Object.values(S.ex.pts).reduce((a,b)=>a+b,0),max=Object.values(S.ex.max).reduce((a,b)=>a+b,0);
+ const msg=tot>=36?L('ممتاز! جاهز للامتحان 🏆','Excellent! Ready for the exam 🏆'):tot>=28?L('جيد جدًّا! راجع الكلمات الأخيرة 👍','Very good! Review the words below 👍'):L('استمرّ في التدريب، ستتحسّن 💪','Keep practising, you will get better 💪');
+ app().innerHTML=`<div class="result"><div style="font-size:70px">${tot>=32?'🏆':'📝'}</div><h2>${L('نتيجة الامتحان','Exam result')}</h2><div style="font-size:54px;font-weight:bold" class="ltr">${tot} / ${max}</div><p>${msg}<br>⏱ <span class="ltr">${fmtT()}</span> · ${L('أفضل درجة','Best')}: <span class="ltr">${state.examBest} / ${max}</span></p>
+ <table class="extab" style="margin:8px auto;border-collapse:collapse">${Object.keys(S.ex.max).map(k=>`<tr><td style="text-align:start">${nm[k]}</td><td class="ltr"><b>${S.ex.pts[k]||0} / ${S.ex.max[k]}</b></td></tr>`).join('')}</table>
+ ${revHTML()}<div class="acts"><button class="btn pri" data-act="exam">🔄 ${L('امتحان جديد','New exam')}</button><button class="btn" data-act="levels">${L('المستويات','Levels')}</button><button class="btn" data-act="home">🏠</button></div></div>`}
 GEN.mats=[null,mats1,()=>pick([mats1b,matTick,matOM])(),()=>pick([matMatch,matMatch,matPair,matSort])(),()=>pick([mats1b,matTick,matTick,matPair,matSort,matOM,matMatch,matMatch,matMatch,matOM])()];
+GEN.mspell=[null,()=>spell(1),()=>spell(2),()=>spell(3),()=>spell(4)];
+GEN.mfun=[null,tf,riddle,()=>pick([listenPick,odd])(),()=>pick([tf,riddle,listenPick,odd])()];
+LVD.mspell=[{ar:'كلمات قصيرة (wood, spoon…)',en:'Short words'},{ar:'كلمات أطول (plastic, handbag…)',en:'Longer words'},{ar:'كلمات الخصائص (shiny, rough…)',en:'Property words'},{ar:'الكلمات الصعبة (waterproof…)',en:'The tricky words'}];
+LVD.mfun=[{ar:'صح أم خطأ؟',en:'True or false?'},{ar:'ألغاز: أنا مين؟',en:'Riddles: What am I?'},{ar:'اسمع واختر + الغريب',en:'Listen & pick + odd one out'},{ar:'تحدٍّ مخلوط',en:'Mixed challenge'}];
 /* emoji, Arabic (nominative), English, Arabic (after "على") */
 const BP={head:['🧑','الرأس','Head','الرأس'],hair:['💇','الشعر','Hair','الشعر'],eyes:['👁️','العينان','Eyes','العينين'],ears:['👂','الأذنان','Ears','الأذنين'],nose:['👃','الأنف','Nose','الأنف'],mouth:['👄','الفم','Mouth','الفم'],
  neck:['','الرقبة','Neck','الرقبة'],chest:['','الصدر','Chest','الصدر'],tummy:['','البطن','Tummy','البطن'],arms:['💪','الذراعان','Arms','الذراعين'],hands:['✋','اليدان','Hands','اليدين'],
