@@ -862,10 +862,11 @@ document.addEventListener('click',e=>{unlockAudio();const t=e.target.closest('[d
   case 'memmenu':SFX.tap();renderMemMenu();break;
   case 'mstart':SFX.tap();startMem(+t.dataset.n);break;
   case 'mflip':flipMem(+t.dataset.i);break;
-  case 'color':SFX.tap();renderColor();break;
+  case 'color':SFX.tap();renderColMenu();break;
   case 'cpick':COL.color=t.dataset.c;document.querySelectorAll('.sw').forEach(x=>x.classList.toggle('on',x===t));SFX.tap();break;
-  case 'cnext':COL.pic=(COL.pic+1)%PICS.length;COL.fills={};SFX.tap();renderColor();break;
-  case 'cclear':COL.fills={};renderColor();break;
+  case 'colmenu':SFX.tap();renderColMenu();break;
+  case 'cpic':COL.pic=+t.dataset.i;SFX.tap();renderColor();break;
+  case 'cclear':COL.all[COL.pic]={};renderColor();break;
   case 'subj':SFX.tap();renderLevels(t.dataset.id);break;
   case 'lvl':SFX.tap();startRound(S.subj,+t.dataset.l);break;
   case 'levels':renderLevels(S.subj);break;
@@ -909,7 +910,8 @@ function rerender(){
  else if(S.screen==='heroes')renderHeroes();
  else if(S.screen==='memmenu')renderMemMenu();
  else if(S.screen==='mem')renderMem();
- else if(S.screen==='color')renderColor()}
+ else if(S.screen==='color')renderColor()
+ else if(S.screen==='colmenu')renderColMenu()}
 /* ===================== SCIENCE: HUMAN BODY ===================== */
 const BODYS={id:'body',icon:'🧒',c:'#2ec27e',c2:'#14935a',name:{ar:'جسم الإنسان',en:'Human Body'},game:{ar:'تعرّف على جسمك',en:'Know Your Body'}};
 const MATREV={id:'mats',icon:'🧱',c:'#2ec27e',c2:'#14935a',name:{ar:'مراجعة المواد',en:'Materials Revision'},game:{ar:'مراجعة المواد وخصائصها',en:'Materials & Properties'}};
@@ -1071,7 +1073,7 @@ function breakModal(){closeModal();const m=document.createElement('div');m.class
 function renderFunHub(){S={screen:'funhub'};stopSpeech();setTheme({c:'#1fb5a8',c2:'#0d7f87'});renderTop();
  app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🌈 ${L('وقت اللعب الهادي','Calm play time')}</h2></div>
  <div class="grid"><button class="card" data-act="memmenu" style="--c:#1fb5a8;--c2:#0d7f87"><div class="big">🃏</div><h3>${L('ذاكرة الكروت','Memory cards')}</h3><div class="g">${L('دوّر على الأزواج المتشابهة','Find the matching pairs')}</div></button>
- <button class="card" data-act="color" style="--c:#ff7ab8;--c2:#d9438a"><div class="big">🎨</div><h3>${L('التلوين','Colouring')}</h3><div class="g">${L('لوّن الصور بألوانك','Colour the pictures your way')}</div></button></div>
+ <button class="card" data-act="color" style="--c:#ff7ab8;--c2:#d9438a"><div class="big">🎨</div><h3>${L('التلوين','Colouring')}</h3><div class="g">${L('لوّن الصور وأبطال عمّار بألوانك','Colour pictures & Ammar’s heroes')}</div><div class="g" style="opacity:.85;font-size:17px">${totalStars()>=COLGATE?'🔓':'🔒 ⭐ <span class="ltr">'+totalStars()+' / '+COLGATE+'</span>'}</div></button></div>
  <div class="note">${L('ألعاب للتسلية فقط، ولا تحتسب نجومًا. وسنذكّره بالراحة كل فترة 👀','Just for fun — no stars. We will remind him to rest his eyes 👀')}</div>`}
 
 /* ----- memory ----- */
@@ -1098,12 +1100,35 @@ const PICS=[
  {n:{ar:'السيارة',en:'Car'},svg:'<rect class="r" x="0" y="0" width="400" height="210"/><ellipse class="r" cx="90" cy="60" rx="45" ry="20"/><ellipse class="r" cx="300" cy="80" rx="40" ry="18"/><rect class="r" x="0" y="210" width="400" height="90"/><rect class="r" x="70" y="140" width="260" height="60" rx="14"/><polygon class="r" points="130,140 160,95 260,95 290,140"/><polygon class="r" points="145,138 168,105 200,105 200,138"/><polygon class="r" points="210,138 210,105 252,105 272,138"/><circle class="r" cx="130" cy="205" r="32"/><circle class="r" cx="130" cy="205" r="13"/><circle class="r" cx="270" cy="205" r="32"/><circle class="r" cx="270" cy="205" r="13"/>'}
 ];
 const PAL=['#ff8a80','#ffb74d','#fff176','#aed581','#4fc3f7','#7986cb','#ba68c8','#f48fb1','#a1887f','#ffffff'];
-function renderColor(){S={screen:'color'};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();let k=0;
+const COLGATE=3; // stars needed to open the colouring corner
+/* turn a finished hero drawing into a colour-me outline: every coloured shape becomes tappable (class r) */
+function colorize(svg){
+ let t=svg.replace(/^<svg[^>]*>/,'').replace(/<\/svg>$/,'');
+ t=t.replace(/<(rect|circle|ellipse|polygon|path)\b([^>]*?)(\/?)>/g,(m,tag,a,sl)=>{
+  const f=(a.match(/\sfill="([^"]*)"/)||[])[1];
+  if(f==='#0002')return '';
+  if(!f||f==='none')return m;
+  if(/^#(222|333|2b2b2b|555|999|bbb|ccc)$/i.test(f))return m;
+  const r=a.match(/\sr="([\d.]+)"/);if(r&&+r[1]<=3)return m;
+  a=a.replace(/\sfill="[^"]*"/,'').replace(/\sstroke(-width|-linejoin)?="[^"]*"/g,'');
+  return `<${tag} class="r"${a}${sl}>`});
+ t=t.replace(/(<text[^>]*?)fill="#fff"/g,'$1fill="#27304d"');
+ return '<rect class="r" x="0" y="0" width="200" height="200"/><rect class="r" x="0" y="176" width="200" height="24"/>'+t}
+HEROES.forEach((h,i)=>PICS.push({n:{ar:h.ar,en:h.en},vb:'0 0 200 200',hero:i,need:Math.max(h.need,COLGATE),svg:colorize(h.svg)}));
+PICS.forEach(p=>{if(p.need===undefined)p.need=COLGATE});
+COL.all={};
+const picOpen=i=>totalStars()>=PICS[i].need;
+function renderColMenu(){S={screen:'colmenu'};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();const t=totalStars();
+ const head=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🎨 ${L('التلوين','Colouring')}</h2></div>`;
+ if(t<COLGATE){app().innerHTML=head+`<div class="result"><div style="font-size:80px">🔒</div><h2>${L('التلوين مقفل!','Colouring is locked!')}</h2><p>${L(`اجمع ${COLGATE} نجوم من ألعاب المواد لتفتح التلوين`,`Collect ${COLGATE} stars from the subject games to open colouring`)}</p><div style="font-size:48px;font-weight:bold" class="ltr">⭐ ${t} / ${COLGATE}</div><div class="acts"><button class="btn pri" data-act="home">${L('هيّا نلعب ونجمع النجوم','Let’s play and collect stars')} 🚀</button></div></div>`;return}
+ app().innerHTML=head+`<p class="note" style="margin-top:0">${L('اختر صورة لتلوّنها. أبطال عمّار تُفتح بالنجوم!','Pick a picture to colour. Ammar’s heroes open with stars!')} ⭐ <span class="ltr">${t}</span></p>
+ <div class="hgrid">${PICS.map((p,i)=>{const open=t>=p.need;return `<button class="hc ${open?'':'lock'}" ${open?`data-act="cpic" data-i="${i}"`:'disabled'}><div class="hp"><svg viewBox="${p.vb||'0 0 400 300'}" style="pointer-events:none">${p.svg}</svg></div><div class="nm">${open?tx(p.n):'???'}</div><div class="sb">${open?(p.hero!==undefined?'🦸':'🎨'):'🔒 ⭐ <span class="ltr">'+p.need+'</span>'}</div></button>`}).join('')}</div>`}
+function renderColor(){if(!picOpen(COL.pic)){renderColMenu();return}S={screen:'color'};COL.fills=COL.all[COL.pic]=COL.all[COL.pic]||{};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();let k=0;
  const svg=PICS[COL.pic].svg.replace(/<(\w+) class="r"/g,(m,t)=>{const i=k++;return `<${t} class="r" data-k="${i}"${COL.fills[i]?` style="fill:${COL.fills[i]}"`:''}`});
  app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🎨 ${tx(PICS[COL.pic].n)}</h2></div>
- <div class="qcard" style="padding:12px"><svg id="csvg" viewBox="0 0 400 300">${svg}</svg>
+ <div class="qcard" style="padding:12px"><svg id="csvg" viewBox="${PICS[COL.pic].vb||'0 0 400 300'}" style="${PICS[COL.pic].vb?'max-width:480px;margin:0 auto':''}">${svg}</svg>
  <div class="pal">${PAL.map(c=>`<button class="sw ${c===COL.color?'on':''}" data-act="cpick" data-c="${c}" style="background:${c}">${c==='#ffffff'?'🧽':''}</button>`).join('')}</div>
- <div class="acts"><button class="btn sec" data-act="cnext">${L('صورة أخرى','Next picture')} ➜</button><button class="btn" data-act="cclear">🗑️ ${L('امسح الألوان','Clear')}</button></div></div>`;
+ <div class="acts"><button class="btn sec" data-act="colmenu">🖼️ ${L('صور أخرى','More pictures')}</button><button class="btn" data-act="cclear">🗑️ ${L('امسح الألوان','Clear')}</button></div></div>`;
  $('#csvg').addEventListener('click',e=>{const r=e.target.closest('.r');if(!r)return;ac();COL.fills[r.dataset.k]=COL.color;r.style.fill=COL.color;SFX.tap()})}
 
 document.addEventListener('visibilitychange',()=>{if(document.hidden)stopSpeech()});
