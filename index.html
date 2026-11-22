@@ -201,6 +201,7 @@ svg.nl{width:100%;height:auto;display:block}.nlw{width:100%;max-width:480px;marg
 .modal{position:fixed;inset:0;background:rgba(30,40,80,.55);z-index:60;display:flex;align-items:center;justify-content:center;padding:20px}
 .mbox{background:#fff;border-radius:30px;padding:26px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.3)}
 .mbox h3{margin:0 0 8px;font-size:30px}.mbox p{font-size:22px;color:var(--soft)}
+.mbox.pm{text-align:start;max-height:92vh;overflow:auto}.pms{background:#f4f6ff;border-radius:20px;padding:14px;margin:12px 0}.pms b{font-size:21px}.pms p{margin:6px 0 10px;font-size:18px}.pms .acts{display:flex;gap:8px;flex-wrap:wrap}.pms .btn{min-height:52px;font-size:18px;padding:0 14px;flex:1}.pms textarea{width:100%;font:14px/1.4 ui-monospace,Menlo,monospace;direction:ltr;border:3px solid #c9d3f2;border-radius:14px;padding:8px;margin-bottom:10px;-webkit-user-select:text;user-select:text;resize:none}.pmsg{text-align:center;font-size:20px;font-weight:bold;color:var(--ok);margin:6px 0}
 .mbox input{width:140px;min-height:64px;font-size:34px;text-align:center;border-radius:18px;border:4px solid #c9d3f2;margin:8px 0 16px;direction:ltr;-webkit-user-select:text;user-select:text}
 .note{color:var(--soft);font-size:18px;text-align:center;margin-top:20px}
 
@@ -462,6 +463,7 @@ const $=s=>document.querySelector(s);
 const LS_KEY='ammar_hub_v1';
 let state={lang:'ar',sound:true,quranRange:'duha',prog:{}};
 (function load(){try{const r=localStorage.getItem(LS_KEY);if(r){const o=JSON.parse(r);if(o&&typeof o==='object')Object.assign(state,o)}}catch(e){}})();
+try{navigator.storage&&navigator.storage.persist&&navigator.storage.persist()}catch(e){}
 function save(){try{localStorage.setItem(LS_KEY,JSON.stringify(state))}catch(e){}}
 const tx=o=>(o&&typeof o==='object')?o[state.lang]:o;
 const L=(ar,en)=>state.lang==='ar'?ar:en;
@@ -530,7 +532,7 @@ const SUBJ=[
  {id:'arabic',icon:'🚂',c:'#ff9f43',c2:'#e8741a',name:{ar:'اللغة العربية',en:'Arabic'},game:{ar:'قطار الحروف واللغويات',en:'Arabic Train'},sub:{ar:'الصف الأول (مصر والإمارات)',en:'Egypt & UAE Grade 1'}},
  {id:'quran',icon:'🌉',c:'#1fb5a8',c2:'#0d7f87',name:{ar:'القرآن الكريم',en:'Quran'},game:{ar:'جسر الآيات',en:'Verse Bridge'},sub:{ar:'من جزء عمّ',en:'Juz’ Amma'}}
 ];
-const LVN=[{ar:'الأساس',en:'Foundation',icon:'🌱'},{ar:'نبني معًا',en:'Building Up',icon:'🧱'},{ar:'التحدّي',en:'Challenge',icon:'⚡'},{ar:'البطل',en:'Master',icon:'👑'}];
+const LVN=[{ar:'متدرّب',en:'Recruit',icon:'🔰'},{ar:'جندي',en:'Soldier',icon:'🪖'},{ar:'ضابط',en:'Officer',icon:'👮'},{ar:'قائد',en:'Commander',icon:'🎖️'}];
 const LVD={
  math:[{ar:'الأعداد والعدّ',en:'Numbers & counting'},{ar:'العشرات والآحاد',en:'Tens & ones'},{ar:'الجمع حتى ٢٠',en:'Addition within 20'},{ar:'الطرح حتى ٢٠ والأشكال',en:'Subtraction within 20 + shapes'}],
  english:[{ar:'sh · ch · th',en:'Digraphs sh · ch · th'},{ar:'ai · ee · oa · igh',en:'Vowel teams ai · ee · oa · igh'},{ar:'الكلمات الصعبة',en:'Tricky words'},{ar:'أكمل النمط الصوتي',en:'Complete the phonics pattern'}],
@@ -544,7 +546,7 @@ const ROUND_LEN=(s,l)=>s==='quran'?5:(s==='mats'&&l===4)?10:6;
 const getP=(s,l)=>(state.prog[s]&&state.prog[s][l])||{stars:0,plays:0};
 function setP(s,l,stars){state.prog[s]=state.prog[s]||{};const p=getP(s,l);state.prog[s][l]={stars:Math.max(p.stars,stars),plays:p.plays+1};save()}
 const subjStars=s=>[1,2,3,4].reduce((n,l)=>n+getP(s,l).stars,0);
-const totalStars=()=>ALLS.reduce((n,s)=>n+subjStars(s.id),0);
+const totalStars=()=>ALLS.reduce((n,s)=>n+subjStars(s.id),0)+(state.bonus||0);
 const totalBadges=()=>ALLS.reduce((n,s)=>n+[1,2,3,4].filter(l=>getP(s.id,l).stars>=3).length,0);
 
 /* ===================== GENERATORS ===================== */
@@ -713,15 +715,15 @@ const VEH=[0,2,4,6,7];
 const medal=(i,cls)=>{const h=HEROES[i],open=h.need<=totalStars(),c=HCAT[h.cat];
  return `<span class="medal ${cls||''} ${open?'':'lock'}" style="--m1:${c[0]};--m2:${c[1]}"><span class="mi ${VEH.includes(i)?'v':''}">${h.svg}</span>${open?'':'<span class="mk">🔒</span>'}</span>`};
 function heroPanel(){const t=totalStars(),n=heroN(),b=buddyIdx(),nx=nextHero(),prev=HEROES.filter(h=>h.need<=t).pop().need,pct=nx?Math.round((t-prev)/(nx.need-prev)*100):100;
- return `<section class="hpanel"><div class="hp-top"><button class="hp-buddy" data-act="heroes" aria-label="${L('أبطال عمّار','Ammar’s Heroes')}">${medal(b,'xl')}</button>
- <div class="hp-info"><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('رفيقك اليوم','Your buddy today')}: <b>${state.lang==='ar'?HEROES[b].ar:HEROES[b].en}</b></p>
+ return `<section class="hpanel"><div class="hp-top"><button class="hp-buddy" data-act="heroes" aria-label="${L('فريق أبطال عمّار','Ammar’s Hero Squad')}">${medal(b,'xl')}</button>
+ <div class="hp-info"><h2>${L('أهلًا يا عمّار! 👋','Hello Ammar! 👋')}</h2><p>${L('بطل اليوم','Hero of the day')}: <b>${state.lang==='ar'?HEROES[b].ar:HEROES[b].en}</b></p>
  <div class="hp-prog"><div class="bar"><i style="width:${pct}%"></i></div><span class="ltr">${nx?`⭐ ${t} / ${nx.need}`:'⭐ '+t}</span></div>
  <div class="hp-next">${nx?L(`ابقَ ${nx.need-t} نجوم لتفتح بطلًا جديدًا!`,`${nx.need-t} more stars to unlock a new hero!`):L('جمعتَ كل الأبطال! 🏆','You collected every hero! 🏆')}</div></div></div>
- <button class="hp-shelf" data-act="heroes" aria-label="${L('كل الأبطال','All heroes')}"><span class="hp-head"><b>🏅 ${L('أبطالي','My heroes')} <span class="ltr">${n} / 10</span></b><span>${L('عرض الكل','See all')} ›</span></span><span class="hp-row">${HEROES.map((_,i)=>medal(i,'sm')).join('')}</span></button></section>`}
+ <button class="hp-shelf" data-act="heroes" aria-label="${L('كل الأبطال','All heroes')}"><span class="hp-head"><b>🏅 ${L('فريقي','My squad')} <span class="ltr">${n} / 10</span></b><span>${L('عرض الكل','See all')} ›</span></span><span class="hp-row">${HEROES.map((_,i)=>medal(i,'sm')).join('')}</span></button></section>`}
 function renderHeroes(){S={screen:'heroes'};stopSpeech();setTheme({c:'#5b6cff',c2:'#3a43c9'});renderTop();const t=totalStars(),n=heroN(),b=buddyIdx();
- app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🏅 ${L('أبطال عمّار','Ammar’s Heroes')}</h2><span class="pill small ltr">${n} / 10</span></div>
- <p class="note" style="margin:0 0 14px;text-align:start">${L('اجمع النجوم لتفتح أبطالًا جدد، واضغط على بطل لتختاره رفيقك. كل بطل يمكنك تلوينه أيضًا 🎨','Collect stars to unlock new heroes, tap one to make it your buddy. You can colour every hero too 🎨')}</p>
- <div class="hgrid">${HEROES.map((h,i)=>{const open=h.need<=t;return `<button class="hc ${open?'':'lock'} ${open&&i===b?'sel':''}" ${open?`data-act="buddy" data-i="${i}"`:'disabled'}>${medal(i,'lg')}<div class="nm">${open?(state.lang==='ar'?h.ar:h.en):'???'}</div><div class="sb">${open?(i===b?'💛 '+L('رفيقي','My buddy'):(state.lang==='ar'?h.en:h.ar)):'🔒 ⭐ <span class="ltr">'+h.need+'</span>'}</div></button>`}).join('')}</div>`}
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🏅 ${L('فريق أبطال عمّار','Ammar’s Hero Squad')}</h2><span class="pill small ltr">${n} / 10</span></div>
+ <p class="note" style="margin:0 0 14px;text-align:start">${L('اجمع النجوم لتضمّ أبطالًا جددًا إلى فريقك، واضغط على بطل لتجعله بطل اليوم. وكل بطل يمكنك تلوينه أيضًا 🎨','Collect stars to add new heroes to your squad, and tap one to make it your hero of the day. You can colour every hero too 🎨')}</p>
+ <div class="hgrid">${HEROES.map((h,i)=>{const open=h.need<=t;return `<button class="hc ${open?'':'lock'} ${open&&i===b?'sel':''}" ${open?`data-act="buddy" data-i="${i}"`:'disabled'}>${medal(i,'lg')}<div class="nm">${open?(state.lang==='ar'?h.ar:h.en):'???'}</div><div class="sb">${open?(i===b?'💛 '+L('بطل اليوم','Hero of the day'):(state.lang==='ar'?h.en:h.ar)):'🔒 ⭐ <span class="ltr">'+h.need+'</span>'}</div></button>`}).join('')}</div>`}
 
 /* ----- English ----- */
 const blankW=(w,d)=>{const i=w.indexOf(d);return w.slice(0,i)+`<span class="gap">${d}</span>`+w.slice(i+d.length)};
@@ -847,8 +849,7 @@ function stopSpeech(){try{AU.pause()}catch(e){}try{if(canSpeak())speechSynthesis
 function renderHome(){S={screen:'home'};stopSpeech();setTheme();renderTop();
  const tile=s=>{const sc=s.id==='science'?subjStars('science')+subjStars('body')+subjStars('mats')+subjStars('mspell')+subjStars('mfun'):subjStars(s.id),mx=s.id==='science'?60:12;
   return `<button class="card" data-act="subj" data-id="${s.id}" style="--c:${s.c};--c2:${s.c2}"><div class="big">${s.icon}</div><h3>${tx(s.name)}</h3><div class="g">${tx(s.game)}</div><div class="pr"><span>⭐</span><span class="ltr">${sc} / ${mx}</span><span class="bar"><i style="width:${Math.round(sc/mx*100)}%"></i></span></div></button>`};
- const calm=totalStars()>=COLGATE;
- app().innerHTML=heroPanel()+`<div class="grid">${SUBJ.map(tile).join('')}<button class="card" data-act="funhub" style="--c:#1fb5a8;--c2:#0d7f87"><div class="big">🌈</div><h3>${L('وقت اللعب الهادي','Calm play time')}</h3><div class="g">${L('ذاكرة الكروت والتلوين','Memory cards & colouring')}</div><div class="pr"><span>${calm?'🔓':'🔒'}</span><span>${calm?L('التلوين مفتوح','Colouring open'):L('التلوين بـ ٣ نجوم','Colouring: 3 stars')}</span></div></button></div>
+ app().innerHTML=heroPanel()+`<div class="grid">${SUBJ.map(tile).join('')}<button class="card" data-act="funhub" style="--c:#1fb5a8;--c2:#0d7f87"><div class="big">🌈</div><h3>${L('استراحة الأبطال','Heroes’ Break')}</h3><div class="g">${L('ذاكرة الكروت وورشة التلوين','Memory cards & colouring studio')}</div><div class="pr"><span>🎨</span><span class="ltr">${PICS.filter(x=>totalStars()>=x.need).length} / ${PICS.length}</span><span class="bar"><i style="width:${Math.round(PICS.filter(x=>totalStars()>=x.need).length/PICS.length*100)}%"></i></span></div></button></div>
  <div class="note">${L('يُحفظ تقدّم عمّار تلقائيًّا على هذا الجهاز','Ammar’s progress is saved automatically on this device')}</div>`}
 
 function renderLevels(id){const s=ALLS.find(x=>x.id===id);S={screen:'levels',subj:id};stopSpeech();setTheme(s);renderTop();
@@ -905,16 +906,28 @@ function renderResult(again){if(S.exam)return renderExamResult(again);const n=S.
  const sub=ALLS.find(x=>x.id===S.subj),last=S.lvl>=4;const msg=stars===3?L('مذهل! أنت بطل حقيقي 🏆','Amazing! You are a real champion 🏆'):stars===2?L('عمل رائع! تقترب من النجمة الثالثة ⭐','Great work! The third star is near ⭐'):L('أحسنت! جرّب مرّة أخرى لتجمع نجومًا أكثر 💪','Well done! Try again to collect more stars 💪');
  app().innerHTML=`<div class="result"><div style="font-size:80px">${stars===3?'🏆':'🎉'}</div><h2>${L('انتهت الجولة!','Round complete!')}</h2><div class="stars">${[0,1,2].map(i=>`<span style="animation-delay:${i*.25}s;${i<stars?'':'filter:grayscale(1);opacity:.25'}">⭐</span>`).join('')}</div>
  <p>${msg}<br><b>${S.score} / ${n}</b> ${L('إجابات صحيحة من المحاولة الأولى','correct on the first try')}</p>
- ${S.newHero?`<div class="newhero"><div style="font-weight:bold;color:#d94a4a">🎉 ${L('بطل جديد انضمّ إلى فريقك!','A new hero joined your team!')}</div>${S.newHero.svg}<h3>${state.lang==='ar'?S.newHero.ar:S.newHero.en}</h3><button class="btn sec" data-act="heroes">🦸 ${L('أبطال عمّار','Ammar’s Heroes')}</button></div>`:''}
+ ${S.newHero?`<div class="newhero"><div style="font-weight:bold;color:#d94a4a">🎉 ${L('بطل جديد انضمّ إلى فريقك!','A new hero joined your squad!')}</div>${S.newHero.svg}<h3>${state.lang==='ar'?S.newHero.ar:S.newHero.en}</h3><button class="btn sec" data-act="heroes">🦸 ${L('فريقي','My squad')}</button></div>`:''}
  ${revHTML()}
- ${stars===3&&last?`<p>🏅 ${L('وسام البطل في','Master badge for')} ${tx(sub.game)}!</p>`:''}
+ ${stars===3&&last?`<p>🏅 ${L('وسام القائد في','Commander badge for')} ${tx(sub.game)}!</p>`:''}
  <div class="acts"><button class="btn pri" data-act="again">🔄 ${L('العب مجدّدًا (أسئلة جديدة)','Play Again (New Questions)')}</button>${last?'':`<button class="btn sec" data-act="next">${L('المستوى التالي','Next Level')} ➜</button>`}<button class="btn" data-act="levels">${L('المستويات','Levels')}</button><button class="btn" data-act="home">🏠</button></div></div>`}
 
 /* ---------- parent reset (two steps) ---------- */
 function closeModal(){const m=$('#modal');if(m)m.remove()}
 function parentModal(step,ctx){closeModal();const m=document.createElement('div');m.className='modal';m.id='modal';
- if(step===1)m.innerHTML=`<div class="mbox"><h3>👨‍👩‍👦 ${L('منطقة الأهل','Parent area')}</h3><p>${L('هل تريد مسح كل النجوم والأوسمة والتقدّم؟','Do you want to erase all stars, badges and progress?')}</p><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn sec" data-act="mstep2">${L('متابعة','Continue')}</button></div></div>`;
+ if(step===0){const a=rnd(11,19),b=rnd(12,19);m.dataset.ans=a+b;m.innerHTML=`<div class="mbox"><h3>🔒 ${L('ركن الأهل','Parent corner')}</h3><p>${L('للتأكّد أنّك شخص بالغ، احسب:','To make sure you are a grown-up, solve:')}<br><b class="ltr" style="font-size:34px">${a} + ${b} = ?</b></p><input id="mans" inputmode="numeric" autocomplete="off"><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn pri" data-act="pgate">${L('دخول','Enter')}</button></div></div>`}
+ else if(step===1)m.innerHTML=`<div class="mbox"><h3>🗑️ ${L('مسح التقدّم','Erase progress')}</h3><p>${L('هل تريد مسح كل النجوم والأوسمة والتقدّم؟','Do you want to erase all stars, badges and progress?')}</p><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn sec" data-act="mstep2">${L('متابعة','Continue')}</button></div></div>`;
  else{const a=rnd(11,19),b=rnd(12,19);m.dataset.ans=a+b;m.innerHTML=`<div class="mbox"><h3>🔒 ${L('تأكيد ثانٍ','Second confirmation')}</h3><p>${L('للتأكّد أنّك شخص بالغ، احسب:','To make sure you are a grown-up, solve:')}<br><b class="ltr" style="font-size:34px">${a} + ${b} = ?</b></p><input id="mans" inputmode="numeric" autocomplete="off"><div class="acts"><button class="btn" data-act="mclose">${L('إلغاء','Cancel')}</button><button class="btn pri" data-act="mreset">${L('نعم، امسح','Yes, erase')}</button></div></div>`}
+ document.body.appendChild(m)}
+const BK='AMMAR1.';
+const mkCode=()=>BK+btoa(unescape(encodeURIComponent(JSON.stringify({prog:state.prog,bonus:state.bonus||0,buddy:state.buddy,examBest:state.examBest||0}))));
+function parentMenu(msg){closeModal();const m=document.createElement('div');m.className='modal';m.id='modal';
+ m.innerHTML=`<div class="mbox pm"><h3>👨‍👩‍👦 ${L('ركن الأهل','Parent corner')}</h3>
+ <div class="pms"><b>⭐ ${L('هدية نجوم لعمّار','Gift stars to Ammar')}</b><p>${L('المجموع الآن','Total now')}: <b class="ltr">⭐ ${totalStars()}</b> · ${L('منها هدايا','gifts')}: <b class="ltr">${state.bonus||0}</b></p>
+ <div class="acts">${[1,3,5,10].map(n=>`<button class="btn sec" data-act="pstars" data-n="${n}">+${n} ⭐</button>`).join('')}<button class="btn" data-act="pstars" data-n="-5">−5</button></div></div>
+ <div class="pms"><b>💾 ${L('نسخة احتياطية','Backup')}</b><p>${L('احفظ هذا الرمز في مكان آمن. إذا ضاع التقدّم الصقه هنا لاسترجاعه.','Keep this code somewhere safe. If progress is lost, paste it here to restore.')}</p>
+ <textarea id="pcode" rows="3" spellcheck="false">${mkCode()}</textarea><div class="acts"><button class="btn" data-act="pcopy">📋 ${L('نسخ الرمز','Copy code')}</button><button class="btn pri" data-act="prestore">📥 ${L('استرجاع من الرمز','Restore from code')}</button></div></div>
+ ${msg?`<div class="pmsg">${msg}</div>`:''}
+ <div class="acts"><button class="btn" data-act="parent1">🗑️ ${L('مسح التقدّم','Erase')}</button><button class="btn pri" data-act="mdone">${L('تمّ','Done')}</button></div></div>`;
  document.body.appendChild(m)}
 
 /* ---------- events ---------- */
@@ -959,13 +972,19 @@ document.addEventListener('click',e=>{unlockAudio();const t=e.target.closest('[d
   case 'rng':state.quranRange=t.dataset.v;save();SFX.tap();renderLevels('quran');break;
   case 'lang':state.lang=state.lang==='ar'?'en':'ar';save();applyLang();rerender();break;
   case 'snd':state.sound=!state.sound;save();if(!state.sound)stopSpeech();renderTop();break;
-  case 'parent':parentModal(1);break;
+  case 'parent':parentModal(0);break;
+  case 'parent1':parentModal(1);break;
+  case 'pgate':{const m=$('#modal');if(+($('#mans').value||0)===+m.dataset.ans){SFX.ok();parentMenu()}else{SFX.boing();toast(L('إجابة غير صحيحة','Not correct'),true)}break}
+  case 'pstars':{state.bonus=Math.max(0,(state.bonus||0)+(+t.dataset.n));save();SFX.ok();renderTop();parentMenu();break}
+  case 'pcopy':{const ta=$('#pcode');ta.select();try{document.execCommand('copy')}catch(e){}try{navigator.clipboard&&navigator.clipboard.writeText(ta.value)}catch(e){}toast(L('تمّ نسخ الرمز ✔','Code copied ✔'),true);break}
+  case 'prestore':{const v=($('#pcode').value||'').trim();try{if(!v.startsWith(BK))throw 0;const o=JSON.parse(decodeURIComponent(escape(atob(v.slice(BK.length)))));if(!o||typeof o.prog!=='object')throw 0;state.prog=o.prog;state.bonus=+o.bonus||0;state.buddy=o.buddy;state.examBest=o.examBest||0;save();SFX.win();renderTop();parentMenu('✅ '+L('تمّ استرجاع التقدّم','Progress restored'))}catch(e){SFX.boing();toast(L('الرمز غير صحيح','That code is not valid'),true)}break}
+  case 'mdone':closeModal();rerender();break;
   case 'voice':voiceModal();break;
   case 'vtest':{const v=VL[t.dataset.p][+t.dataset.i];speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t.dataset.p==='en'?'Wood, metal, plastic, glass':'بَ، بِ، بُ');u.voice=v;u.lang=v.lang;u.rate=t.dataset.p==='en'?.85:.8;speechSynthesis.speak(u);break}
   case 'vpick':{const v=VL[t.dataset.p][+t.dataset.i];state.voices=state.voices||{};state.voices[t.dataset.p]=v.name;save();SFX.tap();voiceModal();break}
   case 'mclose':closeModal();break;
   case 'mstep2':parentModal(2);break;
-  case 'mreset':{const m=$('#modal');if(+($('#mans').value||0)===+m.dataset.ans){state.prog={};save();closeModal();toast(L('تمّ مسح التقدّم','Progress erased'),true);renderHome()}else{SFX.boing();toast(L('إجابة غير صحيحة','Not correct'),true)}break}
+  case 'mreset':{const m=$('#modal');if(+($('#mans').value||0)===+m.dataset.ans){state.prog={};state.bonus=0;state.buddy=undefined;save();closeModal();toast(L('تمّ مسح التقدّم','Progress erased'),true);renderHome()}else{SFX.boing();toast(L('إجابة غير صحيحة','Not correct'),true)}break}
  }});
 function rerender(){
  if(S.screen==='home')renderHome();
@@ -1137,9 +1156,9 @@ function breakModal(){closeModal();const m=document.createElement('div');m.class
  document.body.appendChild(m);const b=$('#brkgo');const t=setInterval(()=>{n--;if(!$('#brkgo')){clearInterval(t);return}if(n<=0){clearInterval(t);b.disabled=false;b.textContent=L('كمّل اللعب','Keep playing');b.dataset.act='mclose'}else b.textContent=n},1000)}
 
 function renderFunHub(){S={screen:'funhub'};stopSpeech();setTheme({c:'#1fb5a8',c2:'#0d7f87'});renderTop();
- app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🌈 ${L('وقت اللعب الهادي','Calm play time')}</h2></div>
+ app().innerHTML=`<div class="lvhead"><button class="btn mini" data-act="home">${L('→ رجوع','← Back')}</button><h2>🌈 ${L('استراحة الأبطال','Heroes’ Break')}</h2></div>
  <div class="grid"><button class="card" data-act="memmenu" style="--c:#1fb5a8;--c2:#0d7f87"><div class="big">🃏</div><h3>${L('ذاكرة الكروت','Memory cards')}</h3><div class="g">${L('دوّر على الأزواج المتشابهة','Find the matching pairs')}</div></button>
- <button class="card" data-act="color" style="--c:#ff7ab8;--c2:#d9438a"><div class="big">🎨</div><h3>${L('التلوين','Colouring')}</h3><div class="g">${L('لوّن الصور وأبطال عمّار بألوانك','Colour pictures & Ammar’s heroes')}</div><div class="g" style="opacity:.85;font-size:17px">${totalStars()>=COLGATE?'🔓':'🔒 ⭐ <span class="ltr">'+totalStars()+' / '+COLGATE+'</span>'}</div></button></div>
+ <button class="card" data-act="color" style="--c:#ff7ab8;--c2:#d9438a"><div class="big">🎨</div><h3>${L('ورشة التلوين','Colouring Studio')}</h3><div class="g">${L('لوّن الصور الحرّة وأبطال عمّار','Colour free pictures & Ammar’s heroes')}</div></button></div>
  <div class="note">${L('ألعاب للتسلية فقط، ولا تحتسب نجومًا. وسنذكّره بالراحة كل فترة 👀','Just for fun — no stars. We will remind him to rest his eyes 👀')}</div>`}
 
 /* ----- memory ----- */
@@ -1166,7 +1185,6 @@ const PICS=[
  {n:{ar:'السيارة',en:'Car'},svg:'<rect class="r" x="0" y="0" width="400" height="210"/><ellipse class="r" cx="90" cy="60" rx="45" ry="20"/><ellipse class="r" cx="300" cy="80" rx="40" ry="18"/><rect class="r" x="0" y="210" width="400" height="90"/><rect class="r" x="70" y="140" width="260" height="60" rx="14"/><polygon class="r" points="130,140 160,95 260,95 290,140"/><polygon class="r" points="145,138 168,105 200,105 200,138"/><polygon class="r" points="210,138 210,105 252,105 272,138"/><circle class="r" cx="130" cy="205" r="32"/><circle class="r" cx="130" cy="205" r="13"/><circle class="r" cx="270" cy="205" r="32"/><circle class="r" cx="270" cy="205" r="13"/>'}
 ];
 const PAL=['#ff6b6b','#ff9f43','#ffd93d','#a3e635','#34d399','#22d3ee','#4d9bff','#818cf8','#c084fc','#f472b6','#a1744a','#f2c29b','#94a3b8','#1e293b','#14b8a6','#fb7185','#fde68a','#ffffff'];
-const COLGATE=3; // stars needed to open the colouring corner
 /* turn a finished hero drawing into a colour-me outline: every coloured shape becomes tappable (class r) */
 function colorize(svg){
  const lum=f=>{const m=/^#([0-9a-f]{6})$/i.exec(f);if(!m)return 255;const n=parseInt(m[1],16);return((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000};
@@ -1181,15 +1199,14 @@ function colorize(svg){
   return `<${tag} class="r"${a}${sl}>`});
  t=t.replace(/(<text[^>]*?)fill="#fff"/g,'$1fill="#27304d"');
  return '<rect class="r" x="0" y="0" width="200" height="200"/><rect class="r" x="0" y="178" width="200" height="22"/>'+t}
-HEROES.forEach((h,i)=>PICS.push({n:{ar:h.ar,en:h.en},vb:'0 0 200 200',hero:i,need:Math.max(h.need,COLGATE),svg:colorize(h.svg)}));
-PICS.forEach(p=>{if(p.need===undefined)p.need=COLGATE});
+HEROES.forEach((h,i)=>PICS.push({n:{ar:h.ar,en:h.en},vb:'0 0 200 200',hero:i,need:h.need,svg:colorize(h.svg)}));
+PICS.forEach(p=>{if(p.need===undefined)p.need=0});
 COL.all={};
 const picOpen=i=>totalStars()>=PICS[i].need;
 function renderColMenu(){S={screen:'colmenu'};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();const t=totalStars();
- const head=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🎨 ${L('التلوين','Colouring')}</h2></div>`;
- if(t<COLGATE){app().innerHTML=head+`<div class="result"><div style="font-size:80px">🔒</div><h2>${L('التلوين مقفل!','Colouring is locked!')}</h2><p>${L(`اجمع ${COLGATE} نجوم من ألعاب المواد لتفتح التلوين`,`Collect ${COLGATE} stars from the subject games to open colouring`)}</p><div style="font-size:48px;font-weight:bold" class="ltr">⭐ ${t} / ${COLGATE}</div><div class="acts"><button class="btn pri" data-act="home">${L('هيّا نلعب ونجمع النجوم','Let’s play and collect stars')} 🚀</button></div></div>`;return}
- app().innerHTML=head+`<p class="note" style="margin-top:0">${L('اختر صورة لتلوّنها. أبطال عمّار تُفتح بالنجوم!','Pick a picture to colour. Ammar’s heroes open with stars!')} ⭐ <span class="ltr">${t}</span></p>
- ${[[L('صور عامة','Classic pictures'),x=>x.hero===undefined,'c4'],[L('أبطال عمّار','Ammar’s heroes'),x=>x.hero!==undefined,'']].map(([ttl,f,cl])=>`<h3 class="sech">${ttl}</h3><div class="hgrid ${cl}">${PICS.map((p,i)=>f(p)?`<button class="hc ${t>=p.need?'':'lock'}" ${t>=p.need?`data-act="cpic" data-i="${i}"`:'disabled'}><div class="hp"><svg viewBox="${p.vb||'0 0 400 300'}" style="pointer-events:none">${p.svg}</svg></div><div class="nm">${t>=p.need?tx(p.n):'???'}</div><div class="sb">${t>=p.need?(p.hero!==undefined?'🦸':'🎨'):'🔒 ⭐ <span class="ltr">'+p.need+'</span>'}</div></button>`:'').join('')}</div>`).join('')}`}
+ const head=`<div class="lvhead"><button class="btn mini" data-act="funhub">${L('→ رجوع','← Back')}</button><h2>🎨 ${L('ورشة التلوين','Colouring Studio')}</h2></div>`;
+ app().innerHTML=head+`<p class="note" style="margin-top:0">${L('الصور الحرّة مفتوحة دائمًا. وصور الأبطال تُفتح بالنجوم ⭐','Free pictures are always open. Hero pictures open with stars ⭐')} ⭐ <span class="ltr">${t}</span></p>
+ ${[[L('🎨 صور حرّة','🎨 Free pictures'),x=>x.hero===undefined,'c4'],[L('🦸 صور الأبطال — تُفتح بالنجوم','🦸 Hero pictures — open with stars'),x=>x.hero!==undefined,'']].map(([ttl,f,cl])=>`<h3 class="sech">${ttl}</h3><div class="hgrid ${cl}">${PICS.map((p,i)=>f(p)?`<button class="hc ${t>=p.need?'':'lock'}" ${t>=p.need?`data-act="cpic" data-i="${i}"`:'disabled'}><div class="hp"><svg viewBox="${p.vb||'0 0 400 300'}" style="pointer-events:none">${p.svg}</svg></div><div class="nm">${t>=p.need?tx(p.n):'???'}</div><div class="sb">${t>=p.need?(p.hero!==undefined?'🦸':'🎨'):'🔒 ⭐ <span class="ltr">'+p.need+'</span>'}</div></button>`:'').join('')}</div>`).join('')}`}
 function renderColor(){if(!picOpen(COL.pic)){renderColMenu();return}S={screen:'color'};setTheme({c:'#ff7ab8',c2:'#d9438a'});renderTop();
  const pic=PICS[COL.pic];COL.fills=COL.all[COL.pic]=COL.all[COL.pic]||{};COL.hist=COL.hist||{};COL.cel=COL.cel||{};let k=0;
  const svg=pic.svg.replace(/<(\w+) class="r"/g,(m,t)=>{const i=k++;return `<${t} class="r" data-k="${i}"${COL.fills[i]?` style="fill:${COL.fills[i]}"`:''}`}),total=k;
