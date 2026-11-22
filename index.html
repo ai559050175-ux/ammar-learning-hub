@@ -115,6 +115,15 @@ h1,h2{margin:0}
 .tenf i.cut::after{content:"✕";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7a86a8;font-size:24px;font-style:normal}
 .tenf i.q{background:transparent;border:3px dashed #f0b429}
 svg.shape{width:150px;height:150px}
+svg.nl{width:100%;height:auto;display:block}.nlw{width:100%;max-width:480px;margin:0 auto}
+.bt{display:inline-flex;gap:12px;align-items:flex-end;direction:ltr;background:#eef3ff;padding:10px 12px;border-radius:14px}
+.bt .tens{display:flex;gap:5px}.bt .rod{display:block;width:14px;height:70px;border-radius:4px;background:repeating-linear-gradient(to bottom,#4d9bff 0 6px,#2f6fe0 6px 7px)}
+.bt .ones{display:grid;grid-template-columns:repeat(5,14px);gap:4px}.bt .ones i{width:14px;height:14px;background:#ff9f43;border-radius:3px}
+.cmp{display:flex;align-items:center;justify-content:center;gap:14px;direction:ltr;flex-wrap:wrap}.cmp .q{font-size:48px;font-weight:bold;color:#f0b429}
+.pairs{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;max-width:420px;direction:ltr}.pairs .pr{display:flex;gap:4px;padding:6px 8px;background:#eef3ff;border-radius:12px}.pairs .pr i{width:28px;height:28px;border-radius:50%;background:#4d9bff}
+.erow{display:flex;flex-wrap:wrap;justify-content:center;font-size:32px;line-height:1.2;direction:ltr;max-width:230px;padding:6px 8px;border-radius:12px}.erow.g1{background:#eef3ff}.erow.g2{background:#fff3e0}
+.addp{direction:ltr;display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap}.addp .pl{font-size:44px;font-weight:bold;color:var(--c2)}
+
 
 .toast{position:fixed;left:50%;top:38%;transform:translate(-50%,-50%);background:#fff;border-radius:34px;padding:16px 34px;font-size:40px;font-weight:bold;box-shadow:0 14px 40px rgba(0,0,0,.25);z-index:50;pointer-events:none;animation:toast 1.2s forwards;text-align:center;max-width:90vw}
 .toast.soft{background:#fff7e0;font-size:32px}
@@ -255,6 +264,8 @@ const SHAPES={
   objs:[['⚽','كرة قدم','Football'],['🏀','كرة سلة','Basketball'],['🌍','الأرض','Earth']]},
  cone:{ar:'المخروط',en:'Cone',svg:'<svg class="shape" viewBox="0 0 120 120"><ellipse cx="60" cy="92" rx="42" ry="14" fill="#c98a00"/><polygon points="60,8 18,92 102,92" fill="#ffc83d"/><ellipse cx="60" cy="92" rx="42" ry="14" fill="#ffb300"/></svg>',
   objs:[['🍦','مخروط آيس كريم','Ice-cream cone'],['🎉','مفرقعة الحفلات','Party popper'],['🥕','جزرة','Carrot']]},
+ pyramid:{ar:'الهرم',en:'Pyramid',svg:'<svg class="shape" viewBox="0 0 120 120"><polygon points="60,10 14,92 70,108" fill="#ffb066"/><polygon points="60,10 70,108 108,84" fill="#e8741a"/></svg>',
+  objs:[['⛺','خيمة','Tent']]},
  cylinder:{ar:'الأسطوانة',en:'Cylinder',svg:'<svg class="shape" viewBox="0 0 120 120"><rect x="20" y="25" width="80" height="70" fill="#3ddc97"/><ellipse cx="60" cy="95" rx="40" ry="14" fill="#1fa971"/><ellipse cx="60" cy="25" rx="40" ry="14" fill="#8cf0c3"/></svg>',
   objs:[['🥫','علبة معلبات','Tin can'],['🛢️','برميل','Barrel'],['🔋','بطارية','Battery']]}
 };
@@ -466,7 +477,7 @@ const VL={};
 
 /* ---------- subjects ---------- */
 const SUBJ=[
- {id:'math',icon:'🚀',c:'#4d9bff',c2:'#2f6fe0',name:{ar:'الرياضيات',en:'Math'},game:{ar:'صاروخ الأرقام',en:'Number Rocket'},sub:{ar:'الصف الأول (بريطانيا Year 1)',en:'UK Year 1'}},
+ {id:'math',icon:'🚀',c:'#4d9bff',c2:'#2f6fe0',name:{ar:'الرياضيات',en:'Math'},game:{ar:'صاروخ الأرقام',en:'Number Rocket'},sub:{ar:'منهج الترم الأول · Year 1',en:'Year 1 · Term 1 syllabus'}},
  {id:'english',icon:'🔤',c:'#a66cff',c2:'#7b3fe4',name:{ar:'اللغة الإنجليزية',en:'English'},game:{ar:'مغامرة الأصوات والكلمات',en:'Phonics & Words Quest'},sub:{ar:'الفونيكس والكلمات الصعبة',en:'Phonics & Tricky Words'}},
  {id:'science',icon:'🔬',c:'#2ec27e',c2:'#14935a',name:{ar:'العلوم',en:'Science'},game:{ar:'مختبر العلوم',en:'Science Lab'},sub:{ar:'الصف الأول (بريطانيا Year 1)',en:'UK Year 1'}},
  {id:'arabic',icon:'🚂',c:'#ff9f43',c2:'#e8741a',name:{ar:'اللغة العربية',en:'Arabic'},game:{ar:'قطار الحروف واللغويات',en:'Arabic Train'},sub:{ar:'الصف الأول (مصر والإمارات)',en:'Egypt & UAE Grade 1'}},
@@ -474,7 +485,7 @@ const SUBJ=[
 ];
 const LVN=[{ar:'الأساس',en:'Foundation',icon:'🌱'},{ar:'نبني معًا',en:'Building Up',icon:'🧱'},{ar:'التحدّي',en:'Challenge',icon:'⚡'},{ar:'البطل',en:'Master',icon:'👑'}];
 const LVD={
- math:[{ar:'أزواج العدد ١٠',en:'Number bonds to 10'},{ar:'أزواج العدد ٢٠ وواحد أكثر / أقل',en:'Bonds to 20 · 1 more / 1 less'},{ar:'الجمع والطرح حتى ٢٠',en:'Add & subtract within 20'},{ar:'الأشكال ثلاثية الأبعاد وتحدٍّ سريع',en:'3D shapes + quick maths'}],
+ math:[{ar:'الأعداد والعدّ',en:'Numbers & counting'},{ar:'العشرات والآحاد',en:'Tens & ones'},{ar:'الجمع حتى ٢٠',en:'Addition within 20'},{ar:'الطرح حتى ٢٠ والأشكال',en:'Subtraction within 20 + shapes'}],
  english:[{ar:'sh · ch · th',en:'Digraphs sh · ch · th'},{ar:'ai · ee · oa · igh',en:'Vowel teams ai · ee · oa · igh'},{ar:'الكلمات الصعبة',en:'Tricky words'},{ar:'أكمل النمط الصوتي',en:'Complete the phonics pattern'}],
  science:[{ar:'ماذا تأكل الحيوانات؟',en:'What animals eat'},{ar:'المواد من حولنا',en:'Everyday materials'},{ar:'الفصول والطقس والنباتات',en:'Seasons, weather & parts'},{ar:'أفضل اختيار ولماذا؟',en:'Best choice & why?'}],
  arabic:[{ar:'الفتحة والكسرة والضمة',en:'Short vowels'},{ar:'المدود: ا و ي',en:'Long vowels (madd)'},{ar:'هذا / هذه والحروف المتشابهة',en:'Hatha / hathihi & similar letters'},{ar:'الحرف الناقص والمقاطع',en:'Missing letters & syllables'}],
@@ -495,25 +506,124 @@ const rep=(c,n)=>Array(Math.max(0,n)).fill(c);
 function numCh(ans,min,max){const s=new Set([ans]);let g=0;while(s.size<4&&g++<300){const d=ans+pick([-4,-3,-2,-1,1,2,3,4]);if(d>=min&&d<=max)s.add(d)}return shuffle([...s]).map(n=>ch(`<span class="ltr">${n}</span>`,n===ans))}
 const N=n=>`<span class="ltr">${n}</span>`;
 
-function math1(){const a=rnd(1,9),b=10-a;return{key:'m1:'+a,title:{ar:'كم نحتاج ليصبح المجموع ١٠؟',en:'How many more to make 10?'},
- visual:`<div class="eq ltr">${a} + ? = 10</div>`+frames([...rep('on',a),...rep('q',b)]),choices:numCh(b,0,10),cols:4}}
-function math2(){const t=rnd(0,2);
- if(t===0){const a=rnd(1,19),b=20-a;return{key:'m2b:'+a,title:{ar:'كم نحتاج ليصبح المجموع ٢٠؟',en:'How many more to make 20?'},visual:`<div class="eq ltr">${a} + ? = 20</div>`+frames([...rep('on',a),...rep('q',b)]),choices:numCh(b,0,20),cols:4}}
- if(t===1){const n=rnd(0,19);return{key:'m2u:'+n,title:{ar:`ما العدد الذي هو واحد أكثر من ${N(n)}؟`,en:`What is 1 more than ${N(n)}?`},visual:`<div class="eq ltr">${n} ➜ +1 ➜ ?</div>`,choices:numCh(n+1,0,20),cols:4}}
- const n=rnd(1,20);return{key:'m2d:'+n,title:{ar:`ما العدد الذي هو واحد أقل من ${N(n)}؟`,en:`What is 1 less than ${N(n)}?`},visual:`<div class="eq ltr">${n} ➜ −1 ➜ ?</div>`,choices:numCh(n-1,0,20),cols:4}}
-function math3(){if(Math.random()<.5){const a=rnd(1,14),b=rnd(1,Math.min(10,20-a)),ans=a+b;
-  return{key:'m3a:'+a+'+'+b,title:{ar:'اجمع',en:'Add'},visual:`<div class="eq ltr">${a} + ${b} = ?</div>`+frames([...rep('on',a),...rep('on2',b)]),choices:numCh(ans,0,20),cols:4}}
- const a=rnd(4,20),b=rnd(1,Math.min(9,a-1)),ans=a-b;
- return{key:'m3s:'+a+'-'+b,title:{ar:'اطرح (الدوائر المشطوبة تُزال)',en:'Take away (crossed dots go)'},visual:`<div class="eq ltr">${a} − ${b} = ?</div>`+frames([...rep('on',a-b),...rep('cut',b)]),choices:numCh(ans,0,20),cols:4}}
-function math4(){const t=rnd(0,3),ids=Object.keys(SHAPES);
- if(t===0){const id=pick(ids);return{key:'m4n:'+id,title:{ar:'ما اسم هذا الشكل؟',en:'What is the name of this shape?'},visual:SHAPES[id].svg,
-  choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
- if(t===1){const id=pick(ids),o=pick(SHAPES[id].objs);return{key:'m4o:'+o[2],title:{ar:'ما شكل هذا الشيء؟',en:'What shape is this object?'},
-  visual:()=>`<div class="em">${o[0]}</div><div class="vname">${dualHTML(o[1]+'|'+o[2])}</div>`,choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
- if(t===2){const id=pick(ids);const others=ids.filter(i=>i!==id);const lbls=[id,...others.slice(0,2)];
-  const pickq=pick([{ar:'أيّ شكل مستدير تمامًا مثل الكرة وليس له أوجه مسطّحة؟',en:'Which shape is perfectly round like a ball, with no flat faces?',a:'sphere'},{ar:'أيّ شكل له ٦ وجوه مربّعة؟',en:'Which shape has 6 square faces?',a:'cube'},{ar:'أيّ شكل له رأس مدبّب؟',en:'Which shape has a pointy tip?',a:'cone'},{ar:'أيّ شكل يشبه علبة المعلبات؟',en:'Which shape looks like a tin can?',a:'cylinder'}]);
-  return{key:'m4q:'+pickq.a,title:{ar:pickq.ar,en:pickq.en},visual:'<div class="em">🤔</div>',choices:shuffle(ids).map(i=>ch(()=>SHAPES[i].svg.replace('class="shape"','class="shape" style="width:84px;height:84px"')+dualHTML(SHAPES[i].ar+'|'+SHAPES[i].en),i===pickq.a)),cols:2}}
- const g=pick([math1,math2,math3])();g.key='m4m:'+g.key;return g}
+/* ===== Math — Year 1 · Term 1 (Weeks 4–12 lessons) =====
+   L1 Numbers & counting · L2 Tens & ones · L3 Addition within 20 · L4 Subtraction within 20 + 2D/3D shapes */
+const MITEMS=[['🐦','birds','طيور'],['⭐','stickers','ملصقات'],['🍎','apples','تفاح'],['🎈','balloons','بالونات'],['🚗','toy cars','سيارات'],['🍪','biscuits','بسكويت'],['🐸','frogs','ضفادع'],['🧸','teddy bears','دببة']];
+/* number line: hops of 1 from `from` to `to`; hideEnd shows "?" at the end */
+function nline(from,to,hideEnd){
+ const lo=Math.max(0,Math.min(from,to)-1),hi=Math.min(20,Math.max(from,to)+1),n=hi-lo,W=480,pad=24,sp=(W-2*pad)/n,X=v=>pad+(v-lo)*sp,Y=62,st=to>from?1:-1;
+ let s=`<svg viewBox="0 0 ${W} 100" class="nl" role="img"><line x1="${pad-14}" y1="${Y}" x2="${W-pad+14}" y2="${Y}" stroke="#8a93b2" stroke-width="3" stroke-linecap="round"/>`;
+ for(let v=from;v!==to;v+=st){const x1=X(v),x2=X(v+st),m=(x1+x2)/2;s+=`<path d="M${x1} ${Y-8} Q${m} ${Y-48} ${x2} ${Y-8}" fill="none" stroke="#ff9f43" stroke-width="4" stroke-linecap="round"/>`}
+ for(let v=lo;v<=hi;v++){const x=X(v),on=v===from,end=v===to;
+  s+=`<line x1="${x}" y1="${Y-8}" x2="${x}" y2="${Y+8}" stroke="#8a93b2" stroke-width="3"/>`;
+  if(on)s+=`<circle cx="${x}" cy="${Y}" r="9" fill="#4d9bff"/>`;
+  if(end)s+=hideEnd?`<circle cx="${x}" cy="${Y}" r="9" fill="#fff" stroke="#f0b429" stroke-width="3" stroke-dasharray="4 3"/>`:`<circle cx="${x}" cy="${Y}" r="9" fill="#3ddc97"/>`;
+  s+=`<text x="${x}" y="${Y+36}" text-anchor="middle" font-size="20" font-weight="700" fill="${on?'#2f6fe0':'#44507a'}">${end&&hideEnd?'?':v}</text>`}
+ return `<div class="nlw ltr">${s}</svg></div>`}
+/* base-ten blocks: rods = tens, small squares = ones */
+const bt=n=>{const t=Math.floor(n/10),o=n%10;return `<div class="bt"><div class="tens">${'<b class="rod"></b>'.repeat(t)}</div><div class="ones">${'<i></i>'.repeat(o)}</div></div>`};
+const erow=(e,n,cls)=>`<div class="erow ${cls||''}">${Array(n).fill(e).join('')}</div>`;
+const eqv=t=>`<div class="eq ltr">${t}</div>`;
+const symCh=a=>[['<','&lt;'],['>','&gt;'],['=','=']].map(([s,h])=>ch(`<span class="ltr" style="font-size:44px">${h}</span>`,s===a));
+
+/* ---- Level 1 · Numbers & counting (W4, W8, W11) ---- */
+function m1count(){const a=rnd(3,15),to=Math.min(20,a+rnd(2,5)),k=to-a;
+ return{key:'m1c:'+a+'+'+k,title:{ar:`ابدأ من ${N(a)} وعُدّ للأمام ${N(k)}. إلى أي عدد وصلت؟`,en:`Start at ${N(a)}. Count on ${N(k)} more. What number do you reach?`},visual:nline(a,to,true),choices:numCh(to,0,20),cols:4}}
+function m1ba(){const af=Math.random()<.5,n=af?rnd(0,19):rnd(1,20),ans=af?n+1:n-1;
+ return{key:'m1ba:'+(af?'a':'b')+n,title:{ar:`ما العدد الذي يأتي ${af?'بعد':'قبل'} ${N(n)}؟`,en:`What number comes ${af?'after':'before'} ${N(n)}?`},visual:eqv(af?`${n} ➜ ?`:`? ➜ ${n}`),choices:numCh(ans,0,20),cols:4}}
+function m1pm(){const more=Math.random()<.5,n=more?rnd(1,19):rnd(2,20),ans=more?n+1:n-1;
+ return{key:'m1pm:'+(more?'m':'l')+n,title:{ar:`ما العدد الذي هو واحد ${more?'أكثر':'أقل'} من ${N(n)}؟`,en:`What is one ${more?'more':'less'} than ${N(n)}?`},visual:frames(more?[...rep('on',n),'q']:[...rep('on',n-1),'cut']),choices:numCh(ans,0,20),cols:4}}
+function m1oe(){const n=rnd(1,10);const pr=[];for(let i=0;i<n;i+=2)pr.push(`<span class="pr"><i></i>${i+1<n?'<i></i>':''}</span>`);
+ return{key:'m1oe:'+n,title:{ar:`هل العدد ${N(n)} فردي أم زوجي؟`,en:`Is ${N(n)} odd or even?`},visual:`<div class="pairs">${pr.join('')}</div>`,
+  choices:[ch(D('زوجي — لكل واحد رفيق|Even — everyone has a buddy'),n%2===0),ch(D('فردي — واحد وحده|Odd — one is left alone'),n%2===1)],cols:1}}
+function m1ord(){const ns=sample(Array.from({length:20},(_,i)=>i+1),4),asc=[...ns].sort((a,b)=>a-b),t=rnd(0,3);
+ const vis=eqv(ns.join(' · ')).replace('class="eq ltr"','class="eq ltr" style="font-size:46px"');
+ if(t<2){const sm=t===0;return{key:'m1o:'+t+ns.join(),title:{ar:sm?'ما أصغر عدد؟':'ما أكبر عدد؟',en:sm?'Which is the smallest number?':'Which is the greatest number?'},visual:vis,choices:shuffle(ns).map(x=>ch(`<span class="ltr">${x}</span>`,x===(sm?asc[0]:asc[3]))),cols:4}}
+ const up=t===2,good=up?asc:[...asc].reverse(),seen=new Set([good.join()]),opts=[good];
+ const bad=[[...good].reverse()];seen.add(bad[0].join());let g=0;while(bad.length<3&&g++<80){const x=shuffle(ns);if(!seen.has(x.join())){seen.add(x.join());bad.push(x)}}
+ return{key:'m1s:'+t+ns.join(),title:{ar:up?'أيّ صفّ مرتّب من الأصغر إلى الأكبر؟':'أيّ صفّ مرتّب من الأكبر إلى الأصغر؟',en:up?'Which row is in order from smallest to greatest?':'Which row is in order from greatest to smallest?'},visual:'<div class="em">🔢</div>',
+  choices:shuffle([good,...bad]).map(x=>ch(`<span class="ltr">${x.join(' , ')}</span>`,x.join()===good.join())),cols:1}}
+const mathL1=()=>pick([m1count,m1ba,m1pm,m1oe,m1ord,m1ba,m1pm])();
+
+/* ---- Level 2 · Tens & ones (W4–W6, W8) ---- */
+function digCh(n){const s=new Set([n]),r=+String(n).split('').reverse().join('');[r,n+1,n-1,n+10,n-10,n+9].forEach(x=>{if(x>=1&&x<=30&&s.size<4)s.add(x)});return shuffle([...s]).map(x=>ch(`<span class="ltr">${x}</span>`,x===n))}
+function m2tens(){const n=rnd(10,30),t=Math.floor(n/10),o=n%10,ask=Math.random()<.5;
+ return{key:'m2t:'+(ask?'t':'o')+n,title:{ar:`كم ${ask?'عشرة':'واحدًا (آحادًا)'} في العدد ${N(n)}؟`,en:`How many ${ask?'tens':'ones'} are there in the number ${N(n)}?`},visual:bt(n)+eqv(n),choices:ask?numCh(t,0,4):numCh(o,0,9),cols:4}}
+function m2build(){const n=rnd(11,30),t=Math.floor(n/10),o=n%10;
+ if(Math.random()<.5)return{key:'m2b:'+n,title:{ar:'ما العدد الذي تُظهره المكعّبات؟ (العصا = ١٠ والمربّع = ١)',en:'What number do the base-ten blocks show? (rod = 10, square = 1)'},visual:bt(n),choices:digCh(n),cols:4};
+ return{key:'m2w:'+n,title:{ar:`معي ${N(t)} من العشرات و${N(o)} من الآحاد. ما العدد؟`,en:`I have ${N(t)} tens and ${N(o)} ones. What number am I?`},visual:bt(n),choices:digCh(n),cols:4}}
+function m2val(){const t=rnd(1,2),o=rnd(1,9),n=t*10+o;if(o===t)return m2val();const ask=Math.random()<.5,d=ask?t:o,sp=x=>`<span class="ltr">${x}</span>`;
+ const mk=(v,pos)=>ch(D(`${sp(v)} من ${pos?'العشرات':'الآحاد'}|${v} ${pos?'tens':'ones'}`),v===d&&!!pos===ask);
+ return{key:'m2v:'+n+ask,title:{ar:`في العدد ${N(n)}، ماذا يمثّل الرقم ${N(d)}؟`,en:`In the number ${N(n)}, what does the digit ${N(d)} stand for?`},visual:eqv(n),choices:[mk(t,1),mk(t,0),mk(o,1),mk(o,0)],cols:2}}
+function m2cmp(){let a=rnd(10,30),b;const r=Math.random();if(r<.15)b=a;else if(r<.5){const tt=Math.min(2,Math.floor(a/10));a=tt*10+rnd(0,9);b=tt*10+rnd(0,9)}else b=rnd(10,30);
+ const ans=a<b?'<':a>b?'>':'=';
+ return{key:'m2c:'+a+'_'+b,title:{ar:'قارن بين العددين: اختر < أو > أو =',en:'Compare the numbers: choose <, > or ='},visual:`<div class="cmp">${bt(a)}<span class="q">?</span>${bt(b)}</div>`+eqv(`${a} ? ${b}`),choices:symCh(ans),cols:3}}
+function m2part(){let n=rnd(11,29);if(n===20)n=21;const t=Math.floor(n/10)*10,o=n%10;
+ if(Math.random()<.5)return{key:'m2p:o'+n,title:{ar:'جزّئ العدد إلى عشرات وآحاد',en:'Partition the number into tens and ones'},visual:bt(n)+eqv(`${n} = ${t} + ?`),choices:numCh(o,0,9),cols:4};
+ const c=new Set([t]);shuffle([10,20,30,o]).forEach(x=>{if(c.size<4)c.add(x)});
+ return{key:'m2p:t'+n,title:{ar:'جزّئ العدد إلى عشرات وآحاد',en:'Partition the number into tens and ones'},visual:bt(n)+eqv(`${n} = ? + ${o}`),choices:shuffle([...c]).map(x=>ch(`<span class="ltr">${x}</span>`,x===t)),cols:4}}
+const mathL2=()=>pick([m2tens,m2build,m2val,m2cmp,m2part,m2cmp,m2build])();
+
+/* ---- Level 3 · Addition within 20 (W8–W9, lessons 1–3) ---- */
+function m3parts(){const p=rnd(2,12),q=rnd(2,Math.min(9,20-p)),w=p+q;
+ if(Math.random()<.5)return{key:'m3p:'+p+'+'+q,title:{ar:'اجمع الجزأين. كم الكلّ؟',en:'Combine the two parts. What is the whole?'},visual:eqv(`${p} + ${q} = ?`)+frames([...rep('on',p),...rep('on2',q)]),choices:numCh(w,0,20),cols:4};
+ return{key:'m3pm:'+w+'-'+p,title:{ar:'الكلّ معروف وأحد الجزأين معروف. ما الجزء الناقص؟',en:'The whole and one part are known. What is the missing part?'},visual:eqv(`${w} = ${p} + ?`)+frames([...rep('on',p),...rep('q',q)]),choices:numCh(q,0,20),cols:4}}
+function m3pic(){const [e]=pick(MITEMS),a=rnd(2,10),b=rnd(2,Math.min(10,20-a));
+ return{key:'m3i:'+e+a+'+'+b,title:{ar:'عُدّ كل الصور. كم المجموع؟',en:'Count all the pictures. How many in all?'},visual:`<div class="addp">${erow(e,a,'g1')}<span class="pl">+</span>${erow(e,b,'g2')}</div>`+eqv(`${a} + ${b} = ?`),choices:numCh(a+b,0,20),cols:4}}
+function m3nl(){const a=rnd(0,15),b=rnd(1,Math.min(5,20-a));
+ return{key:'m3n:'+a+'+'+b,title:{ar:'استخدم خطّ الأعداد: عُدّ للأمام لتجد الناتج',en:'Use the number line: count forward to find the answer'},visual:nline(a,a+b,true)+eqv(`${a} + ${b} = ?`),choices:numCh(a+b,0,20),cols:4}}
+function m3finger(){
+ if(Math.random()<.5){const a=rnd(2,9);let b=rnd(2,9);if(b===a)b=a===9?8:a+1;const big=Math.max(a,b),sm=Math.min(a,b),c=new Set([big,sm]);[big+sm,big-sm,big+1,sm+1].forEach(x=>{if(x>0&&c.size<4)c.add(x)});
+  return{key:'m3f:'+a+'+'+b,title:{ar:`لنحسب ${N(a)} + ${N(b)} بالأصابع: أيّ عدد نحتفظ به في عقولنا؟ (الأكبر)`,en:`To add ${N(a)} + ${N(b)} with fingers, which number do we keep in our mind?`},visual:eqv(`${a} + ${b}`)+'<div class="em">✋</div>',choices:shuffle([...c]).map(x=>ch(`<span class="ltr">${x}</span>`,x===big)),cols:4}}
+ const a=rnd(6,13),b=rnd(2,Math.min(6,20-a));
+ return{key:'m3fs:'+a+'+'+b,title:{ar:`فكّر في ${N(a)} ثم عُدّ ${N(b)} بأصابعك`,en:`Think ${N(a)}, then count on ${N(b)} fingers`},visual:eqv(`${a} + ${b} = ?`)+'<div class="em">🧠✋</div>',choices:numCh(a+b,0,20),cols:4}}
+function m3miss(){const b=rnd(1,9),a=rnd(1,Math.min(11,20-b)),s=a+b;
+ return{key:'m3m:'+a+'+'+b,title:{ar:'أوجد العدد الناقص',en:'Find the missing number'},visual:eqv(`${a} + ? = ${s}`),choices:numCh(b,0,20),cols:4}}
+function m3zero(){
+ if(Math.random()<.25)return{key:'m3zc',title:{ar:'ماذا يحدث عندما نجمع صفرًا إلى عدد؟',en:'What happens when we add zero to a number?'},visual:eqv('7 + 0'),choices:shuffle([ch(D('العدد لا يتغيّر|The number stays the same'),1),ch(D('يصبح العدد أكبر|The number gets bigger'),0),ch(D('يصبح العدد أصغر|The number gets smaller'),0),ch(D('يصبح العدد صفرًا|The number becomes zero'),0)]),cols:1};
+ const n=rnd(1,20),f=Math.random()<.5;return{key:'m3z:'+n+f,title:{ar:'اجمع (قاعدة الصفر)',en:'Add (the zero rule)'},visual:eqv(f?`${n} + 0 = ?`:`0 + ${n} = ?`),choices:numCh(n,0,20),cols:4}}
+function mword(add){const [e,en,ar]=pick(MITEMS);
+ if(add){const a=rnd(3,14),b=rnd(2,Math.min(8,20-a));return{key:'m3w:'+e+a+'+'+b,title:{ar:`يوجد ${N(a)} من ${ar}، وجاء ${N(b)} أخرى معها. كم صار المجموع؟`,en:`There are ${N(a)} ${en}. ${N(b)} more come. How many are there now?`},visual:`<div class="em">${e}</div>`,choices:numCh(a+b,0,20),cols:4}}
+ const a=rnd(8,20),b=rnd(2,Math.min(9,a-1));return{key:'m4w:'+e+a+'-'+b,title:{ar:`يوجد ${N(a)} من ${ar}، ثم ذهب ${N(b)} منها. كم بقي؟`,en:`There are ${N(a)} ${en}. ${N(b)} go away. How many are left?`},visual:`<div class="em">${e}</div>`,choices:numCh(a-b,0,20),cols:4}}
+const mathL3=()=>pick([m3parts,m3pic,m3nl,m3finger,m3miss,m3zero,()=>mword(true),m3nl,m3parts])();
+
+/* ---- Level 4 · Subtraction within 20 (W11–W12) + 2D / 3D shapes ---- */
+function m4take(){const a=rnd(5,20),b=rnd(1,Math.min(9,a-1));
+ return{key:'m4t:'+a+'-'+b,title:{ar:`كان هناك ${N(a)} قطعة. أُخذ منها ${N(b)}. كم بقي؟`,en:`There were ${N(a)} counters. ${N(b)} are taken away. How many are left?`},visual:eqv(`${a} − ${b} = ?`)+frames([...rep('on',a-b),...rep('cut',b)]),choices:numCh(a-b,0,20),cols:4}}
+function m4back(){const a=rnd(6,20),b=rnd(1,5);
+ return{key:'m4b:'+a+'-'+b,title:{ar:'استخدم خطّ الأعداد: عُدّ للخلف لتجد الناتج',en:'Use the number line: count back to find the answer'},visual:nline(a,a-b,true)+eqv(`${a} − ${b} = ?`),choices:numCh(a-b,0,20),cols:4}}
+function m4diff(){const a=rnd(10,20),s=rnd(Math.max(4,a-8),a-2);
+ return{key:'m4d:'+a+'-'+s,title:{ar:`لنحسب ${N(a)} − ${N(s)}: ابدأ من العدد الأصغر ${N(s)} وعُدّ للأمام حتى ${N(a)}. كم قفزة؟`,en:`To solve ${N(a)} − ${N(s)}, start at the smaller number ${N(s)} and count on to ${N(a)}. How many jumps?`},visual:nline(s,a,false)+eqv(`${a} − ${s} = ?`),choices:numCh(a-s,0,20),cols:4}}
+function m4zero(){
+ if(Math.random()<.25)return{key:'m4zc',title:{ar:'ماذا يعني أن نطرح صفرًا من عدد؟',en:'What does it mean to take away zero?'},visual:eqv('9 − 0'),choices:shuffle([ch(D('لا يُزال أيّ شيء|Nothing is taken away'),1),ch(D('نُزيل كل شيء|Everything is taken away'),0),ch(D('الناتج صفر|The answer is zero'),0),ch(D('يزداد العدد|The number gets bigger'),0)]),cols:1};
+ const n=rnd(1,20);return{key:'m4z:'+n,title:{ar:'اطرح (الصفر)',en:'Subtract (zero)'},visual:eqv(`${n} − 0 = ?`),choices:numCh(n,0,20),cols:4}}
+/* shapes */
+const S2D={triangle:{ar:'المثلث',en:'Triangle',svg:'<svg class="shape" viewBox="0 0 120 120"><polygon points="60,12 108,100 12,100" fill="#ff7a59"/></svg>'},
+ square:{ar:'المربّع',en:'Square',svg:'<svg class="shape" viewBox="0 0 120 120"><rect x="20" y="20" width="80" height="80" fill="#4d9bff"/></svg>'},
+ rectangle:{ar:'المستطيل',en:'Rectangle',svg:'<svg class="shape" viewBox="0 0 120 120"><rect x="8" y="30" width="104" height="60" fill="#3ddc97"/></svg>'},
+ circle:{ar:'الدائرة',en:'Circle',svg:'<svg class="shape" viewBox="0 0 120 120"><circle cx="60" cy="60" r="48" fill="#ffc83d"/></svg>'}};
+const shpCh=(M,id,ok)=>ch(()=>M[id].svg.replace('class="shape"','class="shape" style="width:84px;height:84px"')+dualHTML(M[id].ar+'|'+M[id].en),ok);
+const tfCh=a=>[ch(D('صح|True'),a),ch(D('خطأ|False'),!a)];
+function shp2name(){const ids=Object.keys(S2D),id=pick(ids);return{key:'s2n:'+id,title:{ar:'ما اسم هذا الشكل المسطّح (2D)؟',en:'What is the name of this 2D shape?'},visual:S2D[id].svg,choices:shuffle(ids).map(i=>ch(D(S2D[i].ar+'|'+S2D[i].en),i===id)),cols:2}}
+function shp2prop(){const ids=Object.keys(S2D),t=rnd(0,4);
+ if(t<2){const id=pick(['triangle','square','rectangle']),v=id==='triangle'?3:4;return{key:'s2c:'+t+id,title:{ar:t?`كم رأسًا (زاوية) في ${S2D[id].ar}؟`:`كم ضلعًا في ${S2D[id].ar}؟`,en:t?`How many vertices (corners) does a ${S2D[id].en.toLowerCase()} have?`:`How many sides does a ${S2D[id].en.toLowerCase()} have?`},visual:S2D[id].svg,choices:numCh(v,0,6),cols:4}}
+ const Q=[{ar:'أيّ شكل له ٣ أضلاع؟',en:'Which 2D shape has 3 sides?',a:'triangle'},{ar:'أيّ شكل له ٤ أضلاع متساوية؟',en:'Which 2D shape has 4 equal sides?',a:'square'},{ar:'أيّ شكل ليس له رؤوس (زوايا)؟',en:'Which 2D shape has no vertices (corners)?',a:'circle'}];
+ if(t===4)return{key:'s2tf'+rnd(0,1),title:{ar:'صح أم خطأ؟',en:'True or false?'},visual:`<div class="word ltr" style="font-size:36px">2D shapes are flat.</div>`,choices:tfCh(true),cols:2};
+ const q=Q[t-2];return{key:'s2w:'+q.a,title:{ar:q.ar,en:q.en},visual:'<div class="em">🤔</div>',choices:shuffle(ids).map(i=>shpCh(S2D,i,i===q.a)),cols:2}}
+function shp3name(){const ids=Object.keys(SHAPES),id=pick(ids);return{key:'s3n:'+id,title:{ar:'ما اسم هذا الشكل المجسّم (3D)؟',en:'What is the name of this 3D shape?'},visual:SHAPES[id].svg,choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
+function shp3obj(){const ids=Object.keys(SHAPES),id=pick(ids),o=pick(SHAPES[id].objs);return{key:'s3o:'+o[2],title:{ar:'ما شكل هذا الشيء؟',en:'What shape is this object?'},visual:()=>`<div class="em">${o[0]}</div><div class="vname">${dualHTML(o[1]+'|'+o[2])}</div>`,choices:shuffle(ids).map(i=>ch(D(SHAPES[i].ar+'|'+SHAPES[i].en),i===id)),cols:2}}
+function shp3which(){const ids=Object.keys(SHAPES),Q=[
+ {ar:'أيّ شكل مستدير مثل الكرة وليس له حروف أو زوايا؟',en:'Which 3D shape is round like a ball, with no edges or corners?',a:'sphere'},
+ {ar:'أيّ شكل يشبه النرد وله ٦ وجوه مربّعة؟',en:'Which 3D shape is like a dice, with 6 square faces?',a:'cube'},
+ {ar:'أيّ شكل له وجه منحنٍ واحد ووجه مسطّح واحد ورأس واحد؟',en:'Which 3D shape has 1 curved face, 1 flat face and 1 corner?',a:'cone'},
+ {ar:'أيّ شكل له وجهان مسطّحان ووجه منحنٍ واحد؟',en:'Which 3D shape has 2 flat faces and 1 curved face?',a:'cylinder'},
+ {ar:'أيّ شكل يشبه الخيمة وأوجهه مثلّثات تلتقي في نقطة؟',en:'Which 3D shape is like a tent, with flat triangle faces that meet at a point?',a:'pyramid'}],q=pick(Q);
+ return{key:'s3w:'+q.a,title:{ar:q.ar,en:q.en},visual:'<div class="em">🤔</div>',choices:shuffle(ids).map(i=>shpCh(SHAPES,i,i===q.a)),cols:2}}
+function shp3prop(){const t=rnd(0,4);
+ if(t<3){const [w,v,ar,en]=[['faces',6,'وجوه','faces'],['edges',12,'حروف','edges'],['vertices',8,'رؤوس (زوايا)','vertices (corners)']][t];return{key:'s3c:'+w,title:{ar:`كم عدد ${ar} المكعّب؟`,en:`How many ${en} does a cube have?`},visual:SHAPES.cube.svg,choices:numCh(v,0,14),cols:4}}
+ return t===3?{key:'s3tf1',title:{ar:'صح أم خطأ؟',en:'True or false?'},visual:`<div class="word ltr" style="font-size:36px">Some 3D shapes roll.</div>`,choices:tfCh(true),cols:2}:{key:'s3tf2',title:{ar:'صح أم خطأ؟',en:'True or false?'},visual:`<div class="word ltr" style="font-size:36px">3D shapes are flat.</div>`,choices:tfCh(false),cols:2}}
+const mathShapes=()=>pick([shp2name,shp2prop,shp3name,shp3obj,shp3which,shp3prop,shp2prop,shp3which])();
+const mathL4=()=>Math.random()<.6?pick([m4take,m4back,m4diff,m4zero,()=>mword(false),m4take])():mathShapes();
 
 /* ----- English ----- */
 const blankW=(w,d)=>{const i=w.indexOf(d);return w.slice(0,i)+`<span class="gap">${d}</span>`+w.slice(i+d.length)};
@@ -614,7 +724,7 @@ function quran4(){const pool=surahPool(),t=rnd(0,2);
  const s=pick(pool.filter(x=>x.clue));return{key:'q4c:'+s.id,title:{ar:'خمّن السورة من التلميح',en:'Guess the surah from the clue'},visual:()=>`<div class="em">${s.clue.e}</div><div class="vname">${s.clue[state.lang]}</div>`,
   choices:shuffle([s,...sample(pool.filter(x=>x!==s),3)]).map(x=>ch(sname(x),x===s)),cols:2}}
 
-const GEN={math:[null,math1,math2,math3,math4],english:[null,eng1,eng2,eng3,eng4],science:[null,sci1,sci2,sci3,sci4],arabic:[null,ar1,ar2,ar3,ar4],
+const GEN={math:[null,mathL1,mathL2,mathL3,mathL4],english:[null,eng1,eng2,eng3,eng4],science:[null,sci1,sci2,sci3,sci4],arabic:[null,ar1,ar2,ar3,ar4],
  quran:[null,()=>quranOrder(1),()=>quranOrder(2),()=>quranOrder(3),quran4]};
 const RECENT={};
 function buildRound(subj,lvl){const n=ROUND_LEN(subj,lvl),used=new Set(),out=[],prev=new Set(RECENT[subj+lvl]||[]);
